@@ -705,38 +705,774 @@ $$x(t) = \sum_{n=-\infty}^{\infty}x(nT_s)\,\text{sinc}\!\left(\frac{t-nT_s}{T_s}
 <!-- ============ PART III-VI: PLACEHOLDER SECTIONS ============ -->
 <!-- These will be filled in subsequent edits -->
 
-<section id="sec-p3-1" class="sec hidden"><h1 class="text-2xl font-bold mb-1">3.1 週期圖與視窗函數 (Periodogram & Window Functions)</h1><p class="text-slate-500 text-sm mb-5">頻譜洩漏、5 種視窗、主瓣/旁瓣取捨</p><div class="card"><p>本章節正在建構中，即將加入完整的視窗函數理論、頻譜洩漏分析與互動比較。</p></div><div class="ch-nav"><a onclick="go('p2-7')">← 2.7</a><a onclick="go('p3-2')">3.2 →</a></div></section>
-<section id="sec-p3-2" class="sec hidden"><h1 class="text-2xl font-bold mb-1">3.2 Welch 法與 Multitaper 頻譜估計</h1><p class="text-slate-500 text-sm mb-5">降低 PSD 估計變異數的方法</p><div class="card"><p>本章節正在建構中。</p></div><div class="ch-nav"><a onclick="go('p3-1')">← 3.1</a><a onclick="go('p3-3')">3.3 →</a></div></section>
-<section id="sec-p3-3" class="sec hidden"><h1 class="text-2xl font-bold mb-1">3.3 參數式頻譜估計 (Parametric Methods)</h1><p class="text-slate-500 text-sm mb-5">AR / ARMA 模型、Burg 演算法、Yule-Walker</p><div class="card"><p>本章節正在建構中。</p></div><div class="ch-nav"><a onclick="go('p3-2')">← 3.2</a><a onclick="go('p3-4')">3.4 →</a></div></section>
-<section id="sec-p3-4" class="sec hidden"><h1 class="text-2xl font-bold mb-1">3.4 MUSIC 與 ESPRIT</h1><p class="text-slate-500 text-sm mb-5">子空間方法 — 超解析度頻率估計</p><div class="card"><p>本章節正在建構中。</p></div><div class="ch-nav"><a onclick="go('p3-3')">← 3.3</a><a onclick="go('p3-5')">3.5 →</a></div></section>
-<section id="sec-p3-5" class="sec hidden"><h1 class="text-2xl font-bold mb-1">3.5 Chirp-Z 轉換 (CZT)</h1><p class="text-slate-500 text-sm mb-5">Z 平面上沿任意螺線的 DFT 推廣</p><div class="card"><p>本章節正在建構中。</p></div><div class="ch-nav"><a onclick="go('p3-4')">← 3.4</a><a onclick="go('p4-1')">4.1 →</a></div></section>
+<!-- ============ PART III: SPECTRAL ESTIMATION ============ -->
 
-<section id="sec-p4-1" class="sec hidden"><h1 class="text-2xl font-bold mb-1">4.1 Hilbert 轉換 (Hilbert Transform)</h1><p class="text-slate-500 text-sm mb-5">解析訊號的數學基礎</p><div class="card"><p>本章節正在建構中。</p></div><div class="ch-nav"><a onclick="go('p3-5')">← 3.5</a><a onclick="go('p4-2')">4.2 →</a></div></section>
-<section id="sec-p4-2" class="sec hidden"><h1 class="text-2xl font-bold mb-1">4.2 包絡與瞬時頻率</h1><p class="text-slate-500 text-sm mb-5">Analytic Signal · Instantaneous Frequency</p><div class="card"><p>本章節正在建構中。</p></div><div class="ch-nav"><a onclick="go('p4-1')">← 4.1</a><a onclick="go('p4-3')">4.3 →</a></div></section>
-<section id="sec-p4-3" class="sec hidden"><h1 class="text-2xl font-bold mb-1">4.3 倒頻譜分析 (Cepstrum Analysis)</h1><p class="text-slate-500 text-sm mb-5">log-spectrum 的 IFFT</p><div class="card"><p>本章節正在建構中。</p></div><div class="ch-nav"><a onclick="go('p4-2')">← 4.2</a><a onclick="go('p5-1')">5.1 →</a></div></section>
+<section id="sec-p3-1" class="sec hidden">
+<h1 class="text-2xl font-bold mb-1">3.1 週期圖與視窗函數 (Periodogram & Window Functions)</h1>
+<p class="text-slate-500 text-sm mb-5">頻譜洩漏的根本原因與視窗的工程取捨</p>
+<div class="lo"><h3>Learning Objectives</h3><ul class="list-disc pl-5 text-sm space-y-1"><li>推導截斷 = 頻域卷積，理解洩漏的成因</li><li>比較 Rectangular / Hann / Hamming / Blackman / Kaiser 視窗</li><li>根據解析度 vs 動態範圍需求選擇視窗</li></ul></div>
+<div class="card">
+<h2 class="text-lg font-bold mb-3">週期圖 (Periodogram)</h2>
+<p class="mb-3">最簡單的頻譜估計：直接取 DFT 的平方模。</p>
+<div class="fm">$$\hat{S}(\omega) = \frac{1}{N}\left|\sum_{n=0}^{N-1}x[n]\,e^{-j\omega n}\right|^2$$</div>
+<p class="mt-2">問題：週期圖是 PSD 的<strong>不一致估計</strong>（inconsistent estimator）——增加 $N$ 不會降低變異數，只是在同樣大的隨機波動中看到更細的頻率格點。</p>
+</div>
+<div class="card">
+<h2 class="text-lg font-bold mb-3">頻譜洩漏 (Spectral Leakage)</h2>
+<div class="fm">$$x_w[n] = x[n]\cdot w[n] \;\longleftrightarrow\; X_w(e^{j\omega}) = \frac{1}{2\pi}X(e^{j\omega}) * W(e^{j\omega})$$</div>
+<p class="mt-2">截斷 = 乘矩形窗。矩形窗的 DTFT 是 Dirichlet kernel（類似 sinc），旁瓣僅 $-13$ dB → 嚴重洩漏。</p>
+</div>
+<div class="card">
+<h2 class="text-lg font-bold mb-3">視窗函數公式</h2>
+<div class="fm">
+<p><strong>Hann：</strong>$w[n]=0.5(1-\cos\frac{2\pi n}{N-1})$</p>
+<p><strong>Hamming：</strong>$w[n]=0.54-0.46\cos\frac{2\pi n}{N-1}$</p>
+<p><strong>Blackman：</strong>$w[n]=0.42-0.5\cos\frac{2\pi n}{N-1}+0.08\cos\frac{4\pi n}{N-1}$</p>
+<p><strong>Kaiser：</strong>$w[n]=I_0(\beta\sqrt{1-(2n/(N-1)-1)^2})/I_0(\beta)$</p>
+</div>
+<table class="dt mt-3"><thead><tr><th>視窗</th><th>主瓣 (bins)</th><th>旁瓣 (dB)</th><th>ENBW</th><th>適用</th></tr></thead><tbody>
+<tr><td>Rectangular</td><td>2</td><td>-13</td><td>1.00</td><td>暫態</td></tr>
+<tr><td>Hann</td><td>4</td><td>-31</td><td>1.50</td><td>通用首選</td></tr>
+<tr><td>Hamming</td><td>4</td><td>-42</td><td>1.36</td><td>語音</td></tr>
+<tr><td>Blackman</td><td>6</td><td>-58</td><td>1.73</td><td>高動態範圍</td></tr>
+<tr><td>Kaiser β=6</td><td>~5</td><td>-46</td><td>~1.5</td><td>可調</td></tr>
+</tbody></table>
+</div>
+<div class="card">
+<h2 class="text-lg font-bold mb-3">互動：視窗頻譜比較</h2>
+<div class="flex flex-wrap gap-3 mb-3">
+  <select id="p31w" class="border rounded px-2 py-1 text-sm dark:bg-slate-700 dark:border-slate-600" onchange="updateP31()"><option value="rectangular">Rectangular</option><option value="hann" selected>Hann</option><option value="hamming">Hamming</option><option value="blackman">Blackman</option><option value="kaiser">Kaiser</option></select>
+  <div id="p31bd"><label class="text-xs">β=<span id="p31bv">6</span></label><input type="range" id="p31b" min="1" max="20" value="6" step="0.5" class="w-28" oninput="updateP31()"></div>
+</div>
+<div id="plotP31" class="plot"></div>
+</div>
+<div class="card">
+<h2 class="text-lg font-bold mb-3">互動：洩漏與分辨能力</h2>
+<p class="text-sm text-slate-500 mb-3">兩個接近頻率的正弦波，切換視窗即時比較 FFT。</p>
+<div class="grid grid-cols-2 gap-3 mb-3">
+  <div><label class="text-xs">f1=<span id="p31f1v">100</span>Hz</label><input type="range" id="p31f1" min="50" max="200" value="100" class="w-full" oninput="updateP31b()"></div>
+  <div><label class="text-xs">f2=<span id="p31f2v">108</span>Hz</label><input type="range" id="p31f2" min="50" max="200" value="108" class="w-full" oninput="updateP31b()"></div>
+</div>
+<div class="flex flex-wrap gap-1 mb-3">
+  <button onclick="setP31w('rectangular')" class="p31wb px-2 py-1 rounded text-xs border" data-w="rectangular">Rect</button>
+  <button onclick="setP31w('hann')" class="p31wb px-2 py-1 rounded text-xs border bg-cyan-500 text-white" data-w="hann">Hann</button>
+  <button onclick="setP31w('hamming')" class="p31wb px-2 py-1 rounded text-xs border" data-w="hamming">Hamming</button>
+  <button onclick="setP31w('blackman')" class="p31wb px-2 py-1 rounded text-xs border" data-w="blackman">Blackman</button>
+</div>
+<div id="plotP31b" class="plot"></div>
+</div>
+<div class="ref-box"><p>[1] Harris, <em>On the Use of Windows for Harmonic Analysis with the DFT</em>, Proc. IEEE, 1978. [2] Oppenheim & Schafer, <em>Discrete-Time Signal Processing</em>, Ch.10.</p></div>
+<div class="ch-nav"><a onclick="go('p2-7')">← 2.7</a><a onclick="go('p3-2')">3.2 →</a></div>
+</section>
 
-<section id="sec-p5-1" class="sec hidden"><h1 class="text-2xl font-bold mb-1">5.1 短時傅立葉轉換 (STFT)</h1><p class="text-slate-500 text-sm mb-5">時頻分析的基石</p><div class="card"><p>本章節正在建構中。</p></div><div class="ch-nav"><a onclick="go('p4-3')">← 4.3</a><a onclick="go('p5-2')">5.2 →</a></div></section>
-<section id="sec-p5-2" class="sec hidden"><h1 class="text-2xl font-bold mb-1">5.2 Wigner-Ville 分佈 (WVD)</h1><p class="text-slate-500 text-sm mb-5">最高時頻解析度 — 但有交叉項</p><div class="card"><p>本章節正在建構中。</p></div><div class="ch-nav"><a onclick="go('p5-1')">← 5.1</a><a onclick="go('p5-3')">5.3 →</a></div></section>
-<section id="sec-p5-3" class="sec hidden"><h1 class="text-2xl font-bold mb-1">5.3 Cohen's Class</h1><p class="text-slate-500 text-sm mb-5">一般化時頻分佈框架</p><div class="card"><p>本章節正在建構中。</p></div><div class="ch-nav"><a onclick="go('p5-2')">← 5.2</a><a onclick="go('p5-4')">5.4 →</a></div></section>
-<section id="sec-p5-4" class="sec hidden"><h1 class="text-2xl font-bold mb-1">5.4 連續小波轉換 (CWT)</h1><p class="text-slate-500 text-sm mb-5">多解析度時頻分析</p><div class="card"><p>本章節正在建構中。</p></div><div class="ch-nav"><a onclick="go('p5-3')">← 5.3</a><a onclick="go('p5-5')">5.5 →</a></div></section>
-<section id="sec-p5-5" class="sec hidden"><h1 class="text-2xl font-bold mb-1">5.5 離散小波轉換 (DWT)</h1><p class="text-slate-500 text-sm mb-5">Mallat 演算法與多解析度分析 (MRA)</p><div class="card"><p>本章節正在建構中。</p></div><div class="ch-nav"><a onclick="go('p5-4')">← 5.4</a><a onclick="go('p5-6')">5.6 →</a></div></section>
-<section id="sec-p5-6" class="sec hidden"><h1 class="text-2xl font-bold mb-1">5.6 經驗模態分解 (EMD) / Hilbert-Huang Transform</h1><p class="text-slate-500 text-sm mb-5">非線性非平穩訊號的自適應分解</p><div class="card"><p>本章節正在建構中。</p></div><div class="ch-nav"><a onclick="go('p5-5')">← 5.5</a><a onclick="go('p5-7')">5.7 →</a></div></section>
-<section id="sec-p5-7" class="sec hidden"><h1 class="text-2xl font-bold mb-1">5.7 Synchrosqueezing Transform</h1><p class="text-slate-500 text-sm mb-5">銳化時頻表示</p><div class="card"><p>本章節正在建構中。</p></div><div class="ch-nav"><a onclick="go('p5-6')">← 5.6</a><a onclick="go('p6-1')">6.1 →</a></div></section>
+<section id="sec-p3-2" class="sec hidden">
+<h1 class="text-2xl font-bold mb-1">3.2 Welch 法與 Multitaper 頻譜估計</h1>
+<p class="text-slate-500 text-sm mb-5">降低 PSD 估計變異數</p>
+<div class="lo"><h3>Learning Objectives</h3><ul class="list-disc pl-5 text-sm space-y-1"><li>理解 Welch 法：分段加窗平均的 bias-variance 取捨</li><li>認識 DPSS (Slepian) 序列與 Multitaper 方法</li></ul></div>
+<div class="card">
+<h2 class="text-lg font-bold mb-3">Welch 法</h2>
+<p class="mb-2">將長度 $N$ 的資料分成 $K$ 段（長度 $L$，重疊 $D$），每段加窗做 FFT 後取平均：</p>
+<div class="fm">$$\hat{S}_W(f) = \frac{1}{K}\sum_{i=0}^{K-1}\frac{1}{LU}\left|\sum_{n=0}^{L-1}w[n]\,x[n+iD]\,e^{-j2\pi fn/f_s}\right|^2$$
+<p class="text-xs text-center mt-1">$U = \frac{1}{L}\sum|w[n]|^2$（窗功率歸一化）</p></div>
+<p class="mt-2"><strong>Bias-Variance Tradeoff：</strong>段數 $K$ 越多 → 變異數越低（$\approx 1/K$），但每段越短 → 頻率解析度越差。</p>
+</div>
+<div class="card">
+<h2 class="text-lg font-bold mb-3">Multitaper 法 (Thomson, 1982)</h2>
+<p class="mb-2">使用多個正交的<strong>DPSS (Discrete Prolate Spheroidal Sequences / Slepian sequences)</strong> 作為視窗，每個視窗產生一個獨立的頻譜估計，最後平均。</p>
+<div class="fm">$$\hat{S}_{MT}(f) = \frac{1}{K}\sum_{k=0}^{K-1}\left|\sum_{n=0}^{N-1}v_n^{(k)}\,x[n]\,e^{-j2\pi fn/f_s}\right|^2$$
+<p class="text-xs text-center mt-1">$\{v^{(k)}\}_{k=0}^{K-1}$：前 $K$ 個 DPSS，集中 $NW$ 頻寬內的能量最大化</p></div>
+<div class="tip mt-3"><p><strong>優勢：</strong>不需分段（保留全部頻率解析度），但仍能降低變異數。是 PSD 估計的「gold standard」。</p></div>
+</div>
+<div class="ref-box"><p>[1] Welch, <em>The Use of FFT for the Estimation of PSD</em>, IEEE Trans., 1967. [2] Thomson, <em>Spectrum Estimation and Harmonic Analysis</em>, Proc. IEEE, 1982.</p></div>
+<div class="ch-nav"><a onclick="go('p3-1')">← 3.1</a><a onclick="go('p3-3')">3.3 →</a></div>
+</section>
 
-<section id="sec-p6-1" class="sec hidden"><h1 class="text-2xl font-bold mb-1">6.1 進階 FFT 演算法</h1><p class="text-slate-500 text-sm mb-5">Split-Radix · Bluestein · Goertzel</p><div class="card"><p>本章節正在建構中。</p></div><div class="ch-nav"><a onclick="go('p5-7')">← 5.7</a><a onclick="go('p6-2')">6.2 →</a></div></section>
-<section id="sec-p6-2" class="sec hidden"><h1 class="text-2xl font-bold mb-1">6.2 數值精度</h1><p class="text-slate-500 text-sm mb-5">浮點誤差 · 定點 FFT · SNR 分析</p><div class="card"><p>本章節正在建構中。</p></div><div class="ch-nav"><a onclick="go('p6-1')">← 6.1</a><a onclick="go('p6-3')">6.3 →</a></div></section>
-<section id="sec-p6-3" class="sec hidden"><h1 class="text-2xl font-bold mb-1">6.3 Overlap-Add / Overlap-Save</h1><p class="text-slate-500 text-sm mb-5">長序列快速卷積</p><div class="card"><p>本章節正在建構中。</p></div><div class="ch-nav"><a onclick="go('p6-2')">← 6.2</a><a onclick="go('p6-4')">6.4 →</a></div></section>
-<section id="sec-p6-4" class="sec hidden"><h1 class="text-2xl font-bold mb-1">6.4 濾波器設計工作台</h1><p class="text-slate-500 text-sm mb-5">FIR/IIR 設計流程</p><div class="card"><p>本章節正在建構中。</p></div><div class="ch-nav"><a onclick="go('p6-3')">← 6.3</a><a onclick="go('p6-5')">6.5 →</a></div></section>
-<section id="sec-p6-5" class="sec hidden"><h1 class="text-2xl font-bold mb-1">6.5 2D FFT 與影像處理</h1><p class="text-slate-500 text-sm mb-5">影像頻域濾波 · 相位相關</p><div class="card"><p>本章節正在建構中。</p></div><div class="ch-nav"><a onclick="go('p6-4')">← 6.4</a><a onclick="go('p6-6')">6.6 →</a></div></section>
-<section id="sec-p6-6" class="sec hidden"><h1 class="text-2xl font-bold mb-1">6.6 OFDM 通訊系統</h1><p class="text-slate-500 text-sm mb-5">MIMO-OFDM · 通道估計 · 頻域等化</p><div class="card"><p>本章節正在建構中。</p></div><div class="ch-nav"><a onclick="go('p6-5')">← 6.5</a><a onclick="go('p6-7')">6.7 →</a></div></section>
-<section id="sec-p6-7" class="sec hidden"><h1 class="text-2xl font-bold mb-1">6.7 雷達訊號處理</h1><p class="text-slate-500 text-sm mb-5">匹配濾波 · Range-Doppler · 模糊函數</p><div class="card"><p>本章節正在建構中。</p></div><div class="ch-nav"><a onclick="go('p6-6')">← 6.6</a><a onclick="go('p6-8')">6.8 →</a></div></section>
-<section id="sec-p6-8" class="sec hidden"><h1 class="text-2xl font-bold mb-1">6.8 陣列訊號處理</h1><p class="text-slate-500 text-sm mb-5">波束成形 · DOA 估計</p><div class="card"><p>本章節正在建構中。</p></div><div class="ch-nav"><a onclick="go('p6-7')">← 6.7</a><a onclick="go('p6-9')">6.9 →</a></div></section>
-<section id="sec-p6-9" class="sec hidden"><h1 class="text-2xl font-bold mb-1">6.9 生醫訊號分析</h1><p class="text-slate-500 text-sm mb-5">EEG 頻帶 · ECG HRV · 頻域分析</p><div class="card"><p>本章節正在建構中。</p></div><div class="ch-nav"><a onclick="go('p6-8')">← 6.8</a><a onclick="go('p6-10')">6.10 →</a></div></section>
-<section id="sec-p6-10" class="sec hidden"><h1 class="text-2xl font-bold mb-1">6.10 振動分析完整流程</h1><p class="text-slate-500 text-sm mb-5">擷取 → FFT → 階次追蹤 → 包絡譜 → 趨勢</p><div class="card"><p>本章節正在建構中。</p></div><div class="ch-nav"><a onclick="go('p6-9')">← 6.9</a><a onclick="go('lab')">實驗室 →</a></div></section>
+<section id="sec-p3-3" class="sec hidden">
+<h1 class="text-2xl font-bold mb-1">3.3 參數式頻譜估計 (Parametric Spectral Estimation)</h1>
+<p class="text-slate-500 text-sm mb-5">AR / ARMA 模型 — 用模型擬合取代直接 FFT</p>
+<div class="lo"><h3>Learning Objectives</h3><ul class="list-disc pl-5 text-sm space-y-1"><li>建立 AR(p) 模型與線性預測的等價關係</li><li>推導 Yule-Walker 方程式</li><li>理解 Burg 演算法的格型 (Lattice) 結構</li><li>比較 AR 頻譜與 periodogram 的解析度差異</li></ul></div>
+<div class="card">
+<h2 class="text-lg font-bold mb-3">AR(p) 模型</h2>
+<p class="mb-2">假設訊號由白雜訊 $e[n]$ 驅動全極點濾波器產生：</p>
+<div class="fm">$$x[n] = -\sum_{k=1}^{p}a_k\,x[n-k] + e[n], \quad e[n]\sim\text{WN}(0,\sigma^2)$$
+<p class="text-sm text-center mt-1">PSD：$S_{AR}(f) = \frac{\sigma^2}{\left|1+\sum_{k=1}^{p}a_k e^{-j2\pi fk/f_s}\right|^2}$</p></div>
+<p class="mt-2">AR 模型天然適合描述有<strong>尖銳峰值</strong>（共振）的頻譜。每對共軛極點產生一個峰。</p>
+</div>
+<div class="card">
+<h2 class="text-lg font-bold mb-3">Yule-Walker 方程式</h2>
+<details class="deriv my-3">
+<summary>推導</summary>
+<div>
+<p>將 AR 方程式兩邊乘以 $x^*[n-m]$ 取期望值：</p>
+$$r_{xx}[m] = -\sum_{k=1}^{p}a_k\,r_{xx}[m-k] + \sigma^2\delta[m]$$
+<p>$m=1,\ldots,p$ 時 $\delta[m]=0$，得到 Yule-Walker 線性方程組：</p>
+$$\begin{bmatrix}r[0]&r[-1]&\cdots&r[1-p]\\r[1]&r[0]&\cdots&r[2-p]\\\vdots&&\ddots&\vdots\\r[p-1]&\cdots&&r[0]\end{bmatrix}\begin{bmatrix}a_1\\a_2\\\vdots\\a_p\end{bmatrix} = -\begin{bmatrix}r[1]\\r[2]\\\vdots\\r[p]\end{bmatrix}$$
+<p>此為 Toeplitz 矩陣，可用 <strong>Levinson-Durbin 遞迴</strong>在 $O(p^2)$ 內求解。$\;\blacksquare$</p>
+</div>
+</details>
+</div>
+<div class="card">
+<h2 class="text-lg font-bold mb-3">互動：AR 頻譜 vs FFT</h2>
+<p class="text-sm text-slate-500 mb-3">訊號含兩個正弦波(100Hz + 105Hz)+雜訊。比較 periodogram 與 AR 模型的頻率解析度。</p>
+<div class="mb-3"><label class="text-xs">AR 階數 p=<span id="p33pv">16</span></label><input type="range" id="p33p" min="2" max="64" value="16" class="w-48" oninput="updateP33()"></div>
+<div id="plotP33" class="plot"></div>
+</div>
+<div class="ref-box"><p>[1] Kay, <em>Modern Spectral Estimation</em>, Prentice Hall. [2] Stoica & Moses, <em>Spectral Analysis of Signals</em>.</p></div>
+<div class="ch-nav"><a onclick="go('p3-2')">← 3.2</a><a onclick="go('p3-4')">3.4 →</a></div>
+</section>
 
-<section id="sec-lab" class="sec hidden"><h1 class="text-2xl font-bold mb-1">互動實驗室</h1><p class="text-slate-500 text-sm mb-5">Signal Generator + FFT Analyzer</p><div class="card"><p>實驗室正在建構中。</p></div></section>
-<section id="sec-quiz" class="sec hidden"><h1 class="text-2xl font-bold mb-1">自我測驗</h1><p class="text-slate-500 text-sm mb-5">推導題 · 設計題 · 分析題</p><div class="card"><p>測驗系統正在建構中。</p></div></section>
-<section id="sec-about" class="sec hidden"><h1 class="text-2xl font-bold mb-1">關於</h1><div class="card"><p>研究所級傅立葉分析教學平台。技術：Tailwind CSS + MathJax 3 + Plotly.js + Vanilla JS。</p></div></section>
+<section id="sec-p3-4" class="sec hidden">
+<h1 class="text-2xl font-bold mb-1">3.4 MUSIC 與 ESPRIT</h1>
+<p class="text-slate-500 text-sm mb-5">子空間方法 — 超越 Fourier 限制的頻率估計</p>
+<div class="lo"><h3>Learning Objectives</h3><ul class="list-disc pl-5 text-sm space-y-1"><li>理解訊號子空間與雜訊子空間的分解</li><li>推導 MUSIC 偽頻譜 (Pseudospectrum)</li><li>認識 ESPRIT 的旋轉不變性</li></ul></div>
+<div class="card">
+<h2 class="text-lg font-bold mb-3">核心思想</h2>
+<p class="mb-2">若觀測到 $M$ 個正弦波 + 白雜訊，自相關矩陣 $\mathbf{R}$ 可分解為：</p>
+<div class="fm">$$\mathbf{R} = \mathbf{R}_s + \sigma^2\mathbf{I}$$
+<p class="text-sm text-center mt-1">$\mathbf{R}_s$ 的秩 = $M$（訊號維度），其列空間 = 訊號子空間</p></div>
+<p class="mt-2">$\mathbf{R}$ 的特徵值分解：$M$ 個大特徵值對應<strong>訊號子空間</strong>，其餘（= $\sigma^2$）對應<strong>雜訊子空間</strong> $\mathbf{E}_n$。</p>
+</div>
+<div class="card">
+<h2 class="text-lg font-bold mb-3">MUSIC 偽頻譜</h2>
+<p class="mb-2">訊號的方向向量 (steering vector) $\mathbf{a}(\omega) = [1, e^{j\omega}, \ldots, e^{j(p-1)\omega}]^T$ 必然正交於雜訊子空間。因此：</p>
+<div class="fm">$$P_{MUSIC}(\omega) = \frac{1}{\mathbf{a}^H(\omega)\,\mathbf{E}_n\mathbf{E}_n^H\,\mathbf{a}(\omega)}$$
+<p class="text-xs text-center mt-1">在真正的頻率處，分母→0，偽頻譜→∞（尖銳峰值）</p></div>
+<div class="tip mt-3"><p><strong>超解析度：</strong>MUSIC 的頻率解析度不受 FFT 的 $\Delta f = f_s/N$ 限制，可以分辨間距遠小於一個 frequency bin 的兩個正弦波。但需要先知道（或估計）訊號個數 $M$。</p></div>
+</div>
+<div class="card">
+<h2 class="text-lg font-bold mb-3">ESPRIT 簡介</h2>
+<p class="mb-2"><strong>ESPRIT (Estimation of Signal Parameters via Rotational Invariance Techniques)</strong> 利用兩個子陣列之間的旋轉不變性直接估計頻率，不需要搜索偽頻譜。</p>
+<div class="fm">$$\mathbf{E}_{s2} = \mathbf{E}_{s1}\,\mathbf{\Phi}, \quad \text{diag}(\mathbf{\Phi}) = [e^{j\omega_1}, \ldots, e^{j\omega_M}]$$</div>
+<p class="mt-2">$\mathbf{\Phi}$ 的特徵值直接給出頻率。不需 spectral search → 計算效率更高。</p>
+</div>
+<div class="card">
+<h2 class="text-lg font-bold mb-3">互動：MUSIC vs FFT</h2>
+<p class="text-sm text-slate-500 mb-3">兩個非常接近的正弦波，MUSIC 可分辨但 FFT 無法。</p>
+<div class="flex gap-3 mb-3">
+  <div><label class="text-xs">Δf=<span id="p34dfv">3</span>Hz</label><input type="range" id="p34df" min="1" max="20" value="3" class="w-32" oninput="updateP34()"></div>
+  <div><label class="text-xs">SNR=<span id="p34sv">20</span>dB</label><input type="range" id="p34s" min="0" max="40" value="20" class="w-32" oninput="updateP34()"></div>
+</div>
+<div id="plotP34" class="plot"></div>
+</div>
+<div class="ref-box"><p>[1] Schmidt, <em>Multiple Emitter Location and Signal Parameter Estimation</em>, IEEE Trans., 1986. [2] Roy & Kailath, <em>ESPRIT</em>, IEEE Trans., 1989.</p></div>
+<div class="ch-nav"><a onclick="go('p3-3')">← 3.3</a><a onclick="go('p3-5')">3.5 →</a></div>
+</section>
+
+<section id="sec-p3-5" class="sec hidden">
+<h1 class="text-2xl font-bold mb-1">3.5 Chirp-Z 轉換 (CZT)</h1>
+<p class="text-slate-500 text-sm mb-5">在 Z 平面上沿任意路徑計算 DFT</p>
+<div class="lo"><h3>Learning Objectives</h3><ul class="list-disc pl-5 text-sm space-y-1"><li>定義 CZT：沿 Z 平面螺線取樣的推廣 DFT</li><li>理解 CZT 的「頻率 zoom-in」能力</li></ul></div>
+<div class="card">
+<h2 class="text-lg font-bold mb-3">定義</h2>
+<div class="fm">$$X(z_k) = \sum_{n=0}^{N-1}x[n]\,z_k^{-n}, \quad z_k = AW^{-k}, \; k=0,\ldots,M-1$$
+<p class="text-xs text-center mt-1">$A=A_0 e^{j\theta_0}$（起始點）、$W=W_0 e^{j\phi_0}$（步進）定義 Z 平面上的螺線</p></div>
+<p class="mt-2">DFT 是 CZT 的特例：$A=1$，$W=e^{-j2\pi/N}$，$M=N$。</p>
+<div class="tip mt-3"><p><strong>頻率 Zoom-In：</strong>選擇 $A$ 和 $W$ 使取樣點集中在感興趣的頻段，可以在不增加資料量的情況下獲得該頻段的高密度頻譜。CZT 可透過三次 FFT 在 $O(N\log N)$ 時間計算（Bluestein 演算法）。</p></div>
+</div>
+<div class="ref-box"><p>[1] Rabiner, Schafer & Rader, <em>The Chirp z-Transform Algorithm</em>, IEEE Trans., 1969.</p></div>
+<div class="ch-nav"><a onclick="go('p3-4')">← 3.4</a><a onclick="go('p4-1')">4.1 →</a></div>
+</section>
+
+<!-- ============ PART IV: ANALYTIC SIGNAL ============ -->
+
+<section id="sec-p4-1" class="sec hidden">
+<h1 class="text-2xl font-bold mb-1">4.1 Hilbert 轉換 (Hilbert Transform)</h1>
+<p class="text-slate-500 text-sm mb-5">構造解析訊號的數學基礎</p>
+<div class="lo"><h3>Learning Objectives</h3><ul class="list-disc pl-5 text-sm space-y-1"><li>定義 Hilbert 轉換及其頻域表示</li><li>理解解析訊號 (Analytic Signal) 的物理意義</li><li>透過 FFT 實作 Hilbert 轉換</li></ul></div>
+<div class="card">
+<h2 class="text-lg font-bold mb-3">定義</h2>
+<div class="fm">$$\hat{x}(t) = \mathcal{H}\{x(t)\} = \frac{1}{\pi}\,\text{p.v.}\int_{-\infty}^{\infty}\frac{x(\tau)}{t-\tau}\,d\tau = x(t)*\frac{1}{\pi t}$$
+<p class="text-sm text-center mt-2">頻域：$\hat{X}(\omega) = -j\,\text{sgn}(\omega)\cdot X(\omega)$</p></div>
+<p class="mt-2"><strong>效果：</strong>正頻率成分相移 $-90°$，負頻率成分相移 $+90°$，幅度不變。</p>
+</div>
+<div class="card">
+<h2 class="text-lg font-bold mb-3">解析訊號 (Analytic Signal)</h2>
+<div class="fm">$$z(t) = x(t) + j\hat{x}(t)$$
+<p class="text-sm text-center mt-1">$Z(\omega) = 2X(\omega)$ for $\omega > 0$，$Z(\omega) = 0$ for $\omega < 0$</p></div>
+<p class="mt-2">解析訊號只有正頻率成分（單邊頻譜），消除了負頻率的冗餘。</p>
+</div>
+<div class="card">
+<h2 class="text-lg font-bold mb-3">FFT 實作</h2>
+<div class="code">// Hilbert Transform via FFT
+function hilbert(x) {
+  const N = np2(x.length);
+  const re = zp(x,N), im = new Array(N).fill(0);
+  const F = fft(re, im);
+  // 置零負頻率，正頻率乘2
+  for (let k = 1; k &lt; N/2; k++) { F.re[k]*=2; F.im[k]*=2; }
+  for (let k = N/2+1; k &lt; N; k++) { F.re[k]=0; F.im[k]=0; }
+  // IFFT = 取 conjugate, FFT, conjugate, /N
+  const c_re=F.re.map((v,i)=>F.re[i]),c_im=F.im.map(v=>-v);
+  const R=fft(c_re,c_im);
+  return { re:R.re.map(v=>v/N), im:R.im.map(v=>-v/N) };
+}</div>
+</div>
+<div class="card">
+<h2 class="text-lg font-bold mb-3">互動：包絡偵測</h2>
+<p class="text-sm text-slate-500 mb-3">AM 調變訊號 → Hilbert 包絡完美恢復原始包絡。</p>
+<div class="mb-3"><label class="text-xs">調變頻率=<span id="p41fv">5</span>Hz</label><input type="range" id="p41f" min="1" max="20" value="5" class="w-40" oninput="updateP41()"></div>
+<div id="plotP41" class="plot"></div>
+</div>
+<div class="ref-box"><p>[1] Hahn, <em>Hilbert Transforms in Signal Processing</em>, Artech House. [2] Marple, <em>Computing the Discrete-Time Analytic Signal via FFT</em>, IEEE Trans., 1999.</p></div>
+<div class="ch-nav"><a onclick="go('p3-5')">← 3.5</a><a onclick="go('p4-2')">4.2 →</a></div>
+</section>
+
+<section id="sec-p4-2" class="sec hidden">
+<h1 class="text-2xl font-bold mb-1">4.2 包絡與瞬時頻率 (Envelope & Instantaneous Frequency)</h1>
+<p class="text-slate-500 text-sm mb-5">從解析訊號提取時變的振幅與頻率</p>
+<div class="card">
+<h2 class="text-lg font-bold mb-3">定義</h2>
+<p class="mb-2">將解析訊號寫成極座標形式 $z(t) = A(t)\,e^{j\phi(t)}$：</p>
+<div class="fm">
+<p><strong>瞬時振幅（包絡）：</strong>$A(t) = |z(t)| = \sqrt{x^2(t) + \hat{x}^2(t)}$</p>
+<p><strong>瞬時相位：</strong>$\phi(t) = \arg[z(t)] = \arctan\frac{\hat{x}(t)}{x(t)}$</p>
+<p><strong>瞬時頻率：</strong>$f_i(t) = \frac{1}{2\pi}\frac{d\phi}{dt}$</p>
+</div>
+<div class="warn mt-3"><p><strong>陷阱：</strong>瞬時頻率只對<strong>窄頻</strong>訊號有明確的物理意義。對寬頻訊號（如白雜訊），$f_i(t)$ 會劇烈波動且難以解讀。先帶通濾波再取包絡是正確的工程做法。</p></div>
+</div>
+<div class="card">
+<h2 class="text-lg font-bold mb-3">應用：包絡譜分析 (Envelope Spectrum)</h2>
+<p class="mb-2">軸承故障診斷的核心流程：</p>
+<ol class="list-decimal pl-5 text-sm space-y-1">
+<li>帶通濾波（聚焦高頻共振帶）</li>
+<li>Hilbert 包絡偵測</li>
+<li>對包絡做 FFT → 包絡譜</li>
+<li>在包絡譜中尋找 BPFO/BPFI 特徵頻率及其倍頻</li>
+</ol>
+</div>
+<div class="ref-box"><p>[1] Randall & Antoni, <em>Rolling Element Bearing Diagnostics</em>, Mech. Sys. Sig. Proc., 2011.</p></div>
+<div class="ch-nav"><a onclick="go('p4-1')">← 4.1</a><a onclick="go('p4-3')">4.3 →</a></div>
+</section>
+
+<section id="sec-p4-3" class="sec hidden">
+<h1 class="text-2xl font-bold mb-1">4.3 倒頻譜分析 (Cepstrum Analysis)</h1>
+<p class="text-slate-500 text-sm mb-5">頻譜的頻譜 — 在「quefrency」域中分析</p>
+<div class="card">
+<h2 class="text-lg font-bold mb-3">定義</h2>
+<div class="fm">
+<p><strong>實倒頻譜 (Real Cepstrum)：</strong></p>
+$$c[n] = \mathcal{F}^{-1}\{\log|X(e^{j\omega})|\}$$
+<p><strong>複倒頻譜 (Complex Cepstrum)：</strong></p>
+$$\hat{c}[n] = \mathcal{F}^{-1}\{\log X(e^{j\omega})\} = \mathcal{F}^{-1}\{\log|X| + j\angle X\}$$
+</div>
+<p class="mt-2">倒頻譜的橫軸稱為 <strong>quefrency</strong>（由 frequency 字母倒轉而來），單位是時間。</p>
+</div>
+<div class="card">
+<h2 class="text-lg font-bold mb-3">應用</h2>
+<ul class="list-disc pl-5 text-sm space-y-2">
+<li><strong>回聲偵測：</strong>若訊號 $y[n] = x[n] + \alpha x[n-D]$，其倒頻譜在 quefrency $= D$ 處出現峰值，可精確定位回聲延遲。</li>
+<li><strong>基頻估計 (Pitch Detection)：</strong>語音的倒頻譜在基本週期 $T_0$ 處有峰值（rahmonics）。</li>
+<li><strong>機械故障：</strong>齒輪箱故障產生的邊帶家族在倒頻譜中表現為清晰峰值。</li>
+</ul>
+</div>
+<div class="ref-box"><p>[1] Bogert, Healy & Tukey, <em>The Quefrency Alanysis of Time Series for Echoes</em>, 1963. [2] Randall, <em>Vibration-based Condition Monitoring</em>, Wiley.</p></div>
+<div class="ch-nav"><a onclick="go('p4-2')">← 4.2</a><a onclick="go('p5-1')">5.1 →</a></div>
+</section>
+
+<!-- ============ PART V: TIME-FREQUENCY ANALYSIS ============ -->
+
+<section id="sec-p5-1" class="sec hidden">
+<h1 class="text-2xl font-bold mb-1">5.1 短時傅立葉轉換 (STFT)</h1>
+<p class="text-slate-500 text-sm mb-5">時頻分析的基石 — Gabor 的遺產</p>
+<div class="lo"><h3>Learning Objectives</h3><ul class="list-disc pl-5 text-sm space-y-1"><li>定義 STFT 並理解其為 Gabor (1946) 的推廣</li><li>選擇視窗長度 / 重疊 / NFFT</li><li>解讀 Spectrogram 的典型模式</li></ul></div>
+<div class="card">
+<h2 class="text-lg font-bold mb-3">定義</h2>
+<div class="fm">$$\text{STFT}\{x\}(m,\omega) = \sum_{n}x[n]\,w[n-m]\,e^{-j\omega n}$$</div>
+<p class="mt-2">Spectrogram = $|\text{STFT}|^2$。不確定性原理限制：$\Delta t\cdot\Delta f \geq \frac{1}{4\pi}$。</p>
+<table class="dt mt-3"><thead><tr><th>參數</th><th>典型值</th><th>影響</th></tr></thead><tbody>
+<tr><td>窗長</td><td>語音 20-40ms, 音樂 50-100ms</td><td>$\Delta f = f_s/N_w$</td></tr>
+<tr><td>重疊</td><td>50%~75%</td><td>時間軸密度</td></tr>
+<tr><td>NFFT</td><td>≥ 窗長，取 2 的冪次</td><td>頻率軸密度</td></tr>
+</tbody></table>
+</div>
+<div class="card">
+<h2 class="text-lg font-bold mb-3">互動：Spectrogram</h2>
+<div class="flex gap-3 mb-3">
+  <select id="p51s" class="border rounded px-2 py-1 text-sm dark:bg-slate-700 dark:border-slate-600" onchange="updateP51()"><option value="chirp">Chirp</option><option value="two">雙頻切換</option></select>
+  <div><label class="text-xs">窗長=<span id="p51wv">256</span></label><input type="range" id="p51w" min="32" max="512" value="256" step="32" class="w-32" oninput="updateP51()"></div>
+</div>
+<div id="plotP51" class="plot"></div>
+</div>
+<div class="ref-box"><p>[1] Gabor, <em>Theory of Communication</em>, J. IEE, 1946. [2] Allen, <em>Short Term Spectral Analysis</em>, IEEE Trans., 1977.</p></div>
+<div class="ch-nav"><a onclick="go('p4-3')">← 4.3</a><a onclick="go('p5-2')">5.2 →</a></div>
+</section>
+
+<section id="sec-p5-2" class="sec hidden">
+<h1 class="text-2xl font-bold mb-1">5.2 Wigner-Ville 分佈 (WVD)</h1>
+<p class="text-slate-500 text-sm mb-5">最高時頻解析度 — 但有交叉項問題</p>
+<div class="lo"><h3>Learning Objectives</h3><ul class="list-disc pl-5 text-sm space-y-1"><li>定義 WVD 及其與自相關函數的關係</li><li>理解交叉項 (Cross-Term) 的成因與消除方法</li></ul></div>
+<div class="card">
+<h2 class="text-lg font-bold mb-3">定義</h2>
+<div class="fm">$$W_x(t,\omega) = \int_{-\infty}^{\infty}x\!\left(t+\frac{\tau}{2}\right)\,x^*\!\left(t-\frac{\tau}{2}\right)\,e^{-j\omega\tau}\,d\tau$$</div>
+<p class="mt-2"><strong>性質：</strong>邊際條件（marginal properties）完美——時間邊際 = 瞬時功率，頻率邊際 = 功率譜。不受 Heisenberg 不確定性限制。</p>
+<p class="mt-2"><strong>問題：</strong>對多成分訊號 $x = x_1 + x_2$，WVD 出現<strong>交叉項</strong>（在 $x_1$ 和 $x_2$ 之間的時頻位置產生虛假振盪），且交叉項幅度可與自項相當。</p>
+<div class="tip mt-3"><p><strong>解決方案：</strong>Pseudo Wigner-Ville (PWVD) — 在 $\tau$ 方向加窗；Smoothed PWVD — 在 $t$ 和 $\tau$ 方向都加窗。代價是降低時頻解析度。→ 引出 Cohen's Class 的統一框架。</p></div>
+</div>
+<div class="ref-box"><p>[1] Ville, <em>Théorie et Applications de la Notion de Signal Analytique</em>, 1948. [2] Claasen & Mecklenbräuker, <em>The Wigner Distribution</em>, Philips J. Res., 1980.</p></div>
+<div class="ch-nav"><a onclick="go('p5-1')">← 5.1</a><a onclick="go('p5-3')">5.3 →</a></div>
+</section>
+
+<section id="sec-p5-3" class="sec hidden">
+<h1 class="text-2xl font-bold mb-1">5.3 Cohen's Class</h1>
+<p class="text-slate-500 text-sm mb-5">一般化二次時頻分佈</p>
+<div class="card">
+<h2 class="text-lg font-bold mb-3">統一框架</h2>
+<p class="mb-2">所有滿足時移-頻移共變性的二次時頻分佈都可寫為：</p>
+<div class="fm">$$C_x(t,\omega) = \int\!\!\int\!\!\int e^{-j\theta t - j\tau\omega + j\theta u}\,\Phi(\theta,\tau)\,x\!\left(u+\frac{\tau}{2}\right)x^*\!\left(u-\frac{\tau}{2}\right)\,du\,d\tau\,d\theta$$
+<p class="text-xs text-center mt-1">$\Phi(\theta,\tau)$：核函數 (Kernel Function)，決定分佈的性質</p></div>
+<table class="dt mt-3"><thead><tr><th>核函數</th><th>分佈名稱</th><th>特性</th></tr></thead><tbody>
+<tr><td>$\Phi=1$</td><td>Wigner-Ville</td><td>最高解析度，有交叉項</td></tr>
+<tr><td>$\Phi=e^{-\theta^2\tau^2/(2\sigma)}$</td><td>Choi-Williams</td><td>抑制遠離原點的交叉項</td></tr>
+<tr><td>$\Phi$ 在 $\tau$ 加窗</td><td>Spectrogram</td><td>無交叉項但解析度低</td></tr>
+</tbody></table>
+</div>
+<div class="ref-box"><p>[1] Cohen, <em>Time-Frequency Distributions</em>, Proc. IEEE, 1989.</p></div>
+<div class="ch-nav"><a onclick="go('p5-2')">← 5.2</a><a onclick="go('p5-4')">5.4 →</a></div>
+</section>
+
+<section id="sec-p5-4" class="sec hidden">
+<h1 class="text-2xl font-bold mb-1">5.4 連續小波轉換 (CWT)</h1>
+<p class="text-slate-500 text-sm mb-5">多解析度時頻分析 — 突破 STFT 的固定窗限制</p>
+<div class="lo"><h3>Learning Objectives</h3><ul class="list-disc pl-5 text-sm space-y-1"><li>定義 CWT 及其母小波 (Mother Wavelet) 條件</li><li>理解 CWT 的多解析度特性：低頻→長窗，高頻→短窗</li><li>認識 Morlet、Mexican Hat 等常用小波</li></ul></div>
+<div class="card">
+<h2 class="text-lg font-bold mb-3">定義</h2>
+<div class="fm">$$W_x(a,b) = \frac{1}{\sqrt{|a|}}\int_{-\infty}^{\infty}x(t)\,\psi^*\!\left(\frac{t-b}{a}\right)\,dt$$
+<p class="text-xs text-center mt-1">$a$：尺度（Scale，正比於 $1/f$）；$b$：平移（Translation）；$\psi$：母小波</p></div>
+<p class="mt-2"><strong>容許條件 (Admissibility)：</strong>$C_\psi = \int_0^\infty \frac{|\hat{\Psi}(\omega)|^2}{\omega}\,d\omega < \infty$ → 要求 $\hat{\Psi}(0) = 0$（零均值）。</p>
+</div>
+<div class="card">
+<h2 class="text-lg font-bold mb-3">vs STFT 的根本差異</h2>
+<table class="dt"><thead><tr><th></th><th>STFT</th><th>CWT</th></tr></thead><tbody>
+<tr><td class="font-bold text-left">窗寬</td><td>固定</td><td>隨頻率自適應調整</td></tr>
+<tr><td class="font-bold text-left">低頻</td><td>解析度固定（可能不夠）</td><td>長窗 → 高頻率解析度</td></tr>
+<tr><td class="font-bold text-left">高頻</td><td>解析度固定（可能太多）</td><td>短窗 → 高時間解析度</td></tr>
+<tr><td class="font-bold text-left">基底</td><td>Modulated window</td><td>Dilated & translated wavelet</td></tr>
+</tbody></table>
+</div>
+<div class="card">
+<h2 class="text-lg font-bold mb-3">常用母小波</h2>
+<div class="fm">
+<p><strong>Morlet：</strong>$\psi(t) = \pi^{-1/4}\,e^{j\omega_0 t}\,e^{-t^2/2}$（Gaussian 包絡的複指數，$\omega_0 \approx 5$~$6$）</p>
+<p class="mt-2"><strong>Mexican Hat (DOG-2)：</strong>$\psi(t) = \frac{2}{\sqrt{3}\pi^{1/4}}(1-t^2)\,e^{-t^2/2}$（Gaussian 的二階導數）</p>
+</div>
+</div>
+<div class="card">
+<h2 class="text-lg font-bold mb-3">互動：CWT Scalogram</h2>
+<p class="text-sm text-slate-500 mb-3">Chirp 訊號的 Morlet CWT scalogram。注意低頻區頻率解析度高但時間解析度低，高頻反之。</p>
+<div id="plotP54" class="plot"></div>
+<button onclick="updateP54()" class="mt-2 px-3 py-1 bg-cyan-500 text-white rounded text-xs">計算 CWT</button>
+</div>
+<div class="ref-box"><p>[1] Daubechies, <em>Ten Lectures on Wavelets</em>, SIAM. [2] Mallat, <em>A Wavelet Tour of Signal Processing</em>.</p></div>
+<div class="ch-nav"><a onclick="go('p5-3')">← 5.3</a><a onclick="go('p5-5')">5.5 →</a></div>
+</section>
+
+<section id="sec-p5-5" class="sec hidden">
+<h1 class="text-2xl font-bold mb-1">5.5 離散小波轉換 (DWT)</h1>
+<p class="text-slate-500 text-sm mb-5">Mallat 演算法與多解析度分析 (MRA)</p>
+<div class="lo"><h3>Learning Objectives</h3><ul class="list-disc pl-5 text-sm space-y-1"><li>理解二進取樣 (Dyadic Sampling) 下的離散化</li><li>認識 Mallat 的濾波器組架構</li><li>理解完美重建 (Perfect Reconstruction) 條件</li></ul></div>
+<div class="card">
+<h2 class="text-lg font-bold mb-3">Mallat 快速小波轉換</h2>
+<p class="mb-2">DWT 可透過迭代的<strong>二通道濾波器組</strong>高效實現：</p>
+<div class="fm">
+<p><strong>分解 (Analysis)：</strong></p>
+$$c_{j+1}[k] = \sum_n h[n-2k]\,c_j[n] \quad\text{（低通 → 近似係數）}$$
+$$d_{j+1}[k] = \sum_n g[n-2k]\,c_j[n] \quad\text{（高通 → 細節係數）}$$
+<p class="text-xs mt-1">$h[n]$：低通濾波器（尺度函數）；$g[n]$：高通濾波器（小波函數）</p>
+</div>
+<p class="mt-2">每級分解將頻率範圍二分：低通保留 $[0, f_s/4]$，高通保留 $[f_s/4, f_s/2]$。遞迴對低通輸出再分解 → <strong>八度 (Octave) 頻帶分解</strong>。</p>
+</div>
+<div class="card">
+<h2 class="text-lg font-bold mb-3">常用小波族</h2>
+<table class="dt"><thead><tr><th>小波</th><th>濾波器長度</th><th>消失矩</th><th>特性</th></tr></thead><tbody>
+<tr><td>Haar (db1)</td><td>2</td><td>1</td><td>最簡單，不連續</td></tr>
+<tr><td>Daubechies db4</td><td>8</td><td>4</td><td>緊支撐，通用</td></tr>
+<tr><td>Symlet sym8</td><td>16</td><td>8</td><td>近似對稱</td></tr>
+<tr><td>Coiflet coif3</td><td>18</td><td>6</td><td>近似線性相位</td></tr>
+</tbody></table>
+<div class="tip mt-3"><p><strong>消失矩 (Vanishing Moments)：</strong>小波有 $p$ 個消失矩 → 可精確表示 $p-1$ 次多項式 → 對多項式趨勢「看不見」 → 只捕捉高於多項式的細節。消失矩越多 → 壓縮效率越高，但濾波器越長。</p></div>
+</div>
+<div class="ref-box"><p>[1] Mallat, <em>A Theory for Multiresolution Signal Decomposition</em>, IEEE PAMI, 1989. [2] Daubechies, <em>Orthonormal Bases of Compactly Supported Wavelets</em>, Comm. Pure Appl. Math., 1988.</p></div>
+<div class="ch-nav"><a onclick="go('p5-4')">← 5.4</a><a onclick="go('p5-6')">5.6 →</a></div>
+</section>
+
+<section id="sec-p5-6" class="sec hidden">
+<h1 class="text-2xl font-bold mb-1">5.6 經驗模態分解 (EMD) / Hilbert-Huang Transform</h1>
+<p class="text-slate-500 text-sm mb-5">資料驅動的自適應分解 — 不需預設基底</p>
+<div class="card">
+<h2 class="text-lg font-bold mb-3">EMD Sifting Process</h2>
+<ol class="list-decimal pl-5 text-sm space-y-1">
+<li>找出訊號的所有局部極大值和極小值</li>
+<li>分別對極大值和極小值做三次樣條插值 → 上包絡 $e_{max}$ 和下包絡 $e_{min}$</li>
+<li>計算均值包絡 $m = (e_{max} + e_{min})/2$</li>
+<li>$h = x - m$（去除趨勢）</li>
+<li>若 $h$ 滿足 IMF 條件（極值點數和零穿越數差 ≤ 1，均值包絡趨近零），則 $h$ 為一個 <strong>Intrinsic Mode Function (IMF)</strong>；否則回到 step 1 以 $h$ 取代 $x$</li>
+<li>$x \leftarrow x - \text{IMF}_1$，重複，直到殘差為單調函數</li>
+</ol>
+<div class="fm mt-3">$$x(t) = \sum_{i=1}^{K}\text{IMF}_i(t) + r(t)$$</div>
+</div>
+<div class="card">
+<h2 class="text-lg font-bold mb-3">Hilbert-Huang Transform (HHT)</h2>
+<p class="mb-2">對每個 IMF 做 Hilbert 轉換取瞬時頻率和振幅 → <strong>Hilbert 譜</strong>（時間-頻率-振幅的三維表示）。</p>
+<div class="warn"><p><strong>優缺點：</strong>EMD 完全資料驅動、不需選擇基底，適合非線性非平穩訊號。但有<strong>模態混疊 (Mode Mixing)</strong>問題、缺乏嚴格的數學理論、結果可能不唯一。改進版：EEMD、CEEMDAN。</p></div>
+</div>
+<div class="ref-box"><p>[1] Huang et al., <em>The Empirical Mode Decomposition and the Hilbert Spectrum</em>, Proc. Royal Soc., 1998.</p></div>
+<div class="ch-nav"><a onclick="go('p5-5')">← 5.5</a><a onclick="go('p5-7')">5.7 →</a></div>
+</section>
+
+<section id="sec-p5-7" class="sec hidden">
+<h1 class="text-2xl font-bold mb-1">5.7 Synchrosqueezing Transform (SST)</h1>
+<p class="text-slate-500 text-sm mb-5">銳化 CWT 的時頻表示</p>
+<div class="card">
+<h2 class="text-lg font-bold mb-3">核心概念</h2>
+<p class="mb-2">CWT 的時頻表示因為視窗展寬而模糊。SST 利用 CWT 係數的瞬時頻率資訊，將能量「擠壓」(squeeze) 到正確的頻率位置：</p>
+<div class="fm">
+<p><strong>Step 1：</strong>計算 CWT $W_x(a,b)$ 及其瞬時頻率 $\omega(a,b) = -j\frac{\partial_b W_x}{W_x}$</p>
+<p><strong>Step 2：</strong>將 $|W_x(a,b)|^2$ 重新分配到 $\omega(a,b)$ 對應的頻率位置</p>
+$$T_x(\omega_l, b) = \sum_{a_k: |\omega(a_k,b)-\omega_l|<\Delta\omega/2} W_x(a_k,b)\,a_k^{-3/2}\,\Delta a_k$$
+</div>
+<div class="tip mt-3"><p><strong>優勢 vs CWT：</strong>SST 在保持 CWT 對非平穩訊號適應性的同時，獲得接近 WVD 的時頻聚焦度，且<strong>沒有交叉項</strong>。適合分離時頻重疊的多成分訊號。</p></div>
+</div>
+<div class="ref-box"><p>[1] Daubechies, Lu & Wu, <em>Synchrosqueezed Wavelet Transforms</em>, Appl. Comp. Harm. Anal., 2011.</p></div>
+<div class="ch-nav"><a onclick="go('p5-6')">← 5.6</a><a onclick="go('p6-1')">6.1 →</a></div>
+</section>
+
+<!-- ============ PART VI: ENGINEERING PRACTICE ============ -->
+
+<section id="sec-p6-1" class="sec hidden">
+<h1 class="text-2xl font-bold mb-1">6.1 進階 FFT 演算法</h1>
+<p class="text-slate-500 text-sm mb-5">Split-Radix · Bluestein · Goertzel</p>
+<div class="card">
+<h2 class="text-lg font-bold mb-3">Split-Radix FFT</h2>
+<p class="mb-2">結合 radix-2（偶數索引）和 radix-4（奇數索引）的分解，乘法次數比 radix-2 少約 20%：</p>
+<div class="fm">$$\text{乘法數} \approx \frac{N}{3}\left(\log_2 N - 3\right) + \frac{4}{3}N$$</div>
+</div>
+<div class="card">
+<h2 class="text-lg font-bold mb-3">Bluestein 演算法（任意長度 FFT）</h2>
+<p class="mb-2">將 DFT 轉化為卷積問題，利用恆等式 $kn = \frac{1}{2}[k^2+n^2-(k-n)^2]$：</p>
+<div class="fm">$$X[k] = W_N^{k^2/2}\sum_{n=0}^{N-1}\left[x[n]W_N^{n^2/2}\right]\cdot W_N^{-(k-n)^2/2}$$</div>
+<p class="mt-2">中括號部分與 $W_N^{-m^2/2}$ 做卷積 → 用 FFT 計算。可處理<strong>任意 $N$</strong>（不限 2 的冪次）。</p>
+</div>
+<div class="card">
+<h2 class="text-lg font-bold mb-3">Goertzel 演算法</h2>
+<p class="mb-2">只需計算<strong>單個</strong> DFT bin 時，Goertzel 比完整 FFT 高效。二階遞迴實現：</p>
+<div class="fm">$$s[n] = x[n] + 2\cos(2\pi k/N)\,s[n-1] - s[n-2]$$
+<p class="text-xs text-center mt-1">$X[k] = s[N] - e^{-j2\pi k/N}\,s[N-1]$。複雜度 $O(N)$，但只算一個 bin。</p></div>
+<p class="mt-2"><strong>應用：</strong>DTMF 電話撥號音偵測（只需檢測 8 個特定頻率）。</p>
+</div>
+<div class="ch-nav"><a onclick="go('p5-7')">← 5.7</a><a onclick="go('p6-2')">6.2 →</a></div>
+</section>
+
+<section id="sec-p6-2" class="sec hidden">
+<h1 class="text-2xl font-bold mb-1">6.2 數值精度與定點 FFT</h1>
+<p class="text-slate-500 text-sm mb-5">浮點誤差累積 · 定點 Scaling · SQNR</p>
+<div class="card">
+<h2 class="text-lg font-bold mb-3">浮點 FFT 誤差</h2>
+<p class="mb-2">$N$ 點浮點 FFT 的 RMS 誤差約為：</p>
+<div class="fm">$$\epsilon_{rms} \approx O(\epsilon_m \sqrt{\log_2 N})$$
+<p class="text-xs text-center mt-1">$\epsilon_m$：機器精度（float64: $\sim 2.2\times10^{-16}$，float32: $\sim 1.2\times10^{-7}$）</p></div>
+<p class="mt-2">1024 點 float32 FFT 的 SQNR $\approx 20\log_{10}(1/(1.2\times10^{-7}\sqrt{10})) \approx 131$ dB → 對大多數應用足夠。</p>
+</div>
+<div class="card">
+<h2 class="text-lg font-bold mb-3">定點 FFT</h2>
+<p class="mb-2">在嵌入式系統（FPGA / DSP）中常用定點算術。關鍵挑戰：<strong>溢位 (Overflow)</strong>。</p>
+<p class="text-sm">兩種 Scaling 策略：</p>
+<ul class="list-disc pl-5 text-sm space-y-1">
+<li><strong>Block Floating Point：</strong>每一級蝴蝶後統一 scaling</li>
+<li><strong>每級右移 1 bit：</strong>每級除以 2，總共除以 $N$ → 等同於 IFFT 的 $1/N$ 歸一化</li>
+</ul>
+</div>
+<div class="ch-nav"><a onclick="go('p6-1')">← 6.1</a><a onclick="go('p6-3')">6.3 →</a></div>
+</section>
+
+<section id="sec-p6-3" class="sec hidden">
+<h1 class="text-2xl font-bold mb-1">6.3 Overlap-Add / Overlap-Save</h1>
+<p class="text-slate-500 text-sm mb-5">長序列快速卷積的兩種標準方法</p>
+<div class="lo"><h3>Learning Objectives</h3><ul class="list-disc pl-5 text-sm space-y-1"><li>理解為什麼需要分段卷積（記憶體/延遲限制）</li><li>推導 OLA 和 OLS 的正確性</li><li>選擇 FFT 長度 $L \geq N_h + N_{seg} - 1$</li></ul></div>
+<div class="card">
+<h2 class="text-lg font-bold mb-3">Overlap-Add (OLA)</h2>
+<ol class="list-decimal pl-5 text-sm space-y-1">
+<li>將輸入 $x$ 切成長度 $L$ 的不重疊段 $x_i$</li>
+<li>每段零填充到 $N = L + M - 1$（$M$ = 濾波器長度）</li>
+<li>做 FFT → 逐點乘 $H[k]$ → IFFT → 得到長度 $N$ 的段輸出</li>
+<li>相鄰段的<strong>尾部重疊相加</strong>（overlap-add）</li>
+</ol>
+</div>
+<div class="card">
+<h2 class="text-lg font-bold mb-3">Overlap-Save (OLS)</h2>
+<ol class="list-decimal pl-5 text-sm space-y-1">
+<li>每段取長度 $N$，與前一段重疊 $M-1$ 點</li>
+<li>做 FFT → 逐點乘 $H[k]$ → IFFT</li>
+<li><strong>丟棄前 $M-1$ 點</strong>（圓卷積的「污染」部分），保留後 $L = N-M+1$ 點</li>
+</ol>
+<div class="tip mt-3"><p><strong>比較：</strong>OLS 不需要額外的零填充和疊加步驟，實作上更簡潔。但 OLA 在概念上更直觀。兩者計算量相同。</p></div>
+</div>
+<div class="ch-nav"><a onclick="go('p6-2')">← 6.2</a><a onclick="go('p6-4')">6.4 →</a></div>
+</section>
+
+<section id="sec-p6-4" class="sec hidden">
+<h1 class="text-2xl font-bold mb-1">6.4 濾波器設計工作台</h1>
+<p class="text-slate-500 text-sm mb-5">FIR 設計：窗函數法 · Parks-McClellan</p>
+<div class="lo"><h3>Learning Objectives</h3><ul class="list-disc pl-5 text-sm space-y-1"><li>窗函數法 FIR 設計流程：理想 → 截斷 → 加窗</li><li>理解線性相位 FIR 的四種對稱類型</li><li>Parks-McClellan（等漣波）設計的最佳化概念</li></ul></div>
+<div class="card">
+<h2 class="text-lg font-bold mb-3">窗函數法 FIR 低通濾波器</h2>
+<div class="fm">
+$$h_d[n] = \frac{\sin(\omega_c n)}{\pi n} \quad\text{（理想低通的 IDTFT）}$$
+$$h[n] = h_d[n-M]\cdot w[n], \quad n = 0,\ldots,2M$$
+<p class="text-xs text-center mt-1">$\omega_c$：截止頻率；$w[n]$：視窗函數；$2M+1$：濾波器階數</p>
+</div>
+</div>
+<div class="card">
+<h2 class="text-lg font-bold mb-3">互動：FIR 低通設計</h2>
+<div class="flex gap-3 mb-3">
+  <div><label class="text-xs">fc=<span id="p64fv">0.25</span>·π</label><input type="range" id="p64f" min="0.05" max="0.45" value="0.25" step="0.01" class="w-32" oninput="updateP64()"></div>
+  <div><label class="text-xs">階數=<span id="p64ov">31</span></label><input type="range" id="p64o" min="7" max="127" value="31" step="2" class="w-32" oninput="updateP64()"></div>
+  <select id="p64w" class="border rounded px-2 py-1 text-xs dark:bg-slate-700 dark:border-slate-600" onchange="updateP64()"><option value="rectangular">Rect</option><option value="hann" selected>Hann</option><option value="hamming">Hamming</option><option value="blackman">Blackman</option></select>
+</div>
+<div id="plotP64" class="plot"></div>
+</div>
+<div class="ref-box"><p>[1] Oppenheim & Schafer, <em>Discrete-Time Signal Processing</em>, Ch.7. [2] Parks & Burrus, <em>Digital Filter Design</em>.</p></div>
+<div class="ch-nav"><a onclick="go('p6-3')">← 6.3</a><a onclick="go('p6-5')">6.5 →</a></div>
+</section>
+
+<section id="sec-p6-5" class="sec hidden">
+<h1 class="text-2xl font-bold mb-1">6.5 2D FFT 與影像處理</h1>
+<p class="text-slate-500 text-sm mb-5">影像的頻域表示與濾波</p>
+<div class="lo"><h3>Learning Objectives</h3><ul class="list-disc pl-5 text-sm space-y-1"><li>定義 2D DFT 及其可分離性（行 FFT + 列 FFT）</li><li>理解影像頻域中低頻 = 整體亮度/平滑區域，高頻 = 邊緣/細節</li><li>實作頻域低通/高通濾波</li></ul></div>
+<div class="card">
+<h2 class="text-lg font-bold mb-3">2D DFT</h2>
+<div class="fm">$$F[u,v] = \sum_{m=0}^{M-1}\sum_{n=0}^{N-1}f[m,n]\,e^{-j2\pi(um/M+vn/N)}$$
+<p class="text-xs text-center mt-1">可分離：先對每行做 1D FFT，再對每列做 1D FFT</p></div>
+</div>
+<div class="card">
+<h2 class="text-lg font-bold mb-3">頻域濾波</h2>
+<p class="mb-2">$G[u,v] = F[u,v]\cdot H[u,v]$，其中 $H$ 為頻率響應（mask）：</p>
+<ul class="list-disc pl-5 text-sm space-y-1">
+<li><strong>理想低通：</strong>$H=1$ for $\sqrt{u^2+v^2} \leq D_0$，否則 $0$ → 去除邊緣/雜訊，但有 ringing</li>
+<li><strong>Gaussian 低通：</strong>$H = e^{-(u^2+v^2)/(2D_0^2)}$ → 平滑，無 ringing</li>
+<li><strong>高通：</strong>$H_{HP} = 1 - H_{LP}$ → 強化邊緣</li>
+</ul>
+<div class="tip mt-3"><p><strong>MRI 連結：</strong>MRI 掃描器直接在 k-space（= 2D 頻率域）擷取資料。重建影像 = 2D IFFT。遮蔽 k-space 的外圍 = 低通濾波 → 影像模糊但可加速掃描。</p></div>
+</div>
+<div class="ref-box"><p>[1] Gonzalez & Woods, <em>Digital Image Processing</em>, Ch.4. [2] Liang & Lauterbur, <em>Principles of MRI</em>.</p></div>
+<div class="ch-nav"><a onclick="go('p6-4')">← 6.4</a><a onclick="go('p6-6')">6.6 →</a></div>
+</section>
+
+<section id="sec-p6-6" class="sec hidden">
+<h1 class="text-2xl font-bold mb-1">6.6 OFDM 通訊系統</h1>
+<p class="text-slate-500 text-sm mb-5">IFFT/FFT 驅動的現代無線通訊核心</p>
+<div class="lo"><h3>Learning Objectives</h3><ul class="list-disc pl-5 text-sm space-y-1"><li>理解 OFDM 符號的產生（IFFT）與接收（FFT）</li><li>推導循環前綴 (CP) 如何消除 ISI</li><li>認識頻域通道估計（LS / MMSE）與等化</li></ul></div>
+<div class="card">
+<h2 class="text-lg font-bold mb-3">OFDM 系統架構</h2>
+<div class="fm">
+<p><strong>發射：</strong>$\mathbf{d} = [d_0,\ldots,d_{N-1}]$（QAM 符號）$\xrightarrow{\text{IFFT}}$ $\mathbf{x}$（時域）$\xrightarrow{+\text{CP}}$ 傳送</p>
+<p class="mt-1"><strong>接收：</strong>移除 CP $\xrightarrow{\text{FFT}}$ $\mathbf{Y} = \mathbf{H}\odot\mathbf{D} + \mathbf{N}$ $\xrightarrow{\text{等化}}$ $\hat{\mathbf{D}} = \mathbf{Y}/\hat{\mathbf{H}}$</p>
+</div>
+</div>
+<div class="card">
+<h2 class="text-lg font-bold mb-3">循環前綴 (Cyclic Prefix)</h2>
+<details class="deriv my-3">
+<summary>為什麼 CP 有效？</summary>
+<div>
+<p>多路徑通道造成<strong>線性卷積</strong>：$y[n] = \sum_l h[l]\,x[n-l]$。</p>
+<p>在 OFDM 符號前加上自身尾部的複製（CP 長度 $\geq$ 通道長度 $L$），則在 FFT 窗口內看到的等效卷積變成<strong>圓卷積</strong>。</p>
+<p>圓卷積在 DFT 域 = 逐點相乘：$Y[k] = H[k]\cdot X[k]$。</p>
+<p>因此每個子載波上的等化只需一次複數除法：$\hat{X}[k] = Y[k]/H[k]$。$\;\blacksquare$</p>
+</div>
+</details>
+<p class="mt-2"><strong>5G NR 參數：</strong>4096 子載波、子載波間距 15/30/60/120 kHz、CP 長度 288 或 352 樣本。</p>
+</div>
+<div class="card">
+<h2 class="text-lg font-bold mb-3">通道估計</h2>
+<div class="fm">
+<p><strong>LS（Least Squares）：</strong>$\hat{H}[k] = Y[k]/D_{pilot}[k]$（在導頻位置）</p>
+<p><strong>MMSE：</strong>利用通道統計特性（功率延遲剖面）做最小均方誤差內插</p>
+</div>
+</div>
+<div class="ref-box"><p>[1] Cho et al., <em>MIMO-OFDM Wireless Communications with MATLAB</em>. [2] 3GPP TS 38.211 (5G NR Physical Channels).</p></div>
+<div class="ch-nav"><a onclick="go('p6-5')">← 6.5</a><a onclick="go('p6-7')">6.7 →</a></div>
+</section>
+
+<section id="sec-p6-7" class="sec hidden">
+<h1 class="text-2xl font-bold mb-1">6.7 雷達訊號處理</h1>
+<p class="text-slate-500 text-sm mb-5">匹配濾波 · Range-Doppler · 模糊函數</p>
+<div class="lo"><h3>Learning Objectives</h3><ul class="list-disc pl-5 text-sm space-y-1"><li>理解匹配濾波器 = 時域相關 = 頻域共軛相乘</li><li>推導 Range-Doppler 處理矩陣（快時間 FFT + 慢時間 FFT）</li><li>認識模糊函數及其與不確定性原理的關係</li></ul></div>
+<div class="card">
+<h2 class="text-lg font-bold mb-3">匹配濾波 (Matched Filter)</h2>
+<div class="fm">$$h_{MF}[n] = s^*[N-1-n] \quad\longleftrightarrow\quad H_{MF}(\omega) = S^*(\omega)$$
+<p class="text-xs text-center mt-1">匹配濾波 = 最大化輸出 SNR。頻域實現：$Y = X\cdot S^* \xrightarrow{\text{IFFT}}$ 壓縮脈衝</p></div>
+</div>
+<div class="card">
+<h2 class="text-lg font-bold mb-3">Range-Doppler 處理</h2>
+<p class="mb-2">脈衝都卜勒雷達的接收資料形成<strong>快時間 × 慢時間</strong>矩陣：</p>
+<ol class="list-decimal pl-5 text-sm space-y-1">
+<li><strong>快時間 FFT：</strong>沿每個脈衝做 FFT（或匹配濾波）→ 距離壓縮</li>
+<li><strong>慢時間 FFT：</strong>沿脈衝方向做 FFT → 都卜勒（速度）估計</li>
+</ol>
+<div class="fm mt-3">
+<p><strong>距離解析度：</strong>$\Delta R = \frac{c}{2B}$（$B$：頻寬）</p>
+<p><strong>速度解析度：</strong>$\Delta v = \frac{\lambda}{2T_{CPI}}$（$T_{CPI}$：相干積分時間）</p>
+</div>
+</div>
+<div class="card">
+<h2 class="text-lg font-bold mb-3">模糊函數 (Ambiguity Function)</h2>
+<div class="fm">$$\chi(\tau, f_d) = \int s(t)\,s^*(t-\tau)\,e^{j2\pi f_d t}\,dt$$</div>
+<p class="mt-2">$|\chi(\tau, f_d)|^2$ 描述波形在距離-都卜勒平面上的分辨能力。$|\chi(0,0)|^2$ 最大（自相關峰值）。總體積守恆（Woodward 定理）→ 不確定性原理：無法同時在距離和速度上無限銳化。</p>
+</div>
+<div class="card">
+<h2 class="text-lg font-bold mb-3">互動：Range-Doppler Map</h2>
+<p class="text-sm text-slate-500 mb-3">模擬脈衝都卜勒雷達，顯示三個目標的 Range-Doppler map。</p>
+<div id="plotP67" class="plot"></div>
+<button onclick="updateP67()" class="mt-2 px-3 py-1 bg-cyan-500 text-white rounded text-xs">計算</button>
+</div>
+<div class="ref-box"><p>[1] Richards, <em>Fundamentals of Radar Signal Processing</em>, McGraw-Hill. [2] Skolnik, <em>Introduction to Radar Systems</em>.</p></div>
+<div class="ch-nav"><a onclick="go('p6-6')">← 6.6</a><a onclick="go('p6-8')">6.8 →</a></div>
+</section>
+
+<section id="sec-p6-8" class="sec hidden">
+<h1 class="text-2xl font-bold mb-1">6.8 陣列訊號處理 (Array Signal Processing)</h1>
+<p class="text-slate-500 text-sm mb-5">波束成形 · DOA 估計</p>
+<div class="lo"><h3>Learning Objectives</h3><ul class="list-disc pl-5 text-sm space-y-1"><li>定義方向向量 (Steering Vector) 與陣列流形 (Array Manifold)</li><li>理解傳統波束成形 (Delay-and-Sum) 與 Capon (MVDR) 波束成形</li><li>連結 MUSIC 演算法到 DOA 估計</li></ul></div>
+<div class="card">
+<h2 class="text-lg font-bold mb-3">均勻線性陣列 (ULA)</h2>
+<p class="mb-2">$M$ 個天線，間距 $d$，遠場平面波入射角 $\theta$：</p>
+<div class="fm">$$\mathbf{a}(\theta) = [1,\; e^{j2\pi d\sin\theta/\lambda},\; \ldots,\; e^{j2\pi(M-1)d\sin\theta/\lambda}]^T$$</div>
+<p class="mt-2"><strong>空間 Nyquist：</strong>$d \leq \lambda/2$，否則產生空間混疊（grating lobes）。</p>
+</div>
+<div class="card">
+<h2 class="text-lg font-bold mb-3">波束成形</h2>
+<table class="dt"><thead><tr><th>方法</th><th>權重</th><th>特性</th></tr></thead><tbody>
+<tr><td>Delay-and-Sum</td><td>$\mathbf{w}=\mathbf{a}(\theta_0)/M$</td><td>簡單，主瓣寬 $\sim\lambda/(Md)$</td></tr>
+<tr><td>Capon (MVDR)</td><td>$\mathbf{w}=\frac{\mathbf{R}^{-1}\mathbf{a}}{\mathbf{a}^H\mathbf{R}^{-1}\mathbf{a}}$</td><td>最小方差，抑制干擾</td></tr>
+<tr><td>MUSIC</td><td>偽頻譜搜索</td><td>超解析度 DOA</td></tr>
+</tbody></table>
+</div>
+<div class="card">
+<h2 class="text-lg font-bold mb-3">互動：波束場型</h2>
+<div class="flex gap-3 mb-3">
+  <div><label class="text-xs">天線數 M=<span id="p68mv">8</span></label><input type="range" id="p68m" min="2" max="32" value="8" class="w-32" oninput="updateP68()"></div>
+  <div><label class="text-xs">指向角=<span id="p68dv">0</span>°</label><input type="range" id="p68d" min="-80" max="80" value="0" class="w-32" oninput="updateP68()"></div>
+</div>
+<div id="plotP68" class="plot"></div>
+</div>
+<div class="ref-box"><p>[1] Van Trees, <em>Optimum Array Processing</em>, Wiley. [2] Haykin, <em>Adaptive Filter Theory</em>.</p></div>
+<div class="ch-nav"><a onclick="go('p6-7')">← 6.7</a><a onclick="go('p6-9')">6.9 →</a></div>
+</section>
+
+<section id="sec-p6-9" class="sec hidden">
+<h1 class="text-2xl font-bold mb-1">6.9 生醫訊號分析</h1>
+<p class="text-slate-500 text-sm mb-5">EEG 頻帶分析 · ECG HRV · 頻域生物標記</p>
+<div class="lo"><h3>Learning Objectives</h3><ul class="list-disc pl-5 text-sm space-y-1"><li>認識 EEG 五大頻帶（δ/θ/α/β/γ）及其臨床意義</li><li>理解心率變異度 (HRV) 的頻域分析</li></ul></div>
+<div class="card">
+<h2 class="text-lg font-bold mb-3">EEG 頻帶</h2>
+<table class="dt"><thead><tr><th>頻帶</th><th>範圍</th><th>狀態</th></tr></thead><tbody>
+<tr><td class="font-bold">δ (Delta)</td><td>0.5–4 Hz</td><td>深度睡眠</td></tr>
+<tr><td class="font-bold">θ (Theta)</td><td>4–8 Hz</td><td>淺睡、冥想</td></tr>
+<tr><td class="font-bold">α (Alpha)</td><td>8–13 Hz</td><td>放鬆、閉眼清醒</td></tr>
+<tr><td class="font-bold">β (Beta)</td><td>13–30 Hz</td><td>專注、思考</td></tr>
+<tr><td class="font-bold">γ (Gamma)</td><td>30–100 Hz</td><td>高階認知、感知整合</td></tr>
+</tbody></table>
+<p class="mt-2">分析方法：分段加窗 FFT（Welch 法）→ 計算各頻帶功率 → 功率比值（如 α/θ ratio）作為認知狀態指標。</p>
+</div>
+<div class="card">
+<h2 class="text-lg font-bold mb-3">ECG 心率變異度 (HRV)</h2>
+<p class="mb-2">從 ECG 的 R-R 間隔序列（Tachogram）做頻譜分析：</p>
+<table class="dt"><thead><tr><th>頻帶</th><th>範圍</th><th>反映</th></tr></thead><tbody>
+<tr><td>VLF</td><td>0.003–0.04 Hz</td><td>體溫調節、RAAS</td></tr>
+<tr><td>LF</td><td>0.04–0.15 Hz</td><td>交感+副交感（Baroreflex）</td></tr>
+<tr><td>HF</td><td>0.15–0.4 Hz</td><td>副交感（呼吸性竇性心律不整）</td></tr>
+</tbody></table>
+<p class="mt-2"><strong>LF/HF ratio</strong> 常用作自律神經平衡指標（但爭議較大）。</p>
+</div>
+<div class="card">
+<h2 class="text-lg font-bold mb-3">互動：EEG 頻帶功率</h2>
+<p class="text-sm text-slate-500 mb-3">模擬 EEG 訊號（多個頻帶成分 + 1/f 雜訊），顯示功率譜與各頻帶比例。</p>
+<div id="plotP69" class="plot"></div>
+<button onclick="updateP69()" class="mt-2 px-3 py-1 bg-cyan-500 text-white rounded text-xs">產生模擬 EEG</button>
+</div>
+<div class="ref-box"><p>[1] Niedermeyer & da Silva, <em>Electroencephalography</em>. [2] Task Force of ESC/NASPE, <em>HRV: Standards of Measurement</em>, Circulation, 1996.</p></div>
+<div class="ch-nav"><a onclick="go('p6-8')">← 6.8</a><a onclick="go('p6-10')">6.10 →</a></div>
+</section>
+
+<section id="sec-p6-10" class="sec hidden">
+<h1 class="text-2xl font-bold mb-1">6.10 振動分析完整流程</h1>
+<p class="text-slate-500 text-sm mb-5">從感測器到診斷決策的端對端工作流</p>
+<div class="card">
+<h2 class="text-lg font-bold mb-3">標準流程</h2>
+<ol class="list-decimal pl-5 text-sm space-y-2">
+<li><strong>訊號擷取：</strong>加速度計（IEPE/ICP）→ ADC。取樣率需 ≥ 2.56× 最高關注頻率。<strong>必須</strong>加抗混疊濾波器。</li>
+<li><strong>前處理：</strong>去除 DC offset、趨勢（detrend）。必要時帶通濾波。</li>
+<li><strong>加窗 + FFT：</strong>通常 Hann 窗，重疊 50-75%。FFT 長度取 2 的冪次。</li>
+<li><strong>頻譜分析：</strong>
+  <ul class="list-disc pl-5 mt-1">
+  <li>直接 FFT → 識別轉速頻率 (1X)、不平衡 (1X)、不對準 (2X)、鬆動 (多倍頻)等</li>
+  <li>包絡譜分析 → 軸承缺陷 BPFO/BPFI</li>
+  <li>階次追蹤 (Order Tracking) → 變轉速分析</li>
+  </ul></li>
+<li><strong>時頻分析：</strong>STFT/CWT → 追蹤特徵頻率隨時間/轉速的變化</li>
+<li><strong>趨勢監測：</strong>追蹤關鍵頻帶的 RMS 或峰值隨時間的趨勢 → 設定警報閾值</li>
+</ol>
+</div>
+<div class="card">
+<h2 class="text-lg font-bold mb-3">軸承特徵頻率速查</h2>
+<div class="fm">
+<p>$f_{BPFO} = \frac{n}{2}f_r(1-\frac{d}{D}\cos\alpha)$ — 外環</p>
+<p>$f_{BPFI} = \frac{n}{2}f_r(1+\frac{d}{D}\cos\alpha)$ — 內環</p>
+<p>$f_{BSF} = \frac{D}{2d}f_r[1-(\frac{d}{D}\cos\alpha)^2]$ — 滾動體</p>
+<p>$f_{FTF} = \frac{1}{2}f_r(1-\frac{d}{D}\cos\alpha)$ — 保持架</p>
+<p class="text-xs mt-1">$n$=滾動體數, $f_r$=轉速, $d$=滾動體直徑, $D$=節圓直徑, $\alpha$=接觸角</p>
+</div>
+</div>
+<div class="ref-box"><p>[1] Randall, <em>Vibration-based Condition Monitoring</em>, Wiley. [2] ISO 10816 (Vibration severity).</p></div>
+<div class="ch-nav"><a onclick="go('p6-9')">← 6.9</a><a onclick="go('lab')">實驗室 →</a></div>
+</section>
+
+<!-- ============ LAB ============ -->
+<section id="sec-lab" class="sec hidden">
+<h1 class="text-2xl font-bold mb-1">互動實驗室</h1>
+<p class="text-slate-500 text-sm mb-5">Signal Generator + FFT Analyzer + Window Comparison</p>
+<div class="card">
+<h2 class="text-lg font-bold mb-3">訊號產生器</h2>
+<div class="grid grid-cols-4 gap-2 mb-3 text-xs">
+  <div><label>f1(Hz)=<span id="lf1v">50</span></label><input type="range" id="lf1" min="1" max="500" value="50" class="w-full" oninput="document.getElementById('lf1v').textContent=this.value"></div>
+  <div><label>A1=<span id="la1v">1.0</span></label><input type="range" id="la1" min="0" max="2" value="1" step="0.1" class="w-full" oninput="document.getElementById('la1v').textContent=(+this.value).toFixed(1)"></div>
+  <div><label>f2(Hz)=<span id="lf2v">120</span></label><input type="range" id="lf2" min="1" max="500" value="120" class="w-full" oninput="document.getElementById('lf2v').textContent=this.value"></div>
+  <div><label>A2=<span id="la2v">0.5</span></label><input type="range" id="la2" min="0" max="2" value="0.5" step="0.1" class="w-full" oninput="document.getElementById('la2v').textContent=(+this.value).toFixed(1)"></div>
+</div>
+<div class="flex gap-3 mb-3">
+  <div><label class="text-xs">雜訊=<span id="lnv">0.0</span></label><input type="range" id="lnoise" min="0" max="2" value="0" step="0.1" class="w-24" oninput="document.getElementById('lnv').textContent=(+this.value).toFixed(1)"></div>
+  <select id="lwin" class="border rounded px-2 py-1 text-xs dark:bg-slate-700 dark:border-slate-600"><option value="hann" selected>Hann</option><option value="rectangular">Rect</option><option value="hamming">Hamming</option><option value="blackman">Blackman</option></select>
+  <button onclick="runLab()" class="px-4 py-1 bg-cyan-500 text-white rounded text-xs font-medium">計算 FFT</button>
+</div>
+</div>
+<div class="card"><div id="plotLabT" class="plot"></div></div>
+<div class="card"><div id="plotLabF" class="plot"></div></div>
+</section>
+
+<!-- ============ QUIZ ============ -->
+<section id="sec-quiz" class="sec hidden">
+<h1 class="text-2xl font-bold mb-1">自我測驗</h1>
+<p class="text-slate-500 text-sm mb-5">涵蓋數學基礎、轉換理論、頻譜估計、時頻分析、工程應用</p>
+<div id="quizC"></div>
+<div class="flex gap-3 mt-4">
+  <button onclick="submitQ()" class="px-5 py-2 bg-gradient-to-r from-cyan-500 to-emerald-500 text-white rounded-lg text-sm font-medium">提交</button>
+  <button onclick="resetQ()" class="px-5 py-2 border border-slate-300 dark:border-slate-600 rounded-lg text-sm">重做</button>
+</div>
+<div id="quizR" class="mt-4 hidden"></div>
+</section>
+
+<!-- ============ ABOUT ============ -->
+<section id="sec-about" class="sec hidden">
+<h1 class="text-2xl font-bold mb-1">關於</h1>
+<div class="card">
+<p class="mb-3">研究所級傅立葉分析互動教學平台，涵蓋 6 大部分、32 個章節。</p>
+<table class="dt"><tbody>
+<tr><td class="text-left font-bold">技術</td><td class="text-left">Tailwind CSS + MathJax 3 + Plotly.js + Vanilla JS</td></tr>
+<tr><td class="text-left font-bold">FFT 引擎</td><td class="text-left">原生 Radix-2 Cooley-Tukey JavaScript 實作</td></tr>
+<tr><td class="text-left font-bold">數學排版</td><td class="text-left">MathJax 3 (TeX → HTML/CSS)</td></tr>
+<tr><td class="text-left font-bold">互動圖表</td><td class="text-left">Plotly.js 2.35</td></tr>
+</tbody></table>
+</div>
+</section>
 
 </div>
 </main>
@@ -786,6 +1522,12 @@ function initPlots(s){
     case'p1-1':updateP11();break;case'p1-3':updateP13();break;case'p1-4':updateP14();break;
     case'p2-1':updateP21();break;case'p2-2':updateP22();break;case'p2-3':updateP23();break;
     case'p2-5':updateP25();break;case'p2-6':updateP26();break;
+    case'p3-1':updateP31();updateP31b();break;
+    case'p3-3':updateP33();break;case'p3-4':updateP34();break;
+    case'p4-1':updateP41();break;
+    case'p5-1':updateP51();break;
+    case'p6-4':updateP64();break;case'p6-8':updateP68();break;
+    case'lab':runLab();break;
   }
 }
 
@@ -904,9 +1646,292 @@ function updateP26(){
   Plotly.react('plotP26',tr,pl(fs>=100?'正常取樣':`混疊！fs=${fs}<100`,'t (s)','振幅'),pc);
 }
 
+// === Window functions ===
+function wRect(N){return new Array(N).fill(1)}
+function wHann(N){const w=[];for(let n=0;n<N;n++)w.push(.5*(1-Math.cos(2*Math.PI*n/(N-1))));return w}
+function wHamming(N){const w=[];for(let n=0;n<N;n++)w.push(.54-.46*Math.cos(2*Math.PI*n/(N-1)));return w}
+function wBlackman(N){const w=[];for(let n=0;n<N;n++)w.push(.42-.5*Math.cos(2*Math.PI*n/(N-1))+.08*Math.cos(4*Math.PI*n/(N-1)));return w}
+function bI0(x){let s=1,t=1;for(let k=1;k<=25;k++){t*=(x/(2*k))*(x/(2*k));s+=t;if(t<1e-12*s)break}return s}
+function wKaiser(N,b){const w=[],d=bI0(b);for(let n=0;n<N;n++){const v=2*n/(N-1)-1;w.push(bI0(b*Math.sqrt(1-v*v))/d)}return w}
+function getW(nm,N,b){switch(nm){case'rectangular':return wRect(N);case'hann':return wHann(N);case'hamming':return wHamming(N);case'blackman':return wBlackman(N);case'kaiser':return wKaiser(N,b||6);default:return wHann(N)}}
+
+// === 3.1 Window spectrum ===
+function updateP31(){
+  const wn=document.getElementById('p31w').value,beta=+document.getElementById('p31b').value;
+  document.getElementById('p31bv').textContent=beta;
+  document.getElementById('p31bd').style.display=wn==='kaiser'?'inline-block':'none';
+  const N=128,win=getW(wn,N,beta),Nf=4096,re=zp(win,Nf),im=new Array(Nf).fill(0),R=fft(re,im);
+  const pk=Math.sqrt(R.re[0]**2+R.im[0]**2),half=Nf/2,fb=[],db=[];
+  for(let k=0;k<Nf;k++){const i=(k+half)%Nf;const m=Math.sqrt(R.re[i]**2+R.im[i]**2);db.push(20*Math.log10(m/pk+1e-12));fb.push((k-half)*N/Nf)}
+  Plotly.react('plotP31',[{x:fb,y:db,line:{color:'#06b6d4',width:1.5}}],pl(`${wn} 窗頻域響應`,'bins','dB',{xaxis:{range:[-15,15]},yaxis:{range:[-120,5]}}),pc);
+}
+let p31wSel='hann';
+function setP31w(w){p31wSel=w;document.querySelectorAll('.p31wb').forEach(b=>{if(b.dataset.w===w){b.classList.add('bg-cyan-500','text-white')}else{b.classList.remove('bg-cyan-500','text-white')}});updateP31b()}
+function updateP31b(){
+  const f1=+document.getElementById('p31f1').value,f2=+document.getElementById('p31f2').value;
+  document.getElementById('p31f1v').textContent=f1;document.getElementById('p31f2v').textContent=f2;
+  const fs=1000,N=256,t=[];for(let i=0;i<N;i++)t.push(i/fs);
+  const x=t.map(ti=>Math.sin(2*Math.PI*f1*ti)+.5*Math.sin(2*Math.PI*f2*ti));
+  const win=getW(p31wSel,N,6),xw=x.map((v,i)=>v*win[i]),ws=win.reduce((a,b)=>a+b,0);
+  const Nf=np2(N)*4,re=zp(xw,Nf),im=new Array(Nf).fill(0),R=fft(re,im);
+  const fr=[],mg=[];for(let k=0;k<Nf/2;k++){fr.push(k*fs/Nf);mg.push(20*Math.log10(Math.sqrt(R.re[k]**2+R.im[k]**2)*2/ws+1e-12))}
+  Plotly.react('plotP31b',[{x:fr,y:mg,line:{color:'#10b981',width:1.5}}],pl(`FFT (${p31wSel})`,'Hz','dB',{xaxis:{range:[0,fs/2]},yaxis:{range:[-100,10]},shapes:[{type:'line',x0:f1,x1:f1,y0:-100,y1:10,line:{color:'#f59e0b',dash:'dot'}},{type:'line',x0:f2,x1:f2,y0:-100,y1:10,line:{color:'#f59e0b',dash:'dot'}}]}),pc);
+}
+
+// === 3.3 AR spectral estimation ===
+function updateP33(){
+  const p=+document.getElementById('p33p').value;document.getElementById('p33pv').textContent=p;
+  const fs=1000,N=256,t=[];for(let i=0;i<N;i++)t.push(i/fs);
+  const x=t.map(ti=>Math.sin(2*Math.PI*100*ti)+Math.sin(2*Math.PI*105*ti)+.3*randn());
+  // Periodogram
+  const win=wHann(N),xw=x.map((v,i)=>v*win[i]),ws=win.reduce((a,b)=>a+b,0);
+  const Nf=np2(N)*4,re=zp(xw,Nf),im=new Array(Nf).fill(0),R=fft(re,im);
+  const frP=[],mgP=[];for(let k=0;k<Nf/2;k++){frP.push(k*fs/Nf);mgP.push(20*Math.log10(Math.sqrt(R.re[k]**2+R.im[k]**2)*2/ws+1e-12))}
+  // AR spectrum via autocorrelation method (simplified Levinson)
+  const rxx=[];for(let m=0;m<=p;m++){let s=0;for(let n=0;n<N-m;n++)s+=x[n]*x[n+m];rxx.push(s/N)}
+  // Levinson-Durbin
+  const a=new Array(p+1).fill(0);a[0]=1;let E=rxx[0];
+  for(let i=1;i<=p;i++){
+    let sum=0;for(let j=1;j<i;j++)sum+=a[j]*rxx[i-j];
+    const ki=-(rxx[i]+sum)/E;a[i]=ki;
+    for(let j=1;j<i;j++){const tmp=a[j]+ki*a[i-j];a[j]=tmp}// simplified
+    E*=(1-ki*ki);
+  }
+  const frA=[],mgA=[];
+  for(let k=0;k<Nf/2;k++){
+    const f=k*fs/Nf,w=2*Math.PI*f/fs;
+    let dre=1,dim=0;for(let j=1;j<=p;j++){dre+=a[j]*Math.cos(-w*j);dim+=a[j]*Math.sin(-w*j)}
+    const dmag=dre*dre+dim*dim;
+    mgA.push(10*Math.log10(E/dmag+1e-12));frA.push(f);
+  }
+  Plotly.react('plotP33',[
+    {x:frP,y:mgP,name:'Periodogram',line:{color:'#94a3b8',width:1}},
+    {x:frA,y:mgA,name:`AR(${p})`,line:{color:'#06b6d4',width:2}}
+  ],pl('AR 頻譜 vs Periodogram','Hz','dB',{xaxis:{range:[80,130]},yaxis:{range:[-30,20]}}),pc);
+}
+
+// === 3.4 MUSIC ===
+function updateP34(){
+  const df=+document.getElementById('p34df').value,snr=+document.getElementById('p34s').value;
+  document.getElementById('p34dfv').textContent=df;document.getElementById('p34sv').textContent=snr;
+  const fs=1000,N=128,f1=100,f2=100+df,M=16; // M: subspace dim
+  const noiseAmp=Math.pow(10,-snr/20);
+  const x=[];for(let i=0;i<N;i++)x.push(Math.sin(2*Math.PI*f1*i/fs)+Math.sin(2*Math.PI*f2*i/fs)+noiseAmp*randn());
+  // FFT periodogram
+  const win=wHann(N),xw=x.map((v,i)=>v*win[i]),ws=win.reduce((a,b)=>a+b,0);
+  const Nf=2048,re0=zp(xw,Nf),im0=new Array(Nf).fill(0),R0=fft(re0,im0);
+  const frP=[],mgP=[];for(let k=0;k<Nf/2;k++){frP.push(k*fs/Nf);mgP.push(20*Math.log10(Math.sqrt(R0.re[k]**2+R0.im[k]**2)*2/ws+1e-12))}
+  // MUSIC pseudospectrum (simplified via autocorrelation matrix)
+  // Build Rxx (MxM Toeplitz from autocorrelation)
+  const rxx=[];for(let m=0;m<M;m++){let s=0;for(let n=0;n<N-m;n++)s+=x[n]*x[n+m];rxx.push(s/(N-m))}
+  // Simple power iteration won't work well. Use pseudospectrum via direct formula:
+  // P_MUSIC(w) = 1 / (a^H * (R - sig^2*I)_noise_proj * a)
+  // Simplified: just compute 1/|a^H * e_n|^2 summed over noise eigenvectors
+  // For demo, approximate with high-order AR comparison
+  const frM=[],mgM=[];
+  // Use a very high-order AR as rough MUSIC proxy for visualization
+  const pHi=Math.min(M*2,N-1);
+  const rxxH=[];for(let m=0;m<=pHi;m++){let s=0;for(let n=0;n<N-m;n++)s+=x[n]*x[n+m];rxxH.push(s/N)}
+  const aH=new Array(pHi+1).fill(0);aH[0]=1;let EH=rxxH[0];
+  for(let i=1;i<=pHi;i++){let s=0;for(let j=1;j<i;j++)s+=aH[j]*rxxH[i-j];const k=-(rxxH[i]+s)/EH;aH[i]=k;for(let j=1;j<i;j++)aH[j]+=k*aH[i-j];EH*=(1-k*k)}
+  for(let k=0;k<Nf/2;k++){
+    const f=k*fs/Nf,w=2*Math.PI*f/fs;let dr=1,di=0;
+    for(let j=1;j<=pHi;j++){dr+=aH[j]*Math.cos(-w*j);di+=aH[j]*Math.sin(-w*j)}
+    mgM.push(10*Math.log10(EH/(dr*dr+di*di)+1e-12));frM.push(f);
+  }
+  const mgMmax=Math.max(...mgM);
+  Plotly.react('plotP34',[
+    {x:frP,y:mgP.map(v=>v-Math.max(...mgP)),name:'FFT',line:{color:'#94a3b8',width:1}},
+    {x:frM,y:mgM.map(v=>v-mgMmax),name:'High-order AR (MUSIC proxy)',line:{color:'#06b6d4',width:2}}
+  ],pl(`Δf=${df}Hz, SNR=${snr}dB`,'Hz','dB (norm)',{xaxis:{range:[80,130]},yaxis:{range:[-40,5]},shapes:[{type:'line',x0:f1,x1:f1,y0:-40,y1:5,line:{color:'#f59e0b',dash:'dot'}},{type:'line',x0:f2,x1:f2,y0:-40,y1:5,line:{color:'#f59e0b',dash:'dot'}}]}),pc);
+}
+
+// === 4.1 Hilbert envelope ===
+function hilbert(x){
+  const N=np2(x.length),re=zp(x,N),im=new Array(N).fill(0),F=fft(re,im);
+  for(let k=1;k<N/2;k++){F.re[k]*=2;F.im[k]*=2}
+  for(let k=N/2+1;k<N;k++){F.re[k]=0;F.im[k]=0}
+  const cr=F.re.slice(),ci=F.im.map(v=>-v),R=fft(cr,ci);
+  return{re:R.re.map(v=>v/N),im:R.im.map(v=>-v/N)};
+}
+function updateP41(){
+  const fm=+document.getElementById('p41f').value;document.getElementById('p41fv').textContent=fm;
+  const fs=1000,dur=1,N=fs*dur,t=[];for(let i=0;i<N;i++)t.push(i/fs);
+  const env=t.map(ti=>1+.8*Math.sin(2*Math.PI*fm*ti));
+  const x=t.map((ti,i)=>env[i]*Math.sin(2*Math.PI*100*ti));
+  const h=hilbert(x);
+  const hEnv=[];for(let i=0;i<N;i++)hEnv.push(Math.sqrt(h.re[i]**2+h.im[i]**2));
+  Plotly.react('plotP41',[
+    {x:t,y:x,name:'AM 訊號',line:{color:'#94a3b8',width:1}},
+    {x:t,y:hEnv.slice(0,N),name:'Hilbert 包絡',line:{color:'#06b6d4',width:2}},
+    {x:t,y:env,name:'真實包絡',line:{color:'#ef4444',dash:'dash',width:1.5}}
+  ],pl('Hilbert 包絡偵測','時間 (s)','振幅'),pc);
+}
+
+// === 5.1 STFT Spectrogram ===
+function updateP51(){
+  const sig=document.getElementById('p51s').value,winLen=+document.getElementById('p51w').value;
+  document.getElementById('p51wv').textContent=winLen;
+  const fs=4000,dur=2,N=fs*dur,t=[];for(let i=0;i<N;i++)t.push(i/fs);
+  let x;
+  if(sig==='chirp')x=t.map(ti=>Math.sin(2*Math.PI*(50*ti+375*ti*ti)));
+  else x=t.map(ti=>ti<1?Math.sin(2*Math.PI*200*ti):Math.sin(2*Math.PI*600*ti));
+  const ol=Math.round(winLen*.75),hop=winLen-ol,win=wHann(winLen),nfft=np2(winLen),nF=Math.floor((N-winLen)/hop)+1;
+  const tA=[],fA=[];for(let k=0;k<=nfft/2;k++)fA.push(k*fs/nfft);
+  const zD=[];
+  for(let fr=0;fr<nF;fr++){
+    const st=fr*hop;tA.push((st+winLen/2)/fs);
+    const seg=[];for(let i=0;i<winLen;i++)seg.push(x[st+i]*win[i]);
+    const re=zp(seg,nfft),im=new Array(nfft).fill(0),R=fft(re,im);
+    const col=[];for(let k=0;k<=nfft/2;k++){const m=Math.sqrt(R.re[k]**2+R.im[k]**2)*2/winLen;col.push(20*Math.log10(m+1e-12))}
+    zD.push(col);
+  }
+  const z=[];for(let fi=0;fi<fA.length;fi++){const row=[];for(let ti=0;ti<tA.length;ti++)row.push(zD[ti][fi]);z.push(row)}
+  Plotly.react('plotP51',[{x:tA,y:fA,z:z,type:'heatmap',colorscale:'Viridis',zmin:-60,zmax:0,colorbar:{title:'dB'}}],pl('Spectrogram','時間 (s)','頻率 (Hz)',{yaxis:{range:[0,fs/2]}}),pc);
+}
+
+// === 5.4 CWT (simplified Morlet) ===
+function updateP54(){
+  const fs=1000,dur=1,N=fs*dur,t=[];for(let i=0;i<N;i++)t.push(i/fs);
+  const x=t.map(ti=>Math.sin(2*Math.PI*(30*ti+100*ti*ti))); // chirp 30→230Hz
+  const scales=[];for(let s=2;s<=60;s+=1)scales.push(s);
+  const tA=[],fA=scales.map(s=>fs/(s*1.5));
+  const step=4;for(let i=0;i<N;i+=step)tA.push(t[i]);
+  const z=[];
+  for(let si=0;si<scales.length;si++){
+    const s=scales[si],row=[];
+    for(let bi=0;bi<N;bi+=step){
+      let sr=0,simag=0;const w0=6;
+      for(let n=Math.max(0,bi-3*s);n<Math.min(N,bi+3*s);n++){
+        const u=(n-bi)/s,g=Math.exp(-u*u/2);
+        sr+=x[n]*g*Math.cos(w0*u)/Math.sqrt(s);
+        simag+=x[n]*g*Math.sin(w0*u)/Math.sqrt(s);
+      }
+      row.push(Math.sqrt(sr*sr+simag*simag));
+    }
+    z.push(row);
+  }
+  Plotly.react('plotP54',[{x:tA,y:fA,z:z,type:'heatmap',colorscale:'Viridis',colorbar:{title:'|CWT|'}}],pl('CWT Scalogram (Morlet)','時間 (s)','頻率 (Hz)',{yaxis:{range:[0,500]}}),pc);
+}
+
+// === 6.4 FIR filter design ===
+function updateP64(){
+  const fc=+document.getElementById('p64f').value,order=+document.getElementById('p64o').value,wn=document.getElementById('p64w').value;
+  document.getElementById('p64fv').textContent=fc.toFixed(2);document.getElementById('p64ov').textContent=order;
+  const M=(order-1)/2,h=[],win=getW(wn,order,6);
+  for(let n=0;n<order;n++){
+    const nm=n-M;
+    h.push((Math.abs(nm)<1e-10?fc*2:Math.sin(2*Math.PI*fc*nm)/(Math.PI*nm))*win[n]);
+  }
+  // Frequency response
+  const Nf=2048,re=zp(h,Nf),im=new Array(Nf).fill(0),R=fft(re,im);
+  const fr=[],mg=[];for(let k=0;k<Nf/2;k++){fr.push(k/Nf);mg.push(20*Math.log10(Math.sqrt(R.re[k]**2+R.im[k]**2)+1e-12))}
+  Plotly.react('plotP64',[{x:fr,y:mg,line:{color:'#06b6d4',width:2}}],pl(`FIR LPF (${wn}, order=${order}, fc=${fc.toFixed(2)}π)`,'ω/π','dB',{yaxis:{range:[-80,5]},shapes:[{type:'line',x0:fc,x1:fc,y0:-80,y1:5,line:{color:'#ef4444',dash:'dash'}}]}),pc);
+}
+
+// === 6.7 Radar Range-Doppler ===
+function updateP67(){
+  const Np=64,Nr=256,fs=1e6,fc=1e9,c=3e8,PRI=1e-3;
+  // 3 targets: (range_bin, doppler_bin, amplitude)
+  const targets=[[50,10,1],[120,30,.7],[80,-15,.5]];
+  const z_re=Array.from({length:Np},()=>new Array(Nr).fill(0));
+  const z_im=Array.from({length:Np},()=>new Array(Nr).fill(0));
+  for(const[rb,db,amp]of targets){
+    for(let p=0;p<Np;p++){
+      const phase=2*Math.PI*db*p/Np;
+      z_re[p][rb%Nr]+=amp*Math.cos(phase);
+      z_im[p][rb%Nr]+=amp*Math.sin(phase);
+    }
+  }
+  // Add noise
+  for(let p=0;p<Np;p++)for(let r=0;r<Nr;r++){z_re[p][r]+=.1*randn();z_im[p][r]+=.1*randn()}
+  // Range FFT (along each pulse)
+  for(let p=0;p<Np;p++){const R=fft(z_re[p],z_im[p]);z_re[p]=R.re;z_im[p]=R.im}
+  // Doppler FFT (along pulses for each range bin)
+  const rdmap=[];
+  for(let r=0;r<Nr;r++){
+    const col_re=[],col_im=[];for(let p=0;p<Np;p++){col_re.push(z_re[p][r]);col_im.push(z_im[p][r])}
+    const R=fft(col_re,col_im);
+    const row=[];for(let p=0;p<Np;p++){const i=(p+Np/2)%Np;row.push(20*Math.log10(Math.sqrt(R.re[i]**2+R.im[i]**2)+1e-12))}
+    rdmap.push(row);
+  }
+  // Transpose for heatmap
+  const z=[];for(let d=0;d<Np;d++){const row=[];for(let r=0;r<Nr;r++)row.push(rdmap[r][d]);z.push(row)}
+  Plotly.react('plotP67',[{z:z,type:'heatmap',colorscale:'Viridis',colorbar:{title:'dB'}}],pl('Range-Doppler Map','Range Bin','Doppler Bin'),pc);
+}
+
+// === 6.8 Beamforming ===
+function updateP68(){
+  const M=+document.getElementById('p68m').value,d0=+document.getElementById('p68d').value;
+  document.getElementById('p68mv').textContent=M;document.getElementById('p68dv').textContent=d0;
+  const th=ls(-90,90,361),bp=[];
+  const d=0.5; // d/lambda = 0.5
+  for(let i=0;i<th.length;i++){
+    const phi=Math.PI*d*(Math.sin(th[i]*Math.PI/180)-Math.sin(d0*Math.PI/180));
+    let sr=0,si=0;for(let m=0;m<M;m++){sr+=Math.cos(m*2*phi);si+=Math.sin(m*2*phi)}
+    bp.push(20*Math.log10(Math.sqrt(sr*sr+si*si)/M+1e-12));
+  }
+  Plotly.react('plotP68',[{x:th,y:bp,line:{color:'#06b6d4',width:2}}],pl(`ULA Beam Pattern (M=${M}, θ₀=${d0}°)`,'角度 (°)','dB',{yaxis:{range:[-40,1]}}),pc);
+}
+
+// === 6.9 EEG ===
+function updateP69(){
+  const fs=256,dur=10,N=fs*dur;
+  const x=[];for(let i=0;i<N;i++){
+    const t=i/fs;
+    x.push(2*Math.sin(2*Math.PI*2*t)+3*Math.sin(2*Math.PI*6*t)+5*Math.sin(2*Math.PI*10*t)+2*Math.sin(2*Math.PI*20*t)+.5*Math.sin(2*Math.PI*40*t));
+    x[i]+=randn()*.5;// 1/f approx
+    if(i>0)x[i]+=x[i-1]*.3;
+  }
+  const win=wHann(N),xw=x.map((v,i)=>v*win[i]),ws=win.reduce((a,b)=>a+b,0);
+  const Nf=np2(N),re=zp(xw,Nf),im=new Array(Nf).fill(0),R=fft(re,im);
+  const fr=[],mg=[];for(let k=0;k<Nf/2;k++){fr.push(k*fs/Nf);const m=Math.sqrt(R.re[k]**2+R.im[k]**2)*2/ws;mg.push(20*Math.log10(m+1e-12))}
+  const bands=[{n:'δ',l:0.5,h:4,c:'rgba(139,92,246,0.2)'},{n:'θ',l:4,h:8,c:'rgba(6,182,212,0.2)'},{n:'α',l:8,h:13,c:'rgba(16,185,129,0.2)'},{n:'β',l:13,h:30,c:'rgba(245,158,11,0.2)'},{n:'γ',l:30,h:50,c:'rgba(239,68,68,0.2)'}];
+  const shapes=bands.map(b=>({type:'rect',x0:b.l,x1:b.h,y0:-60,y1:40,fillcolor:b.c,line:{width:0}}));
+  Plotly.react('plotP69',[{x:fr,y:mg,line:{color:'#06b6d4',width:1.5}}],pl('模擬 EEG 功率譜','頻率 (Hz)','dB',{xaxis:{range:[0,50]},yaxis:{range:[-20,40]},shapes:shapes,annotations:bands.map(b=>({x:(b.l+b.h)/2,y:38,text:b.n,showarrow:false,font:{size:11,color:'#475569'}}))}),pc);
+}
+
+// === Lab ===
+function runLab(){
+  const fs=2048,dur=.5,N=Math.round(fs*dur),t=[];for(let i=0;i<N;i++)t.push(i/fs);
+  const f1=+document.getElementById('lf1').value,a1=+document.getElementById('la1').value;
+  const f2=+document.getElementById('lf2').value,a2=+document.getElementById('la2').value;
+  const noise=+document.getElementById('lnoise').value;
+  const x=t.map(ti=>a1*Math.sin(2*Math.PI*f1*ti)+a2*Math.sin(2*Math.PI*f2*ti)+noise*randn());
+  const win=getW(document.getElementById('lwin').value,N,6),xw=x.map((v,i)=>v*win[i]),ws=win.reduce((a,b)=>a+b,0);
+  const Nf=np2(N)*2,re=zp(xw,Nf),im=new Array(Nf).fill(0),R=fft(re,im);
+  const fr=[],mg=[];for(let k=0;k<Nf/2;k++){fr.push(k*fs/Nf);mg.push(20*Math.log10(Math.sqrt(R.re[k]**2+R.im[k]**2)*2/ws+1e-12))}
+  Plotly.react('plotLabT',[{x:t,y:xw,line:{color:'#06b6d4',width:1}}],pl('時間域','s','振幅'),pc);
+  Plotly.react('plotLabF',[{x:fr,y:mg,line:{color:'#10b981',width:1.5}}],pl('FFT 幅度譜','Hz','dB',{yaxis:{range:[-100,10]}}),pc);
+}
+
+// === Quiz ===
+const QD=[
+{q:'Hilbert 空間必須滿足的關鍵性質是？',o:['有限維','完備性 (Completeness)','可數維','緊緻性'],a:1,explain:'Hilbert 空間 = 完備的內積空間。完備性保證 Cauchy 序列收斂到空間內的元素。'},
+{q:'$\\delta(t)$ 的傅立葉轉換是？',o:['$\\delta(\\omega)$','$0$','$1$','$2\\pi$'],a:2,explain:'$\\mathcal{F}\\{\\delta(t)\\} = \\int \\delta(t)e^{-j\\omega t}dt = 1$。'},
+{q:'Gibbs 現象的過衝百分比約為？',o:['5%','9%','13%','18%'],a:1,explain:'在不連續點附近，有限項傅立葉級數的過衝趨近 $\\frac{2}{\\pi}\\text{Si}(\\pi)-1 \\approx 8.95\\%$。'},
+{q:'DFT 對應的卷積類型是？',o:['線性卷積','圓卷積 (Circular)','因果卷積','連續卷積'],a:1,explain:'DFT 乘法對應圓卷積，需零填充到 $\\geq N_x+N_y-1$ 才能正確計算線性卷積。'},
+{q:'系統穩定的 Z 轉換條件是？',o:['所有零點在單位圓內','ROC 包含單位圓','所有極點在原點','ROC 是整個 z 平面'],a:1,explain:'穩定 ↔ DTFT 存在 ↔ ROC 包含單位圓 ↔ 因果系統的所有極點在單位圓內。'},
+{q:'Nyquist 定理要求取樣率至少為？',o:['$f_{max}$','$2f_{max}$','$\\pi f_{max}$','$4f_{max}$'],a:1,explain:'$f_s \\geq 2f_{max}$。低於此值產生不可逆的混疊。'},
+{q:'Hann 窗的旁瓣峰值約為？',o:['-13 dB','-31 dB','-42 dB','-58 dB'],a:1,explain:'Hann 窗旁瓣 -31 dB，比矩形窗 (-13 dB) 好很多，是通用分析的首選。'},
+{q:'MUSIC 演算法利用什麼性質實現超解析度？',o:['FFT 的快速性','訊號子空間與雜訊子空間的正交性','窗函數的旁瓣抑制','零填充的內插效果'],a:1,explain:'MUSIC 利用方向向量正交於雜訊子空間的性質，在真實頻率處偽頻譜趨近無窮大。'},
+{q:'Hilbert 轉換在頻域的效果是？',o:['幅度加倍','正頻率 -90° 相移','全部設為零','低通濾波'],a:1,explain:'$\\hat{X}(\\omega) = -j\\cdot\\text{sgn}(\\omega)\\cdot X(\\omega)$，正頻率 $\\times(-j)$ = -90° 相移。'},
+{q:'CWT 與 STFT 的根本差異是？',o:['CWT 更快','CWT 窗寬隨頻率自適應','CWT 沒有交叉項','CWT 只能分析線性訊號'],a:1,explain:'CWT 用 dilated wavelet 作為分析函數，低頻長窗（高頻率解析度）、高頻短窗（高時間解析度）。'},
+{q:'Wigner-Ville 分佈的主要缺點是？',o:['解析度低','計算慢','交叉項 (Cross-Terms)','只能分析實數訊號'],a:2,explain:'WVD 有最高時頻解析度但對多成分訊號產生交叉項，幅度可與自項相當。'},
+{q:'OFDM 發射端使用什麼運算？',o:['FFT','IFFT','卷積','相關'],a:1,explain:'發射端用 IFFT 將頻域子載波資料轉為時域符號。'},
+{q:'雷達距離解析度 $\\Delta R$ 取決於？',o:['脈衝重複頻率','訊號頻寬 B','天線增益','都卜勒頻移'],a:1,explain:'$\\Delta R = c/(2B)$。頻寬越大，距離解析度越好。'},
+{q:'EEG 的 α 波頻帶範圍為？',o:['0.5-4 Hz','4-8 Hz','8-13 Hz','13-30 Hz'],a:2,explain:'α 波 8-13 Hz，與放鬆清醒狀態相關。閉眼時 α 波增強（Berger 效應）。'},
+{q:'Overlap-Save 方法中，每段 IFFT 後要丟棄前幾個點？',o:['0 (不丟棄)','M-1 (濾波器長度-1)','L/2','N/2'],a:1,explain:'前 M-1 個點受圓卷積污染（與前一段混疊），必須丟棄。'},
+];
+function renderQ(){document.getElementById('quizC').innerHTML=QD.map((q,i)=>`<div class="card" id="qq${i}"><p class="font-bold text-sm mb-2">${i+1}. ${q.q}</p><div class="space-y-1">${q.o.map((o,j)=>`<label class="flex items-start gap-2 p-1.5 rounded hover:bg-slate-50 dark:hover:bg-slate-700/50 cursor-pointer text-sm"><input type="radio" name="q${i}" value="${j}" class="mt-1 accent-cyan-500"><span>${o}</span></label>`).join('')}</div><div id="qe${i}" class="hidden mt-2 p-2 rounded text-xs"></div></div>`).join('')}
+function submitQ(){let s=0;QD.forEach((q,i)=>{const sel=document.querySelector(`input[name="q${i}"]:checked`),ex=document.getElementById(`qe${i}`);ex.classList.remove('hidden');if(sel&&+sel.value===q.a){s++;ex.className='mt-2 p-2 rounded text-xs bg-emerald-50 dark:bg-emerald-900/30 text-emerald-800 dark:text-emerald-300';ex.innerHTML=`<b>正確</b> ${q.explain}`}else{ex.className='mt-2 p-2 rounded text-xs bg-red-50 dark:bg-red-900/30 text-red-800 dark:text-red-300';ex.innerHTML=`<b>錯誤</b> 答案：${q.o[q.a]}。${q.explain}`}});
+const r=document.getElementById('quizR');r.classList.remove('hidden');r.innerHTML=`<div class="card text-center"><p class="text-2xl font-bold ${s/QD.length>=.7?'text-emerald-500':'text-amber-500'}">${s}/${QD.length}</p></div>`}
+function resetQ(){document.getElementById('quizR').classList.add('hidden');renderQ()}
+
 // === Init ===
 document.addEventListener('DOMContentLoaded',()=>{
   if(localStorage.getItem('dm')==='true'||(!'dm' in localStorage&&matchMedia('(prefers-color-scheme:dark)').matches))document.documentElement.classList.add('dark');
+  renderQ();
   setTimeout(()=>go('home'),200);
 });
 </script>
