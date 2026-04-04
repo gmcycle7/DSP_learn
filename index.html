@@ -1,0 +1,2242 @@
+<!DOCTYPE html>
+<html lang="zh-Hant" class="scroll-smooth">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>傅立葉分析教學平台 | Fourier Analysis Lab</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = {
+  darkMode: 'class',
+  theme: {
+    extend: {
+      colors: {
+        primary: { 50:'#ecfdf5',100:'#d1fae5',200:'#a7f3d0',300:'#6ee7b7',400:'#34d399',500:'#10b981',600:'#059669',700:'#047857',800:'#065f46',900:'#064e3b' },
+        accent: { 50:'#ecfeff',100:'#cffafe',200:'#a5f3fc',300:'#67e8f9',400:'#22d3ee',500:'#06b6d4',600:'#0891b2',700:'#0e7490',800:'#155e75',900:'#164e63' },
+      }
+    }
+  }
+}
+</script>
+<script src="https://cdn.plot.ly/plotly-2.35.0.min.js"></script>
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['$','$'],['\\(','\\)']], displayMath: [['$$','$$'],['\\[','\\]']] },
+  startup: { typeset: false }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" async></script>
+<style>
+/* 自訂捲軸 */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #06b6d4; border-radius: 3px; }
+.dark ::-webkit-scrollbar-thumb { background: #22d3ee; }
+
+/* 側邊欄動畫 */
+.sidebar-item { transition: all 0.2s ease; }
+.sidebar-item:hover { padding-left: 1.25rem; }
+.sidebar-item.active { border-left: 3px solid #06b6d4; background: rgba(6,182,212,0.1); }
+
+/* 章節內容動畫 */
+.section-content { animation: fadeIn 0.3s ease; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+/* 程式碼區塊 */
+.code-block { background: #1e293b; color: #e2e8f0; border-radius: 0.5rem; padding: 1rem; overflow-x: auto; font-family: 'Courier New', monospace; font-size: 0.85rem; line-height: 1.6; }
+.dark .code-block { background: #0f172a; }
+
+/* 公式區塊 */
+.formula-box { background: linear-gradient(135deg, rgba(6,182,212,0.05), rgba(16,185,129,0.05)); border: 1px solid rgba(6,182,212,0.2); border-radius: 0.75rem; padding: 1.5rem; margin: 1rem 0; }
+.dark .formula-box { background: linear-gradient(135deg, rgba(6,182,212,0.1), rgba(16,185,129,0.1)); border-color: rgba(6,182,212,0.3); }
+
+/* 表格 */
+.data-table { width: 100%; border-collapse: collapse; }
+.data-table th { background: #0e7490; color: white; padding: 0.75rem; text-align: center; font-size: 0.85rem; }
+.data-table td { padding: 0.6rem 0.75rem; border-bottom: 1px solid #e2e8f0; text-align: center; font-size: 0.85rem; }
+.dark .data-table td { border-color: #334155; }
+.data-table tr:hover td { background: rgba(6,182,212,0.08); }
+
+/* 卡片 */
+.info-card { background: white; border-radius: 0.75rem; padding: 1.5rem; box-shadow: 0 1px 3px rgba(0,0,0,0.1); border: 1px solid #e2e8f0; }
+.dark .info-card { background: #1e293b; border-color: #334155; }
+
+/* 標籤切換 */
+.tab-btn { transition: all 0.2s; }
+.tab-btn.active { background: #06b6d4; color: white; }
+
+/* Plotly 圖表容器 */
+.plot-container { width: 100%; min-height: 350px; border-radius: 0.5rem; overflow: hidden; }
+
+/* 響應式側邊欄 */
+@media (max-width: 1024px) {
+  #sidebar { position: fixed; left: -280px; top: 64px; bottom: 0; z-index: 40; transition: left 0.3s ease; }
+  #sidebar.open { left: 0; }
+  #sidebar-overlay { display: none; position: fixed; inset: 0; top: 64px; background: rgba(0,0,0,0.5); z-index: 35; }
+  #sidebar-overlay.open { display: block; }
+}
+
+/* 提示框 */
+.tip-box { border-left: 4px solid #06b6d4; background: rgba(6,182,212,0.05); padding: 1rem 1.25rem; border-radius: 0 0.5rem 0.5rem 0; margin: 1rem 0; }
+.warn-box { border-left: 4px solid #f59e0b; background: rgba(245,158,11,0.05); padding: 1rem 1.25rem; border-radius: 0 0.5rem 0.5rem 0; margin: 1rem 0; }
+
+/* 滑桿 */
+input[type="range"] { -webkit-appearance: none; height: 6px; border-radius: 3px; background: #cbd5e1; outline: none; }
+input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 18px; height: 18px; border-radius: 50%; background: #06b6d4; cursor: pointer; }
+.dark input[type="range"] { background: #475569; }
+</style>
+</head>
+<body class="bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-gray-200 transition-colors duration-300">
+
+<!-- ==================== 頂部導航列 ==================== -->
+<nav id="navbar" class="fixed top-0 left-0 right-0 z-50 bg-white/90 dark:bg-gray-900/90 backdrop-blur-md border-b border-gray-200 dark:border-gray-700 h-16">
+  <div class="flex items-center justify-between h-full px-4 max-w-screen-2xl mx-auto">
+    <div class="flex items-center gap-3">
+      <!-- 手機版漢堡選單 -->
+      <button id="menuToggle" class="lg:hidden p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800" onclick="toggleSidebar()">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+      </button>
+      <!-- Logo -->
+      <div class="flex items-center gap-2">
+        <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-cyan-500 to-emerald-500 flex items-center justify-center text-white font-bold text-sm">F</div>
+        <span class="font-bold text-lg bg-gradient-to-r from-cyan-600 to-emerald-600 bg-clip-text text-transparent hidden sm:inline">傅立葉分析</span>
+      </div>
+    </div>
+    <!-- 導航連結 -->
+    <div class="hidden md:flex items-center gap-1">
+      <button onclick="navigateTo('home')" class="nav-link px-3 py-2 rounded-lg text-sm font-medium hover:bg-gray-100 dark:hover:bg-gray-800 transition">首頁</button>
+      <button onclick="navigateTo('ch1')" class="nav-link px-3 py-2 rounded-lg text-sm font-medium hover:bg-gray-100 dark:hover:bg-gray-800 transition">概念講解</button>
+      <button onclick="navigateTo('lab')" class="nav-link px-3 py-2 rounded-lg text-sm font-medium hover:bg-gray-100 dark:hover:bg-gray-800 transition">互動實驗室</button>
+      <button onclick="navigateTo('ch7')" class="nav-link px-3 py-2 rounded-lg text-sm font-medium hover:bg-gray-100 dark:hover:bg-gray-800 transition">應用案例</button>
+      <button onclick="navigateTo('quiz')" class="nav-link px-3 py-2 rounded-lg text-sm font-medium hover:bg-gray-100 dark:hover:bg-gray-800 transition">自我測驗</button>
+      <button onclick="navigateTo('about')" class="nav-link px-3 py-2 rounded-lg text-sm font-medium hover:bg-gray-100 dark:hover:bg-gray-800 transition">關於</button>
+    </div>
+    <!-- 深色模式切換 -->
+    <button id="darkToggle" onclick="toggleDark()" class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition" title="切換深色模式">
+      <svg id="sunIcon" class="w-5 h-5 hidden dark:block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+      <svg id="moonIcon" class="w-5 h-5 block dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
+    </button>
+  </div>
+</nav>
+
+<!-- 側邊欄遮罩 -->
+<div id="sidebar-overlay" onclick="toggleSidebar()"></div>
+
+<!-- ==================== 左側側邊欄 ==================== -->
+<aside id="sidebar" class="fixed top-16 left-0 w-64 h-[calc(100vh-4rem)] bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 overflow-y-auto z-40 hidden lg:block">
+  <div class="p-4">
+    <h3 class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">章節目錄</h3>
+    <div class="space-y-1">
+      <!-- 首頁 -->
+      <button onclick="navigateTo('home')" class="sidebar-item w-full text-left px-3 py-2 rounded-lg text-sm hover:bg-gray-100 dark:hover:bg-gray-700 transition active" data-section="home">
+        <span class="mr-2">🏠</span> 首頁
+      </button>
+
+      <!-- Ch1 -->
+      <div>
+        <button onclick="toggleChapter('ch1-sub'); navigateTo('ch1')" class="sidebar-item w-full text-left px-3 py-2 rounded-lg text-sm hover:bg-gray-100 dark:hover:bg-gray-700 transition font-medium" data-section="ch1">
+          <span class="mr-2">1.</span> 基礎概念
+        </button>
+      </div>
+
+      <!-- Ch2 -->
+      <div>
+        <button onclick="toggleChapter('ch2-sub'); navigateTo('ch2')" class="sidebar-item w-full text-left px-3 py-2 rounded-lg text-sm hover:bg-gray-100 dark:hover:bg-gray-700 transition font-medium" data-section="ch2">
+          <span class="mr-2">2.</span> 傅立葉級數
+        </button>
+      </div>
+
+      <!-- Ch3 -->
+      <div>
+        <button onclick="navigateTo('ch3')" class="sidebar-item w-full text-left px-3 py-2 rounded-lg text-sm hover:bg-gray-100 dark:hover:bg-gray-700 transition font-medium" data-section="ch3">
+          <span class="mr-2">3.</span> 連續傅立葉轉換
+        </button>
+      </div>
+
+      <!-- Ch4 -->
+      <div>
+        <button onclick="navigateTo('ch4')" class="sidebar-item w-full text-left px-3 py-2 rounded-lg text-sm hover:bg-gray-100 dark:hover:bg-gray-700 transition font-medium" data-section="ch4">
+          <span class="mr-2">4.</span> DFT 與 FFT
+        </button>
+      </div>
+
+      <!-- Ch5 -->
+      <div>
+        <button onclick="navigateTo('ch5')" class="sidebar-item w-full text-left px-3 py-2 rounded-lg text-sm hover:bg-gray-100 dark:hover:bg-gray-700 transition font-medium" data-section="ch5">
+          <span class="mr-2">5.</span> 視窗函數與頻譜洩漏
+          <span class="ml-1 text-xs px-1.5 py-0.5 bg-cyan-100 dark:bg-cyan-900 text-cyan-700 dark:text-cyan-300 rounded">重點</span>
+        </button>
+      </div>
+
+      <!-- Ch6 -->
+      <div>
+        <button onclick="navigateTo('ch6')" class="sidebar-item w-full text-left px-3 py-2 rounded-lg text-sm hover:bg-gray-100 dark:hover:bg-gray-700 transition font-medium" data-section="ch6">
+          <span class="mr-2">6.</span> STFT 與 Spectrogram
+        </button>
+      </div>
+
+      <!-- Ch7 -->
+      <div>
+        <button onclick="navigateTo('ch7')" class="sidebar-item w-full text-left px-3 py-2 rounded-lg text-sm hover:bg-gray-100 dark:hover:bg-gray-700 transition font-medium" data-section="ch7">
+          <span class="mr-2">7.</span> 重要應用與定理
+        </button>
+      </div>
+
+      <hr class="my-3 border-gray-200 dark:border-gray-600">
+
+      <!-- 互動實驗室 -->
+      <button onclick="navigateTo('lab')" class="sidebar-item w-full text-left px-3 py-2 rounded-lg text-sm hover:bg-gray-100 dark:hover:bg-gray-700 transition font-medium text-cyan-600 dark:text-cyan-400" data-section="lab">
+        <span class="mr-2">🔬</span> 互動實驗室
+      </button>
+
+      <!-- 自我測驗 -->
+      <button onclick="navigateTo('quiz')" class="sidebar-item w-full text-left px-3 py-2 rounded-lg text-sm hover:bg-gray-100 dark:hover:bg-gray-700 transition font-medium text-emerald-600 dark:text-emerald-400" data-section="quiz">
+        <span class="mr-2">📝</span> 自我測驗
+      </button>
+
+      <!-- 關於 -->
+      <button onclick="navigateTo('about')" class="sidebar-item w-full text-left px-3 py-2 rounded-lg text-sm hover:bg-gray-100 dark:hover:bg-gray-700 transition" data-section="about">
+        <span class="mr-2">ℹ️</span> 關於
+      </button>
+    </div>
+  </div>
+</aside>
+
+<!-- ==================== 主內容區 ==================== -->
+<main id="mainContent" class="pt-16 lg:pl-64 min-h-screen">
+<div class="max-w-5xl mx-auto p-4 md:p-8">
+
+<!-- ==================== 首頁 ==================== -->
+<section id="sec-home" class="section-content">
+  <div class="text-center py-12">
+    <div class="inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-gradient-to-br from-cyan-500 to-emerald-500 text-white text-3xl font-bold mb-6 shadow-lg shadow-cyan-500/30">F</div>
+    <h1 class="text-4xl md:text-5xl font-bold mb-4">
+      <span class="bg-gradient-to-r from-cyan-600 to-emerald-600 bg-clip-text text-transparent">傅立葉分析教學平台</span>
+    </h1>
+    <p class="text-xl text-gray-500 dark:text-gray-400 mb-2">Fourier Analysis Lab</p>
+    <p class="text-gray-600 dark:text-gray-400 max-w-2xl mx-auto mb-8">專為電子電機工程系學生設計的互動式學習平台。<br>從基礎概念到工程應用，透過互動圖表深入理解傅立葉分析。</p>
+    <div class="flex flex-wrap justify-center gap-4">
+      <button onclick="navigateTo('ch1')" class="px-6 py-3 bg-gradient-to-r from-cyan-500 to-emerald-500 text-white rounded-xl font-medium shadow-lg shadow-cyan-500/30 hover:shadow-xl transition transform hover:-translate-y-0.5">開始學習</button>
+      <button onclick="navigateTo('lab')" class="px-6 py-3 border-2 border-cyan-500 text-cyan-600 dark:text-cyan-400 rounded-xl font-medium hover:bg-cyan-50 dark:hover:bg-cyan-900/30 transition">進入實驗室</button>
+    </div>
+  </div>
+  <!-- 特色卡片 -->
+  <div class="grid md:grid-cols-3 gap-6 mt-8">
+    <div class="info-card text-center">
+      <div class="text-3xl mb-3">📐</div>
+      <h3 class="font-bold mb-2">完整理論</h3>
+      <p class="text-sm text-gray-500 dark:text-gray-400">涵蓋傅立葉級數、CTFT、DFT/FFT、STFT 等核心主題，搭配 MathJax 公式呈現</p>
+    </div>
+    <div class="info-card text-center">
+      <div class="text-3xl mb-3">🔬</div>
+      <h3 class="font-bold mb-2">互動實驗</h3>
+      <p class="text-sm text-gray-500 dark:text-gray-400">即時產生訊號、選擇視窗函數、計算 FFT，透過 Plotly 互動圖表觀察結果</p>
+    </div>
+    <div class="info-card text-center">
+      <div class="text-3xl mb-3">⚡</div>
+      <h3 class="font-bold mb-2">工程導向</h3>
+      <p class="text-sm text-gray-500 dark:text-gray-400">聚焦 EE/ECE 實際應用：濾波器設計、通訊系統、電源分析、振動偵測</p>
+    </div>
+  </div>
+  <!-- 首頁快速導覽互動圖 -->
+  <div class="mt-12">
+    <h2 class="text-2xl font-bold mb-4 text-center">快速體驗：傅立葉級數合成方波</h2>
+    <p class="text-center text-gray-500 dark:text-gray-400 mb-4">拖動滑桿改變諧波數量，觀察方波如何由正弦波疊加而成</p>
+    <div class="flex items-center justify-center gap-4 mb-4">
+      <label class="text-sm font-medium">諧波數量：<span id="homeHarmonicsVal">5</span></label>
+      <input type="range" id="homeHarmonics" min="1" max="50" value="5" class="w-64" oninput="updateHomeDemo()">
+    </div>
+    <div id="homePlot" class="plot-container"></div>
+  </div>
+</section>
+
+<!-- ==================== 第 1 章：基礎概念 ==================== -->
+<section id="sec-ch1" class="section-content hidden">
+  <h1 class="text-3xl font-bold mb-2">1. 基礎概念</h1>
+  <p class="text-gray-500 dark:text-gray-400 mb-6">時間域 vs 頻率域 — 傅立葉分析的核心思想</p>
+
+  <div class="info-card mb-6">
+    <h2 class="text-xl font-bold mb-3">1.1 時間域 (Time Domain) vs 頻率域 (Frequency Domain)</h2>
+    <p class="mb-3">在工程分析中，我們觀察訊號有兩個基本視角：</p>
+    <ul class="list-disc pl-6 space-y-2 mb-4">
+      <li><strong>時間域 (Time Domain)</strong>：觀察訊號的振幅如何隨時間變化。示波器（Oscilloscope）顯示的就是時間域波形。</li>
+      <li><strong>頻率域 (Frequency Domain)</strong>：觀察訊號包含哪些頻率成分以及各成分的強度。頻譜分析儀（Spectrum Analyzer）顯示的就是頻率域資訊。</li>
+    </ul>
+    <div class="formula-box">
+      <p class="text-center mb-2"><strong>傅立葉分析的核心思想</strong></p>
+      <p class="text-center">任何「合理」的週期訊號都可以分解為不同頻率的正弦波（Sinusoid）之疊加。</p>
+      <p class="text-center mt-2">$$x(t) = \sum_{k=-\infty}^{\infty} c_k \, e^{j k \omega_0 t}$$</p>
+    </div>
+  </div>
+
+  <div class="info-card mb-6">
+    <h2 class="text-xl font-bold mb-3">1.2 為什麼 EE 工程師必須學傅立葉分析？</h2>
+    <div class="grid md:grid-cols-2 gap-4">
+      <div class="p-4 rounded-lg bg-cyan-50 dark:bg-cyan-900/20">
+        <h3 class="font-bold text-cyan-700 dark:text-cyan-400 mb-2">濾波器設計 (Filter Design)</h3>
+        <p class="text-sm">在頻率域中，濾波器就是一個乘法運算。低通、高通、帶通濾波器的設計全部建立在頻率域分析之上。</p>
+      </div>
+      <div class="p-4 rounded-lg bg-emerald-50 dark:bg-emerald-900/20">
+        <h3 class="font-bold text-emerald-700 dark:text-emerald-400 mb-2">通訊系統 (Communication Systems)</h3>
+        <p class="text-sm">調變（Modulation）、解調（Demodulation）、頻寬分配（Bandwidth Allocation）都需要頻率域的觀點。</p>
+      </div>
+      <div class="p-4 rounded-lg bg-blue-50 dark:bg-blue-900/20">
+        <h3 class="font-bold text-blue-700 dark:text-blue-400 mb-2">電力系統 (Power Systems)</h3>
+        <p class="text-sm">分析電源的諧波失真（THD）、電力品質監測，都依賴傅立葉分析來識別有害的諧波成分。</p>
+      </div>
+      <div class="p-4 rounded-lg bg-purple-50 dark:bg-purple-900/20">
+        <h3 class="font-bold text-purple-700 dark:text-purple-400 mb-2">音訊與振動 (Audio & Vibration)</h3>
+        <p class="text-sm">語音辨識、音訊壓縮（MP3）、機械故障診斷都需要分析訊號的頻率組成。</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 互動圖表：時域 vs 頻域 -->
+  <div class="info-card mb-6">
+    <h2 class="text-xl font-bold mb-3">互動圖表：時間域 ↔ 頻率域</h2>
+    <p class="text-sm text-gray-500 dark:text-gray-400 mb-3">調整三個正弦波的頻率與振幅，觀察合成訊號在時間域和頻率域的變化。</p>
+    <div class="grid md:grid-cols-3 gap-4 mb-4">
+      <div>
+        <label class="text-xs font-medium">成分 1：頻率 <span id="ch1f1v">5</span> Hz，振幅 <span id="ch1a1v">1.0</span></label>
+        <input type="range" id="ch1f1" min="1" max="50" value="5" class="w-full" oninput="updateCh1Demo()">
+        <input type="range" id="ch1a1" min="0" max="2" value="1" step="0.1" class="w-full" oninput="updateCh1Demo()">
+      </div>
+      <div>
+        <label class="text-xs font-medium">成分 2：頻率 <span id="ch1f2v">12</span> Hz，振幅 <span id="ch1a2v">0.5</span></label>
+        <input type="range" id="ch1f2" min="1" max="50" value="12" class="w-full" oninput="updateCh1Demo()">
+        <input type="range" id="ch1a2" min="0" max="2" value="0.5" step="0.1" class="w-full" oninput="updateCh1Demo()">
+      </div>
+      <div>
+        <label class="text-xs font-medium">成分 3：頻率 <span id="ch1f3v">30</span> Hz，振幅 <span id="ch1a3v">0.3</span></label>
+        <input type="range" id="ch1f3" min="1" max="50" value="30" class="w-full" oninput="updateCh1Demo()">
+        <input type="range" id="ch1a3" min="0" max="2" value="0.3" step="0.1" class="w-full" oninput="updateCh1Demo()">
+      </div>
+    </div>
+    <div id="ch1TimePlot" class="plot-container mb-4"></div>
+    <div id="ch1FreqPlot" class="plot-container"></div>
+  </div>
+
+  <!-- Python/MATLAB 程式碼 -->
+  <div class="info-card mb-6">
+    <h2 class="text-lg font-bold mb-3">Python / MATLAB 對應程式碼</h2>
+    <div class="flex gap-2 mb-3">
+      <button onclick="showCodeTab(this,'ch1-py','ch1-ml')" class="tab-btn active px-3 py-1 rounded text-sm border">Python</button>
+      <button onclick="showCodeTab(this,'ch1-ml','ch1-py')" class="tab-btn px-3 py-1 rounded text-sm border">MATLAB</button>
+    </div>
+    <div id="ch1-py" class="code-block">
+<pre>import numpy as np
+import matplotlib.pyplot as plt
+
+# 產生合成訊號
+fs = 1000          # 取樣頻率 (Hz)
+t = np.arange(0, 1, 1/fs)
+f1, f2, f3 = 5, 12, 30
+x = 1.0*np.sin(2*np.pi*f1*t) + 0.5*np.sin(2*np.pi*f2*t) + 0.3*np.sin(2*np.pi*f3*t)
+
+# 計算 FFT
+X = np.fft.fft(x)
+freqs = np.fft.fftfreq(len(x), 1/fs)
+
+# 繪製時間域
+plt.subplot(2,1,1)
+plt.plot(t, x)
+plt.xlabel('Time (s)'); plt.ylabel('Amplitude')
+plt.title('Time Domain')
+
+# 繪製頻率域（取單邊頻譜）
+plt.subplot(2,1,2)
+plt.plot(freqs[:len(freqs)//2], np.abs(X[:len(X)//2])*2/len(x))
+plt.xlabel('Frequency (Hz)'); plt.ylabel('Magnitude')
+plt.title('Frequency Domain')
+plt.tight_layout(); plt.show()</pre>
+    </div>
+    <div id="ch1-ml" class="code-block hidden">
+<pre>% 產生合成訊號
+fs = 1000;          % 取樣頻率 (Hz)
+t = 0:1/fs:1-1/fs;
+f1 = 5; f2 = 12; f3 = 30;
+x = 1.0*sin(2*pi*f1*t) + 0.5*sin(2*pi*f2*t) + 0.3*sin(2*pi*f3*t);
+
+% 計算 FFT
+X = fft(x);
+N = length(x);
+freqs = (0:N-1)*(fs/N);
+
+% 繪製
+subplot(2,1,1); plot(t, x);
+xlabel('Time (s)'); ylabel('Amplitude'); title('Time Domain');
+subplot(2,1,2); plot(freqs(1:N/2), abs(X(1:N/2))*2/N);
+xlabel('Frequency (Hz)'); ylabel('Magnitude'); title('Frequency Domain');</pre>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== 第 2 章：傅立葉級數 ==================== -->
+<section id="sec-ch2" class="section-content hidden">
+  <h1 class="text-3xl font-bold mb-2">2. 傅立葉級數 (Fourier Series)</h1>
+  <p class="text-gray-500 dark:text-gray-400 mb-6">週期訊號的頻率分解</p>
+
+  <div class="info-card mb-6">
+    <h2 class="text-xl font-bold mb-3">2.1 三角形式 (Trigonometric Form)</h2>
+    <p class="mb-3">對於週期為 $T$、基頻為 $\omega_0 = 2\pi/T$ 的週期訊號 $x(t)$：</p>
+    <div class="formula-box">
+      $$x(t) = \frac{a_0}{2} + \sum_{n=1}^{\infty} \left[ a_n \cos(n\omega_0 t) + b_n \sin(n\omega_0 t) \right]$$
+      <p class="text-sm mt-2 text-center">其中：$a_n = \frac{2}{T}\int_0^T x(t)\cos(n\omega_0 t)\,dt$，$b_n = \frac{2}{T}\int_0^T x(t)\sin(n\omega_0 t)\,dt$</p>
+    </div>
+  </div>
+
+  <div class="info-card mb-6">
+    <h2 class="text-xl font-bold mb-3">2.2 複數指數形式 (Complex Exponential Form)</h2>
+    <div class="formula-box">
+      $$x(t) = \sum_{n=-\infty}^{\infty} c_n \, e^{jn\omega_0 t}$$
+      <p class="text-sm mt-2 text-center">其中：$c_n = \frac{1}{T}\int_0^T x(t)\,e^{-jn\omega_0 t}\,dt$</p>
+    </div>
+    <p class="mt-3">複數形式更加簡潔，在工程分析中使用更為廣泛。兩種形式之間的關係：$c_n = \frac{1}{2}(a_n - jb_n)$。</p>
+  </div>
+
+  <div class="info-card mb-6">
+    <h2 class="text-xl font-bold mb-3">2.3 經典波形範例</h2>
+    <p class="mb-3">以下是三種常見週期波形的傅立葉級數：</p>
+
+    <h3 class="font-bold mt-4 mb-2">方波 (Square Wave)</h3>
+    <div class="formula-box">
+      $$x(t) = \frac{4}{\pi}\sum_{n=1,3,5,\ldots}^{\infty}\frac{1}{n}\sin(n\omega_0 t)$$
+    </div>
+    <p class="text-sm text-gray-500 mt-1">只包含奇數次諧波，振幅以 $1/n$ 衰減。</p>
+
+    <h3 class="font-bold mt-4 mb-2">三角波 (Triangle Wave)</h3>
+    <div class="formula-box">
+      $$x(t) = \frac{8}{\pi^2}\sum_{n=1,3,5,\ldots}^{\infty}\frac{(-1)^{(n-1)/2}}{n^2}\sin(n\omega_0 t)$$
+    </div>
+    <p class="text-sm text-gray-500 mt-1">同樣只有奇數次諧波，但振幅以 $1/n^2$ 更快衰減（更平滑）。</p>
+
+    <h3 class="font-bold mt-4 mb-2">鋸齒波 (Sawtooth Wave)</h3>
+    <div class="formula-box">
+      $$x(t) = \frac{2}{\pi}\sum_{n=1}^{\infty}\frac{(-1)^{n+1}}{n}\sin(n\omega_0 t)$$
+    </div>
+    <p class="text-sm text-gray-500 mt-1">包含所有次諧波（奇數與偶數），振幅以 $1/n$ 衰減。</p>
+  </div>
+
+  <!-- 互動：諧波合成 -->
+  <div class="info-card mb-6">
+    <h2 class="text-xl font-bold mb-3">互動實驗：諧波合成</h2>
+    <p class="text-sm text-gray-500 mb-3">選擇波形類型並調整諧波數量，觀察傅立葉級數的逐步逼近過程。注意在不連續點附近的 <strong>Gibbs 現象 (Gibbs Phenomenon)</strong>。</p>
+    <div class="flex flex-wrap items-center gap-4 mb-4">
+      <div>
+        <label class="text-sm font-medium mr-2">波形：</label>
+        <select id="ch2wave" class="border rounded px-2 py-1 text-sm dark:bg-gray-700 dark:border-gray-600" onchange="updateCh2Demo()">
+          <option value="square">方波 (Square)</option>
+          <option value="triangle">三角波 (Triangle)</option>
+          <option value="sawtooth">鋸齒波 (Sawtooth)</option>
+        </select>
+      </div>
+      <div>
+        <label class="text-sm font-medium">諧波數 N = <span id="ch2Nval">5</span></label>
+        <input type="range" id="ch2N" min="1" max="80" value="5" class="w-48" oninput="updateCh2Demo()">
+      </div>
+    </div>
+    <div id="ch2SynthPlot" class="plot-container mb-4"></div>
+    <div id="ch2SpecPlot" class="plot-container"></div>
+  </div>
+
+  <div class="info-card mb-6">
+    <h2 class="text-xl font-bold mb-3">2.4 Gibbs 現象 (Gibbs Phenomenon)</h2>
+    <p class="mb-3">當我們用有限項傅立葉級數逼近不連續的訊號時，在不連續點附近會出現約 <strong>9%</strong> 的過衝（overshoot）。即使諧波數量趨近無限大，這個過衝的<em>百分比</em>不會消失，只是寬度趨近於零。</p>
+    <div class="tip-box">
+      <p><strong>工程啟示：</strong>Gibbs 現象解釋了為什麼數位訊號（方波）在實際電路中會產生 ringing — 因為任何實際系統都有有限頻寬，無法傳遞無限多的諧波。</p>
+    </div>
+  </div>
+
+  <!-- Python/MATLAB -->
+  <div class="info-card mb-6">
+    <h2 class="text-lg font-bold mb-3">Python / MATLAB 對應程式碼</h2>
+    <div class="flex gap-2 mb-3">
+      <button onclick="showCodeTab(this,'ch2-py','ch2-ml')" class="tab-btn active px-3 py-1 rounded text-sm border">Python</button>
+      <button onclick="showCodeTab(this,'ch2-ml','ch2-py')" class="tab-btn px-3 py-1 rounded text-sm border">MATLAB</button>
+    </div>
+    <div id="ch2-py" class="code-block">
+<pre>import numpy as np
+import matplotlib.pyplot as plt
+
+t = np.linspace(0, 2, 1000)
+N_harmonics = 20
+x = np.zeros_like(t)
+
+# 方波的傅立葉級數合成
+for n in range(1, N_harmonics+1, 2):  # 只有奇數次諧波
+    x += (4/(np.pi*n)) * np.sin(2*np.pi*n*t)
+
+plt.plot(t, x, label=f'N={N_harmonics}')
+plt.axhline(y=1, color='r', linestyle='--', alpha=0.5)
+plt.title(f'方波傅立葉級數 (N={N_harmonics} 項)')
+plt.xlabel('t'); plt.ylabel('x(t)')
+plt.legend(); plt.grid(True); plt.show()</pre>
+    </div>
+    <div id="ch2-ml" class="code-block hidden">
+<pre>t = linspace(0, 2, 1000);
+N_harmonics = 20;
+x = zeros(size(t));
+
+% 方波的傅立葉級數合成
+for n = 1:2:N_harmonics   % 只有奇數次諧波
+    x = x + (4/(pi*n)) * sin(2*pi*n*t);
+end
+
+plot(t, x); hold on;
+yline(1, 'r--');
+title(sprintf('方波傅立葉級數 (N=%d 項)', N_harmonics));
+xlabel('t'); ylabel('x(t)'); grid on;</pre>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== 第 3 章：CTFT ==================== -->
+<section id="sec-ch3" class="section-content hidden">
+  <h1 class="text-3xl font-bold mb-2">3. 連續時間傅立葉轉換 (CTFT)</h1>
+  <p class="text-gray-500 dark:text-gray-400 mb-6">Continuous-Time Fourier Transform — 非週期訊號的頻率分析</p>
+
+  <div class="info-card mb-6">
+    <h2 class="text-xl font-bold mb-3">3.1 定義</h2>
+    <p class="mb-3">將傅立葉級數推廣到非週期訊號，令週期 $T \to \infty$：</p>
+    <div class="formula-box">
+      <p class="font-bold text-center mb-2">正轉換（Analysis）：</p>
+      $$X(j\omega) = \int_{-\infty}^{\infty} x(t)\, e^{-j\omega t}\, dt$$
+      <p class="font-bold text-center mt-4 mb-2">反轉換（Synthesis）：</p>
+      $$x(t) = \frac{1}{2\pi}\int_{-\infty}^{\infty} X(j\omega)\, e^{j\omega t}\, d\omega$$
+    </div>
+  </div>
+
+  <div class="info-card mb-6">
+    <h2 class="text-xl font-bold mb-3">3.2 重要性質</h2>
+    <table class="data-table">
+      <thead>
+        <tr><th>性質</th><th>時間域</th><th>頻率域</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>線性 (Linearity)</td><td>$ax_1(t)+bx_2(t)$</td><td>$aX_1(j\omega)+bX_2(j\omega)$</td></tr>
+        <tr><td>時移 (Time Shift)</td><td>$x(t-t_0)$</td><td>$e^{-j\omega t_0}X(j\omega)$</td></tr>
+        <tr><td>頻移 (Frequency Shift)</td><td>$e^{j\omega_0 t}x(t)$</td><td>$X(j(\omega-\omega_0))$</td></tr>
+        <tr><td>尺度 (Scaling)</td><td>$x(at)$</td><td>$\frac{1}{|a|}X\!\left(\frac{j\omega}{a}\right)$</td></tr>
+        <tr><td>時域卷積 (Convolution)</td><td>$x_1(t)*x_2(t)$</td><td>$X_1(j\omega)\cdot X_2(j\omega)$</td></tr>
+        <tr><td>Parseval 定理</td><td colspan="2">$\int_{-\infty}^{\infty}|x(t)|^2\,dt = \frac{1}{2\pi}\int_{-\infty}^{\infty}|X(j\omega)|^2\,d\omega$</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="info-card mb-6">
+    <h2 class="text-xl font-bold mb-3">3.3 常見轉換對</h2>
+    <table class="data-table">
+      <thead><tr><th>訊號 $x(t)$</th><th>轉換 $X(j\omega)$</th><th>說明</th></tr></thead>
+      <tbody>
+        <tr><td>$\text{rect}(t/\tau)$</td><td>$\tau\,\text{sinc}(\omega\tau/2\pi)$</td><td>矩形脈衝 ↔ sinc</td></tr>
+        <tr><td>$\text{sinc}(Wt/\pi)$</td><td>$\frac{\pi}{W}\text{rect}(\omega/2W)$</td><td>sinc ↔ 矩形（對偶性）</td></tr>
+        <tr><td>$\delta(t)$</td><td>$1$</td><td>脈衝函數 (Dirac Delta)</td></tr>
+        <tr><td>$1$</td><td>$2\pi\delta(\omega)$</td><td>常數 ↔ 頻域脈衝</td></tr>
+        <tr><td>$e^{-at}u(t),\; a>0$</td><td>$\frac{1}{a+j\omega}$</td><td>單邊指數衰減</td></tr>
+        <tr><td>$e^{-\alpha t^2}$</td><td>$\sqrt{\frac{\pi}{\alpha}}\,e^{-\omega^2/(4\alpha)}$</td><td>Gaussian ↔ Gaussian</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- 互動：rect/sinc 對 -->
+  <div class="info-card mb-6">
+    <h2 class="text-xl font-bold mb-3">互動圖表：矩形脈衝與 sinc 函數</h2>
+    <p class="text-sm text-gray-500 mb-3">調整矩形脈衝寬度 $\tau$，觀察時域變寬時頻域變窄（不確定性原理 Uncertainty Principle 的體現）。</p>
+    <div class="mb-4">
+      <label class="text-sm font-medium">脈衝寬度 $\tau$ = <span id="ch3tauv">1.0</span></label>
+      <input type="range" id="ch3tau" min="0.2" max="3" value="1" step="0.1" class="w-64" oninput="updateCh3Demo()">
+    </div>
+    <div id="ch3TimePlot" class="plot-container mb-4"></div>
+    <div id="ch3FreqPlot" class="plot-container"></div>
+  </div>
+
+  <!-- Python/MATLAB -->
+  <div class="info-card mb-6">
+    <h2 class="text-lg font-bold mb-3">Python / MATLAB 對應程式碼</h2>
+    <div class="flex gap-2 mb-3">
+      <button onclick="showCodeTab(this,'ch3-py','ch3-ml')" class="tab-btn active px-3 py-1 rounded text-sm border">Python</button>
+      <button onclick="showCodeTab(this,'ch3-ml','ch3-py')" class="tab-btn px-3 py-1 rounded text-sm border">MATLAB</button>
+    </div>
+    <div id="ch3-py" class="code-block">
+<pre>import numpy as np
+import matplotlib.pyplot as plt
+
+# 矩形脈衝的 FFT 近似
+tau = 1.0
+fs = 1000; N = 4096
+t = np.arange(-N//2, N//2) / fs
+x = np.where(np.abs(t) <= tau/2, 1.0, 0.0)
+
+X = np.fft.fftshift(np.fft.fft(np.fft.ifftshift(x))) / fs
+freqs = np.fft.fftshift(np.fft.fftfreq(N, 1/fs))
+
+plt.subplot(2,1,1); plt.plot(t, x); plt.title('rect(t/τ)')
+plt.subplot(2,1,2); plt.plot(freqs, np.abs(X))
+plt.title('|X(jω)| = τ·sinc'); plt.xlim([-20,20])
+plt.tight_layout(); plt.show()</pre>
+    </div>
+    <div id="ch3-ml" class="code-block hidden">
+<pre>% 矩形脈衝的 FFT 近似
+tau = 1.0;
+fs = 1000; N = 4096;
+t = (-N/2:N/2-1) / fs;
+x = double(abs(t) <= tau/2);
+
+X = fftshift(fft(ifftshift(x))) / fs;
+freqs = (-N/2:N/2-1) * (fs/N);
+
+subplot(2,1,1); plot(t, x); title('rect(t/\tau)');
+subplot(2,1,2); plot(freqs, abs(X));
+title('|X(j\omega)|'); xlim([-20 20]);</pre>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== 第 4 章：DFT 與 FFT ==================== -->
+<section id="sec-ch4" class="section-content hidden">
+  <h1 class="text-3xl font-bold mb-2">4. 離散傅立葉轉換 (DFT) 與快速傅立葉轉換 (FFT)</h1>
+  <p class="text-gray-500 dark:text-gray-400 mb-6">Discrete Fourier Transform & Fast Fourier Transform</p>
+
+  <div class="info-card mb-6">
+    <h2 class="text-xl font-bold mb-3">4.1 DFT 定義</h2>
+    <p class="mb-3">對於長度為 $N$ 的離散序列 $x[n]$，其 DFT 定義為：</p>
+    <div class="formula-box">
+      <p class="font-bold text-center mb-2">正轉換：</p>
+      $$X[k] = \sum_{n=0}^{N-1} x[n]\, e^{-j2\pi kn/N}, \quad k = 0, 1, \ldots, N-1$$
+      <p class="font-bold text-center mt-4 mb-2">反轉換（IDFT）：</p>
+      $$x[n] = \frac{1}{N}\sum_{k=0}^{N-1} X[k]\, e^{j2\pi kn/N}, \quad n = 0, 1, \ldots, N-1$$
+    </div>
+    <p class="mt-3">直接計算 DFT 的時間複雜度為 $O(N^2)$，因為需要 $N$ 個輸出，每個輸出需要 $N$ 次複數乘加。</p>
+  </div>
+
+  <div class="info-card mb-6">
+    <h2 class="text-xl font-bold mb-3">4.2 FFT — 高效率的 DFT 演算法</h2>
+    <p class="mb-3"><strong>快速傅立葉轉換 (Fast Fourier Transform, FFT)</strong> 並不是一種不同的轉換，而是計算 DFT 的高效演算法。最著名的是 Cooley-Tukey 演算法（1965 年）。</p>
+    <div class="formula-box">
+      <p class="text-center font-bold">Radix-2 分解（$N$ 為 2 的冪次）</p>
+      <p class="mt-2">$$X[k] = \underbrace{\sum_{r=0}^{N/2-1} x[2r]\, W_N^{2rk}}_{\text{偶數項 DFT}} + W_N^k \underbrace{\sum_{r=0}^{N/2-1} x[2r+1]\, W_N^{2rk}}_{\text{奇數項 DFT}}$$</p>
+      <p class="text-sm text-center mt-2">其中 $W_N = e^{-j2\pi/N}$ 為旋轉因子 (Twiddle Factor)</p>
+    </div>
+    <p class="mt-3">這個遞迴分解將時間複雜度從 $O(N^2)$ 降低到 $O(N\log_2 N)$。對於 $N = 1,\!048,\!576 = 2^{20}$，加速比為 $N/\log_2 N = 52,\!428$ 倍！</p>
+  </div>
+
+  <div class="info-card mb-6">
+    <h2 class="text-xl font-bold mb-3">4.3 零填充 (Zero-Padding)</h2>
+    <p class="mb-3">在原始訊號後面補零不會增加新的頻率資訊，但可以：</p>
+    <ul class="list-disc pl-6 space-y-1 mb-3">
+      <li>增加頻率軸的取樣密度（更細的 frequency bin）→ 頻譜看起來更「平滑」</li>
+      <li>讓 FFT 長度成為 2 的冪次 → 可使用 Radix-2 FFT</li>
+      <li>等效於對 DTFT 做更密集的取樣</li>
+    </ul>
+    <div class="warn-box">
+      <p><strong>注意：</strong>零填充提高的是「頻率域的內插解析度」，而非真正的「頻率解析度」。真正的頻率解析度取決於訊號的實際觀測長度（視窗長度）。</p>
+    </div>
+  </div>
+
+  <!-- 互動：FFT 與零填充 -->
+  <div class="info-card mb-6">
+    <h2 class="text-xl font-bold mb-3">互動實驗：FFT 與零填充效果</h2>
+    <p class="text-sm text-gray-500 mb-3">比較不同零填充倍數下的 FFT 頻譜。訊號：兩個正弦波（50 Hz + 55 Hz），取樣率 500 Hz，觀測長度 0.1 秒（50 個點）。</p>
+    <div class="flex flex-wrap items-center gap-4 mb-4">
+      <div>
+        <label class="text-sm font-medium">零填充倍數：</label>
+        <select id="ch4zp" class="border rounded px-2 py-1 text-sm dark:bg-gray-700 dark:border-gray-600" onchange="updateCh4Demo()">
+          <option value="1">1x（無填充）</option>
+          <option value="2">2x</option>
+          <option value="4" selected>4x</option>
+          <option value="8">8x</option>
+          <option value="16">16x</option>
+        </select>
+      </div>
+    </div>
+    <div id="ch4TimePlot" class="plot-container mb-4"></div>
+    <div id="ch4FreqPlot" class="plot-container"></div>
+  </div>
+
+  <!-- JavaScript FFT 程式碼 -->
+  <div class="info-card mb-6">
+    <h2 class="text-xl font-bold mb-3">4.4 Radix-2 FFT JavaScript 實作</h2>
+    <p class="text-sm text-gray-500 mb-3">以下是本網站使用的 FFT 函式完整原始碼（已內建於頁面中）：</p>
+    <div class="code-block">
+<pre>/**
+ * Radix-2 Cooley-Tukey FFT
+ * 輸入：real[] 實部陣列，imag[] 虛部陣列（長度必須為 2 的冪次）
+ * 輸出：{ real: [], imag: [] } 頻域複數結果
+ */
+function fft(real, imag) {
+  const N = real.length;
+  if (N === 1) return { real: [...real], imag: [...imag] };
+
+  // 位元反轉排序 (Bit-Reversal Permutation)
+  const re = new Float64Array(N);
+  const im = new Float64Array(N);
+  const bits = Math.log2(N);
+  for (let i = 0; i &lt; N; i++) {
+    let rev = 0;
+    for (let b = 0; b &lt; bits; b++) {
+      rev = (rev &lt;&lt; 1) | ((i >> b) &amp; 1);
+    }
+    re[rev] = real[i];
+    im[rev] = imag[i];
+  }
+
+  // 蝴蝶運算 (Butterfly Operations)
+  for (let size = 2; size &lt;= N; size *= 2) {
+    const half = size / 2;
+    const angle = -2 * Math.PI / size;
+    for (let i = 0; i &lt; N; i += size) {
+      for (let j = 0; j &lt; half; j++) {
+        const wr = Math.cos(angle * j);  // 旋轉因子實部
+        const wi = Math.sin(angle * j);  // 旋轉因子虛部
+        const tr = wr * re[i+j+half] - wi * im[i+j+half];
+        const ti = wr * im[i+j+half] + wi * re[i+j+half];
+        re[i+j+half] = re[i+j] - tr;
+        im[i+j+half] = im[i+j] - ti;
+        re[i+j] += tr;
+        im[i+j] += ti;
+      }
+    }
+  }
+  return { real: Array.from(re), imag: Array.from(im) };
+}</pre>
+    </div>
+  </div>
+
+  <!-- Python/MATLAB -->
+  <div class="info-card mb-6">
+    <h2 class="text-lg font-bold mb-3">Python / MATLAB 對應程式碼</h2>
+    <div class="flex gap-2 mb-3">
+      <button onclick="showCodeTab(this,'ch4-py','ch4-ml')" class="tab-btn active px-3 py-1 rounded text-sm border">Python</button>
+      <button onclick="showCodeTab(this,'ch4-ml','ch4-py')" class="tab-btn px-3 py-1 rounded text-sm border">MATLAB</button>
+    </div>
+    <div id="ch4-py" class="code-block">
+<pre>import numpy as np
+
+# 訊號：兩個接近頻率的正弦波
+fs = 500; T = 0.1
+t = np.arange(0, T, 1/fs)
+x = np.sin(2*np.pi*50*t) + np.sin(2*np.pi*55*t)
+
+# 零填充到 4 倍長度
+N_zp = len(x) * 4
+X = np.fft.fft(x, n=N_zp)
+freqs = np.fft.fftfreq(N_zp, 1/fs)
+
+# 顯示單邊頻譜
+import matplotlib.pyplot as plt
+plt.plot(freqs[:N_zp//2], 20*np.log10(np.abs(X[:N_zp//2])/N_zp + 1e-12))
+plt.xlabel('Frequency (Hz)'); plt.ylabel('Magnitude (dB)')
+plt.title('FFT with 4x Zero-Padding'); plt.grid(); plt.show()</pre>
+    </div>
+    <div id="ch4-ml" class="code-block hidden">
+<pre>fs = 500; T = 0.1;
+t = 0:1/fs:T-1/fs;
+x = sin(2*pi*50*t) + sin(2*pi*55*t);
+
+% 零填充到 4 倍長度
+N_zp = length(x) * 4;
+X = fft(x, N_zp);
+freqs = (0:N_zp-1) * (fs/N_zp);
+
+plot(freqs(1:N_zp/2), 20*log10(abs(X(1:N_zp/2))/N_zp + 1e-12));
+xlabel('Frequency (Hz)'); ylabel('Magnitude (dB)');
+title('FFT with 4x Zero-Padding'); grid on;</pre>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== 第 5 章：視窗函數與頻譜洩漏 ==================== -->
+<section id="sec-ch5" class="section-content hidden">
+  <h1 class="text-3xl font-bold mb-2">5. 視窗函數 (Window Functions) 與頻譜洩漏 (Spectral Leakage)</h1>
+  <p class="text-gray-500 dark:text-gray-400 mb-6">這是頻譜分析中最關鍵的工程技巧之一</p>
+
+  <div class="info-card mb-6">
+    <h2 class="text-xl font-bold mb-3">5.1 為什麼需要加窗？</h2>
+    <p class="mb-3">在實際應用中，我們只能觀測有限長度的訊號。將無限長訊號截斷為有限長度，等同於將訊號乘以一個<strong>矩形窗 (Rectangular Window)</strong>。</p>
+    <div class="formula-box">
+      $$x_w[n] = x[n] \cdot w[n]$$
+      <p class="text-sm text-center mt-2">時域相乘 ↔ 頻域卷積（Convolution）</p>
+      $$X_w(e^{j\omega}) = X(e^{j\omega}) * W(e^{j\omega})$$
+    </div>
+    <p class="mt-3">矩形窗的頻譜是 <strong>sinc 函數</strong>，具有很高的旁瓣（Sidelobes），這會導致<strong>頻譜洩漏 (Spectral Leakage)</strong> — 本來集中在一個頻率上的能量「洩漏」到鄰近頻率。</p>
+    <div class="tip-box">
+      <p><strong>核心概念：</strong>使用其他形狀的視窗（如 Hann、Hamming、Blackman）可以減低旁瓣，從而減少頻譜洩漏，代價是主瓣（Main Lobe）變寬 → 頻率解析度降低。這就是<strong>「頻率解析度 vs 動態範圍」</strong>的根本取捨。</p>
+    </div>
+  </div>
+
+  <div class="info-card mb-6">
+    <h2 class="text-xl font-bold mb-3">5.2 常見視窗函數公式</h2>
+    <p class="mb-3">以下列出五種常見視窗的數學定義（$n = 0, 1, \ldots, N-1$）：</p>
+
+    <h3 class="font-bold mt-4 mb-1">Rectangular（矩形窗）</h3>
+    <div class="formula-box">$$w[n] = 1$$</div>
+
+    <h3 class="font-bold mt-4 mb-1">Hann（漢寧窗）/ Hanning</h3>
+    <div class="formula-box">$$w[n] = 0.5\left(1 - \cos\frac{2\pi n}{N-1}\right)$$</div>
+
+    <h3 class="font-bold mt-4 mb-1">Hamming（漢明窗）</h3>
+    <div class="formula-box">$$w[n] = 0.54 - 0.46\cos\frac{2\pi n}{N-1}$$</div>
+
+    <h3 class="font-bold mt-4 mb-1">Blackman（布萊克曼窗）</h3>
+    <div class="formula-box">$$w[n] = 0.42 - 0.5\cos\frac{2\pi n}{N-1} + 0.08\cos\frac{4\pi n}{N-1}$$</div>
+
+    <h3 class="font-bold mt-4 mb-1">Kaiser（凱薩窗）</h3>
+    <div class="formula-box">$$w[n] = \frac{I_0\!\left(\beta\sqrt{1-\left(\frac{2n}{N-1}-1\right)^2}\right)}{I_0(\beta)}$$
+    <p class="text-sm text-center mt-1">$I_0$ 為零階修正貝塞爾函數；$\beta$ 參數控制旁瓣衰減</p></div>
+  </div>
+
+  <div class="info-card mb-6">
+    <h2 class="text-xl font-bold mb-3">5.3 視窗函數比較表</h2>
+    <div class="overflow-x-auto">
+      <table class="data-table">
+        <thead>
+          <tr><th>視窗</th><th>主瓣寬度<br>(bins)</th><th>旁瓣峰值<br>(dB)</th><th>旁瓣衰減率<br>(dB/oct)</th><th>等效雜訊頻寬<br>(bins)</th><th>適用場景</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Rectangular</td><td>2</td><td>-13</td><td>-6</td><td>1.00</td><td>暫態分析、頻率已知</td></tr>
+          <tr><td>Hann</td><td>4</td><td>-31</td><td>-18</td><td>1.50</td><td>通用頻譜分析</td></tr>
+          <tr><td>Hamming</td><td>4</td><td>-42</td><td>-6</td><td>1.36</td><td>語音處理、通訊</td></tr>
+          <tr><td>Blackman</td><td>6</td><td>-58</td><td>-18</td><td>1.73</td><td>高動態範圍需求</td></tr>
+          <tr><td>Kaiser (β=6)</td><td>~5</td><td>-46</td><td>可調</td><td>~1.5</td><td>可彈性調整</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- 視窗時域/頻域波形 -->
+  <div class="info-card mb-6">
+    <h2 class="text-xl font-bold mb-3">5.4 視窗的時域與頻域波形</h2>
+    <p class="text-sm text-gray-500 mb-3">選擇視窗觀察其時域形狀和頻域響應（dB 尺度）。Kaiser 窗可調整 β 參數。</p>
+    <div class="flex flex-wrap items-center gap-4 mb-4">
+      <div>
+        <label class="text-sm font-medium mr-2">視窗：</label>
+        <select id="ch5win" class="border rounded px-2 py-1 text-sm dark:bg-gray-700 dark:border-gray-600" onchange="updateCh5WinPlot()">
+          <option value="rectangular">Rectangular</option>
+          <option value="hann" selected>Hann</option>
+          <option value="hamming">Hamming</option>
+          <option value="blackman">Blackman</option>
+          <option value="kaiser">Kaiser</option>
+        </select>
+      </div>
+      <div id="ch5betaDiv">
+        <label class="text-sm font-medium">Kaiser β = <span id="ch5betav">6.0</span></label>
+        <input type="range" id="ch5beta" min="0" max="20" value="6" step="0.5" class="w-40" oninput="updateCh5WinPlot()">
+      </div>
+    </div>
+    <div id="ch5WinTimePlot" class="plot-container mb-4"></div>
+    <div id="ch5WinFreqPlot" class="plot-container"></div>
+  </div>
+
+  <div class="info-card mb-6">
+    <h2 class="text-xl font-bold mb-3">5.5 如何選擇視窗？工程指南</h2>
+    <div class="grid md:grid-cols-2 gap-4">
+      <div class="p-4 rounded-lg bg-cyan-50 dark:bg-cyan-900/20">
+        <h3 class="font-bold text-cyan-700 dark:text-cyan-400 mb-2">需要高頻率解析度</h3>
+        <p class="text-sm">→ 使用窄主瓣視窗（Rectangular 或 Kaiser β 小）</p>
+        <p class="text-sm mt-1">場景：分辨兩個相鄰頻率、精確量測頻率值</p>
+      </div>
+      <div class="p-4 rounded-lg bg-emerald-50 dark:bg-emerald-900/20">
+        <h3 class="font-bold text-emerald-700 dark:text-emerald-400 mb-2">需要高動態範圍</h3>
+        <p class="text-sm">→ 使用低旁瓣視窗（Blackman 或 Kaiser β 大）</p>
+        <p class="text-sm mt-1">場景：偵測強訊號旁邊的微弱訊號、諧波失真分析</p>
+      </div>
+      <div class="p-4 rounded-lg bg-blue-50 dark:bg-blue-900/20">
+        <h3 class="font-bold text-blue-700 dark:text-blue-400 mb-2">通用分析</h3>
+        <p class="text-sm">→ Hann 窗是最安全的預設選擇</p>
+        <p class="text-sm mt-1">場景：一般頻譜分析、不確定需求時的首選</p>
+      </div>
+      <div class="p-4 rounded-lg bg-purple-50 dark:bg-purple-900/20">
+        <h3 class="font-bold text-purple-700 dark:text-purple-400 mb-2">需要彈性調整</h3>
+        <p class="text-sm">→ Kaiser 窗（調整 β 可在解析度與動態範圍間取捨）</p>
+        <p class="text-sm mt-1">場景：需要根據具體需求微調的專業分析</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 互動實驗：頻譜洩漏對比 -->
+  <div class="info-card mb-6">
+    <h2 class="text-xl font-bold mb-3">5.6 互動實驗：頻譜洩漏與分辨能力</h2>
+    <p class="text-sm text-gray-500 mb-3">兩個接近頻率的正弦波 + 可選雜訊。切換不同視窗，即時比較 FFT 頻譜的洩漏與頻率分辨能力。</p>
+    <div class="grid md:grid-cols-2 gap-4 mb-4">
+      <div>
+        <label class="text-sm font-medium">頻率 1 = <span id="ch5f1v">100</span> Hz</label>
+        <input type="range" id="ch5f1" min="50" max="200" value="100" class="w-full" oninput="updateCh5LeakDemo()">
+      </div>
+      <div>
+        <label class="text-sm font-medium">頻率 2 = <span id="ch5f2v">108</span> Hz</label>
+        <input type="range" id="ch5f2" min="50" max="200" value="108" class="w-full" oninput="updateCh5LeakDemo()">
+      </div>
+      <div>
+        <label class="text-sm font-medium">振幅比（成分2/成分1）= <span id="ch5ampv">0.5</span></label>
+        <input type="range" id="ch5amp" min="0.01" max="1" value="0.5" step="0.01" class="w-full" oninput="updateCh5LeakDemo()">
+      </div>
+      <div>
+        <label class="text-sm font-medium">雜訊強度 = <span id="ch5noisev">0.0</span></label>
+        <input type="range" id="ch5noise" min="0" max="1" value="0" step="0.05" class="w-full" oninput="updateCh5LeakDemo()">
+      </div>
+    </div>
+    <div class="flex flex-wrap gap-2 mb-4">
+      <button onclick="setCh5Win('rectangular')" class="ch5-win-btn px-3 py-1 rounded text-sm border hover:bg-cyan-50 dark:hover:bg-cyan-900/30 transition" data-win="rectangular">Rectangular</button>
+      <button onclick="setCh5Win('hann')" class="ch5-win-btn active px-3 py-1 rounded text-sm border bg-cyan-500 text-white" data-win="hann">Hann</button>
+      <button onclick="setCh5Win('hamming')" class="ch5-win-btn px-3 py-1 rounded text-sm border hover:bg-cyan-50 dark:hover:bg-cyan-900/30 transition" data-win="hamming">Hamming</button>
+      <button onclick="setCh5Win('blackman')" class="ch5-win-btn px-3 py-1 rounded text-sm border hover:bg-cyan-50 dark:hover:bg-cyan-900/30 transition" data-win="blackman">Blackman</button>
+      <button onclick="setCh5Win('kaiser')" class="ch5-win-btn px-3 py-1 rounded text-sm border hover:bg-cyan-50 dark:hover:bg-cyan-900/30 transition" data-win="kaiser">Kaiser</button>
+    </div>
+    <div id="ch5LeakTimePlot" class="plot-container mb-4"></div>
+    <div id="ch5LeakFreqPlot" class="plot-container"></div>
+  </div>
+
+  <!-- Python/MATLAB -->
+  <div class="info-card mb-6">
+    <h2 class="text-lg font-bold mb-3">Python / MATLAB 對應程式碼</h2>
+    <div class="flex gap-2 mb-3">
+      <button onclick="showCodeTab(this,'ch5-py','ch5-ml')" class="tab-btn active px-3 py-1 rounded text-sm border">Python</button>
+      <button onclick="showCodeTab(this,'ch5-ml','ch5-py')" class="tab-btn px-3 py-1 rounded text-sm border">MATLAB</button>
+    </div>
+    <div id="ch5-py" class="code-block">
+<pre>import numpy as np
+from scipy.signal import windows
+import matplotlib.pyplot as plt
+
+fs = 1000; N = 256
+t = np.arange(N) / fs
+f1, f2 = 100, 108
+x = np.sin(2*np.pi*f1*t) + 0.5*np.sin(2*np.pi*f2*t)
+
+# 比較不同視窗
+for name, win in [('Rectangular', np.ones(N)),
+                  ('Hann', windows.hann(N)),
+                  ('Hamming', windows.hamming(N)),
+                  ('Blackman', windows.blackman(N)),
+                  ('Kaiser β=6', windows.kaiser(N, 6))]:
+    xw = x * win
+    X = np.fft.fft(xw, 4*N)
+    freqs = np.fft.fftfreq(4*N, 1/fs)
+    mag_dB = 20*np.log10(np.abs(X[:2*N]) / (N/2) + 1e-12)
+    plt.plot(freqs[:2*N], mag_dB, label=name)
+
+plt.xlim([50, 200]); plt.ylim([-80, 5])
+plt.xlabel('Frequency (Hz)'); plt.ylabel('Magnitude (dB)')
+plt.title('視窗函數比較'); plt.legend(); plt.grid(); plt.show()</pre>
+    </div>
+    <div id="ch5-ml" class="code-block hidden">
+<pre>fs = 1000; N = 256;
+t = (0:N-1)'/fs;
+f1 = 100; f2 = 108;
+x = sin(2*pi*f1*t) + 0.5*sin(2*pi*f2*t);
+
+wins = {ones(N,1), hann(N), hamming(N), blackman(N), kaiser(N,6)};
+names = {'Rect','Hann','Hamming','Blackman','Kaiser'};
+
+for i = 1:5
+    xw = x .* wins{i};
+    X = fft(xw, 4*N);
+    freqs = (0:4*N-1)*(fs/(4*N));
+    mag_dB = 20*log10(abs(X(1:2*N))/(N/2) + 1e-12);
+    plot(freqs(1:2*N), mag_dB); hold on;
+end
+xlim([50 200]); ylim([-80 5]);
+legend(names); xlabel('Hz'); ylabel('dB'); grid on;</pre>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== 第 6 章：STFT 與 Spectrogram ==================== -->
+<section id="sec-ch6" class="section-content hidden">
+  <h1 class="text-3xl font-bold mb-2">6. 短時傅立葉轉換 (STFT) 與 Spectrogram</h1>
+  <p class="text-gray-500 dark:text-gray-400 mb-6">Short-Time Fourier Transform — 觀察訊號頻率隨時間的變化</p>
+
+  <div class="info-card mb-6">
+    <h2 class="text-xl font-bold mb-3">6.1 STFT 定義</h2>
+    <p class="mb-3">標準傅立葉轉換只能告訴我們訊號包含「哪些」頻率，但無法告訴我們「何時」出現。STFT 透過滑動視窗解決此問題：</p>
+    <div class="formula-box">
+      $$\text{STFT}\{x[n]\}(m, \omega) = \sum_{n=-\infty}^{\infty} x[n]\, w[n-m]\, e^{-j\omega n}$$
+      <p class="text-sm text-center mt-2">$m$ 是時間索引（視窗中心位置），$w[n]$ 是視窗函數</p>
+    </div>
+  </div>
+
+  <div class="info-card mb-6">
+    <h2 class="text-xl font-bold mb-3">6.2 重要參數</h2>
+    <ul class="list-disc pl-6 space-y-2">
+      <li><strong>視窗長度 (Window Length)</strong>：越長 → 頻率解析度越高，但時間解析度越低。越短 → 時間解析度高，但頻率解析度低。這是<strong>不確定性原理 (Uncertainty Principle)</strong> 的直接體現。</li>
+      <li><strong>重疊率 (Overlap)</strong>：相鄰視窗之間的重疊比例。常見值為 50%～75%。重疊率越高，時間軸取樣越密，但計算量越大。</li>
+      <li><strong>FFT 長度 (NFFT)</strong>：通常 ≥ 視窗長度（多出的部分零填充），決定頻率軸的取樣密度。</li>
+    </ul>
+    <div class="warn-box mt-3">
+      <p><strong>不確定性原理：</strong>$\Delta t \cdot \Delta f \geq \frac{1}{4\pi}$。無法同時獲得完美的時間解析度和頻率解析度——必須根據應用需求做取捨。</p>
+    </div>
+  </div>
+
+  <div class="info-card mb-6">
+    <h2 class="text-xl font-bold mb-3">6.3 工程應用</h2>
+    <div class="grid md:grid-cols-2 gap-4">
+      <div class="p-4 rounded-lg bg-cyan-50 dark:bg-cyan-900/20">
+        <h3 class="font-bold mb-2">語音與音訊分析</h3>
+        <p class="text-sm">語音辨識系統使用 Mel-Spectrogram 作為特徵輸入；音樂分析用 Spectrogram 觀察旋律與和聲。</p>
+      </div>
+      <div class="p-4 rounded-lg bg-emerald-50 dark:bg-emerald-900/20">
+        <h3 class="font-bold mb-2">振動分析與故障診斷</h3>
+        <p class="text-sm">旋轉機械的軸承故障會在特定頻率產生週期性衝擊，Spectrogram 可追蹤這些特徵隨時間的變化。</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 互動：STFT Spectrogram -->
+  <div class="info-card mb-6">
+    <h2 class="text-xl font-bold mb-3">互動實驗：Spectrogram</h2>
+    <p class="text-sm text-gray-500 mb-3">產生 Chirp 訊號（頻率隨時間線性增加）或雙頻訊號，觀察彩色 Spectrogram。</p>
+    <div class="grid md:grid-cols-2 gap-4 mb-4">
+      <div>
+        <label class="text-sm font-medium mr-2">訊號類型：</label>
+        <select id="ch6sig" class="border rounded px-2 py-1 text-sm dark:bg-gray-700 dark:border-gray-600" onchange="updateCh6Demo()">
+          <option value="chirp">Chirp（線性掃頻）</option>
+          <option value="two_tone">雙頻切換</option>
+          <option value="am">AM 調變</option>
+        </select>
+      </div>
+      <div>
+        <label class="text-sm font-medium">視窗長度 = <span id="ch6winv">256</span></label>
+        <input type="range" id="ch6win" min="32" max="512" value="256" step="32" class="w-full" oninput="updateCh6Demo()">
+      </div>
+      <div>
+        <label class="text-sm font-medium">重疊率 = <span id="ch6olv">75</span>%</label>
+        <input type="range" id="ch6ol" min="0" max="90" value="75" step="5" class="w-full" oninput="updateCh6Demo()">
+      </div>
+    </div>
+    <div id="ch6TimePlot" class="plot-container mb-4"></div>
+    <div id="ch6SpectPlot" class="plot-container"></div>
+  </div>
+
+  <!-- Python/MATLAB -->
+  <div class="info-card mb-6">
+    <h2 class="text-lg font-bold mb-3">Python / MATLAB 對應程式碼</h2>
+    <div class="flex gap-2 mb-3">
+      <button onclick="showCodeTab(this,'ch6-py','ch6-ml')" class="tab-btn active px-3 py-1 rounded text-sm border">Python</button>
+      <button onclick="showCodeTab(this,'ch6-ml','ch6-py')" class="tab-btn px-3 py-1 rounded text-sm border">MATLAB</button>
+    </div>
+    <div id="ch6-py" class="code-block">
+<pre>import numpy as np
+from scipy.signal import spectrogram, chirp
+import matplotlib.pyplot as plt
+
+fs = 4000; T = 2
+t = np.linspace(0, T, int(fs*T), endpoint=False)
+# 線性 Chirp：50 Hz → 500 Hz
+x = chirp(t, f0=50, f1=500, t1=T, method='linear')
+
+f, t_spec, Sxx = spectrogram(x, fs=fs, nperseg=256, noverlap=192)
+plt.pcolormesh(t_spec, f, 10*np.log10(Sxx+1e-12), shading='gouraud', cmap='viridis')
+plt.ylabel('Frequency (Hz)'); plt.xlabel('Time (s)')
+plt.title('Spectrogram of Linear Chirp')
+plt.colorbar(label='Power (dB)'); plt.show()</pre>
+    </div>
+    <div id="ch6-ml" class="code-block hidden">
+<pre>fs = 4000; T = 2;
+t = linspace(0, T, fs*T);
+x = chirp(t, 50, T, 500);
+
+figure;
+spectrogram(x, hann(256), 192, 512, fs, 'yaxis');
+title('Spectrogram of Linear Chirp');
+colorbar;</pre>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== 第 7 章：重要應用與定理 ==================== -->
+<section id="sec-ch7" class="section-content hidden">
+  <h1 class="text-3xl font-bold mb-2">7. 重要應用與定理</h1>
+  <p class="text-gray-500 dark:text-gray-400 mb-6">工程實務中的核心定理與常見陷阱</p>
+
+  <div class="info-card mb-6">
+    <h2 class="text-xl font-bold mb-3">7.1 卷積定理 (Convolution Theorem) 與濾波器設計</h2>
+    <div class="formula-box">
+      <p class="text-center">$$y(t) = x(t) * h(t) \quad \longleftrightarrow \quad Y(j\omega) = X(j\omega) \cdot H(j\omega)$$</p>
+    </div>
+    <p class="mt-3 mb-3">時域的卷積等於頻域的逐點相乘。這意味著：</p>
+    <ul class="list-disc pl-6 space-y-2">
+      <li><strong>濾波 = 頻域乘法</strong>：低通濾波器 $H(j\omega)$ 在高頻處為零，將高頻成分移除。</li>
+      <li><strong>快速卷積 (Fast Convolution)</strong>：利用 FFT 可以在 $O(N\log N)$ 時間完成卷積，比直接計算的 $O(N^2)$ 快得多。在影像處理和長 FIR 濾波器中廣泛使用。</li>
+    </ul>
+  </div>
+
+  <div class="info-card mb-6">
+    <h2 class="text-xl font-bold mb-3">7.2 Nyquist-Shannon 取樣定理 (Sampling Theorem)</h2>
+    <div class="formula-box">
+      <p class="text-center font-bold mb-2">取樣定理</p>
+      <p class="text-center">$$f_s \geq 2 f_{\max}$$</p>
+      <p class="text-sm text-center mt-2">取樣頻率 $f_s$ 必須至少是訊號最高頻率 $f_{\max}$ 的兩倍。$f_s/2$ 稱為 Nyquist 頻率。</p>
+    </div>
+    <p class="mt-3">若違反此條件，會產生<strong>混疊 (Aliasing)</strong>：高頻成分「偽裝」成低頻成分，且無法事後修正。</p>
+    <div class="tip-box">
+      <p><strong>工程實務：</strong>實際系統中，取樣前必須加入<strong>抗混疊濾波器 (Anti-Aliasing Filter)</strong>（類比低通濾波器），且通常取樣率會選擇遠大於 2 倍（如 2.56 倍以上）以留有餘裕。</p>
+    </div>
+  </div>
+
+  <!-- 互動：Aliasing -->
+  <div class="info-card mb-6">
+    <h2 class="text-xl font-bold mb-3">互動圖表：Aliasing 混疊現象</h2>
+    <p class="text-sm text-gray-500 mb-3">原始訊號頻率固定為 50 Hz。調整取樣頻率，觀察取樣後的訊號。當 $f_s < 2 \times 50 = 100$ Hz 時，會產生混疊。</p>
+    <div class="mb-4">
+      <label class="text-sm font-medium">取樣頻率 $f_s$ = <span id="ch7fsv">200</span> Hz</label>
+      <input type="range" id="ch7fs" min="30" max="500" value="200" step="5" class="w-64" oninput="updateCh7AliasDemo()">
+      <span id="ch7aliasWarn" class="text-sm text-red-500 font-bold ml-3 hidden">Aliasing!</span>
+    </div>
+    <div id="ch7AliasPlot" class="plot-container"></div>
+  </div>
+
+  <div class="info-card mb-6">
+    <h2 class="text-xl font-bold mb-3">7.3 功率譜密度 (Power Spectral Density, PSD)</h2>
+    <p class="mb-3">PSD 描述訊號的功率如何在頻率上分佈，單位為 V²/Hz 或 W/Hz：</p>
+    <div class="formula-box">
+      $$S_{xx}(f) = \lim_{T\to\infty} \frac{1}{T}\left|X_T(f)\right|^2$$
+    </div>
+    <p class="mt-3">實務上常用 <strong>Welch 法</strong>（將訊號分段加窗做 FFT 後平均）來估計 PSD，這樣可以降低估計的變異數。</p>
+  </div>
+
+  <div class="info-card mb-6">
+    <h2 class="text-xl font-bold mb-3">7.4 FFT 常見陷阱與注意事項</h2>
+    <div class="space-y-3">
+      <div class="warn-box">
+        <p><strong>陷阱 1：忘記加窗</strong></p>
+        <p class="text-sm mt-1">不加窗 = 矩形窗 → 嚴重的頻譜洩漏，可能完全淹沒微弱訊號。</p>
+      </div>
+      <div class="warn-box">
+        <p><strong>陷阱 2：混淆 FFT bin 和實際頻率</strong></p>
+        <p class="text-sm mt-1">第 $k$ 個 bin 對應的頻率是 $f_k = k \cdot f_s / N$。常見錯誤：忘記除以 $N$ 或搞混單位。</p>
+      </div>
+      <div class="warn-box">
+        <p><strong>陷阱 3：未正確處理單邊/雙邊頻譜</strong></p>
+        <p class="text-sm mt-1">FFT 輸出是雙邊頻譜。取單邊頻譜時，除了 DC 和 Nyquist 分量外，幅度需要乘以 2。</p>
+      </div>
+      <div class="warn-box">
+        <p><strong>陷阱 4：以為零填充能提高「真正的」解析度</strong></p>
+        <p class="text-sm mt-1">零填充只是頻域內插，不會增加新資訊。要真正提高頻率解析度，需要更長的觀測時間。</p>
+      </div>
+      <div class="warn-box">
+        <p><strong>陷阱 5：取樣率不足（Aliasing）</strong></p>
+        <p class="text-sm mt-1">沒有使用抗混疊濾波器就直接取樣 → 高頻訊號折疊到低頻區域，結果完全錯誤。</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Python/MATLAB -->
+  <div class="info-card mb-6">
+    <h2 class="text-lg font-bold mb-3">Python / MATLAB 對應程式碼</h2>
+    <div class="flex gap-2 mb-3">
+      <button onclick="showCodeTab(this,'ch7-py','ch7-ml')" class="tab-btn active px-3 py-1 rounded text-sm border">Python</button>
+      <button onclick="showCodeTab(this,'ch7-ml','ch7-py')" class="tab-btn px-3 py-1 rounded text-sm border">MATLAB</button>
+    </div>
+    <div id="ch7-py" class="code-block">
+<pre>import numpy as np
+from scipy.signal import welch
+import matplotlib.pyplot as plt
+
+# Welch 法估計 PSD
+fs = 1000; N = 10000
+t = np.arange(N) / fs
+x = np.sin(2*np.pi*100*t) + 0.5*np.sin(2*np.pi*250*t) + np.random.randn(N)*0.3
+
+f_psd, Pxx = welch(x, fs=fs, nperseg=1024, noverlap=512)
+plt.semilogy(f_psd, Pxx)
+plt.xlabel('Frequency (Hz)'); plt.ylabel('PSD (V²/Hz)')
+plt.title('Power Spectral Density (Welch)'); plt.grid(); plt.show()</pre>
+    </div>
+    <div id="ch7-ml" class="code-block hidden">
+<pre>fs = 1000; N = 10000;
+t = (0:N-1)/fs;
+x = sin(2*pi*100*t) + 0.5*sin(2*pi*250*t) + 0.3*randn(1,N);
+
+[Pxx, f_psd] = pwelch(x, hann(1024), 512, 1024, fs);
+semilogy(f_psd, Pxx);
+xlabel('Frequency (Hz)'); ylabel('PSD (V^2/Hz)');
+title('Power Spectral Density (Welch)'); grid on;</pre>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== 互動實驗室 ==================== -->
+<section id="sec-lab" class="section-content hidden">
+  <h1 class="text-3xl font-bold mb-2">互動實驗室</h1>
+  <p class="text-gray-500 dark:text-gray-400 mb-6">Signal Generator + FFT Analyzer</p>
+
+  <div class="info-card mb-6">
+    <h2 class="text-xl font-bold mb-3">訊號產生器</h2>
+    <p class="text-sm text-gray-500 mb-4">最多可疊加 4 個成分。點擊「計算 FFT」查看結果。</p>
+
+    <!-- 成分 1 -->
+    <div class="grid md:grid-cols-5 gap-3 items-end mb-3 p-3 rounded-lg bg-gray-50 dark:bg-gray-800">
+      <div><label class="text-xs font-medium">波形 1</label>
+        <select id="lab-w1" class="w-full border rounded px-2 py-1 text-sm dark:bg-gray-700 dark:border-gray-600">
+          <option value="sine">Sine</option><option value="square">Square</option><option value="sawtooth">Sawtooth</option>
+        </select></div>
+      <div><label class="text-xs font-medium">頻率 (Hz): <span id="lab-f1v">50</span></label>
+        <input type="range" id="lab-f1" min="1" max="500" value="50" class="w-full" oninput="document.getElementById('lab-f1v').textContent=this.value"></div>
+      <div><label class="text-xs font-medium">振幅: <span id="lab-a1v">1.0</span></label>
+        <input type="range" id="lab-a1" min="0" max="2" value="1" step="0.05" class="w-full" oninput="document.getElementById('lab-a1v').textContent=parseFloat(this.value).toFixed(2)"></div>
+      <div><label class="text-xs font-medium">相位 (deg): <span id="lab-p1v">0</span></label>
+        <input type="range" id="lab-p1" min="0" max="360" value="0" class="w-full" oninput="document.getElementById('lab-p1v').textContent=this.value"></div>
+      <div><label class="inline-flex items-center text-xs"><input type="checkbox" id="lab-en1" checked class="mr-1">啟用</label></div>
+    </div>
+
+    <!-- 成分 2 -->
+    <div class="grid md:grid-cols-5 gap-3 items-end mb-3 p-3 rounded-lg bg-gray-50 dark:bg-gray-800">
+      <div><label class="text-xs font-medium">波形 2</label>
+        <select id="lab-w2" class="w-full border rounded px-2 py-1 text-sm dark:bg-gray-700 dark:border-gray-600">
+          <option value="sine">Sine</option><option value="square">Square</option><option value="sawtooth">Sawtooth</option>
+        </select></div>
+      <div><label class="text-xs font-medium">頻率 (Hz): <span id="lab-f2v">120</span></label>
+        <input type="range" id="lab-f2" min="1" max="500" value="120" class="w-full" oninput="document.getElementById('lab-f2v').textContent=this.value"></div>
+      <div><label class="text-xs font-medium">振幅: <span id="lab-a2v">0.50</span></label>
+        <input type="range" id="lab-a2" min="0" max="2" value="0.5" step="0.05" class="w-full" oninput="document.getElementById('lab-a2v').textContent=parseFloat(this.value).toFixed(2)"></div>
+      <div><label class="text-xs font-medium">相位 (deg): <span id="lab-p2v">0</span></label>
+        <input type="range" id="lab-p2" min="0" max="360" value="0" class="w-full" oninput="document.getElementById('lab-p2v').textContent=this.value"></div>
+      <div><label class="inline-flex items-center text-xs"><input type="checkbox" id="lab-en2" checked class="mr-1">啟用</label></div>
+    </div>
+
+    <!-- 成分 3 -->
+    <div class="grid md:grid-cols-5 gap-3 items-end mb-3 p-3 rounded-lg bg-gray-50 dark:bg-gray-800">
+      <div><label class="text-xs font-medium">波形 3</label>
+        <select id="lab-w3" class="w-full border rounded px-2 py-1 text-sm dark:bg-gray-700 dark:border-gray-600">
+          <option value="sine">Sine</option><option value="square">Square</option><option value="sawtooth">Sawtooth</option>
+        </select></div>
+      <div><label class="text-xs font-medium">頻率 (Hz): <span id="lab-f3v">200</span></label>
+        <input type="range" id="lab-f3" min="1" max="500" value="200" class="w-full" oninput="document.getElementById('lab-f3v').textContent=this.value"></div>
+      <div><label class="text-xs font-medium">振幅: <span id="lab-a3v">0.00</span></label>
+        <input type="range" id="lab-a3" min="0" max="2" value="0" step="0.05" class="w-full" oninput="document.getElementById('lab-a3v').textContent=parseFloat(this.value).toFixed(2)"></div>
+      <div><label class="text-xs font-medium">相位 (deg): <span id="lab-p3v">0</span></label>
+        <input type="range" id="lab-p3" min="0" max="360" value="0" class="w-full" oninput="document.getElementById('lab-p3v').textContent=this.value"></div>
+      <div><label class="inline-flex items-center text-xs"><input type="checkbox" id="lab-en3" class="mr-1">啟用</label></div>
+    </div>
+
+    <!-- 成分 4 -->
+    <div class="grid md:grid-cols-5 gap-3 items-end mb-3 p-3 rounded-lg bg-gray-50 dark:bg-gray-800">
+      <div><label class="text-xs font-medium">波形 4</label>
+        <select id="lab-w4" class="w-full border rounded px-2 py-1 text-sm dark:bg-gray-700 dark:border-gray-600">
+          <option value="sine">Sine</option><option value="square">Square</option><option value="sawtooth">Sawtooth</option>
+        </select></div>
+      <div><label class="text-xs font-medium">頻率 (Hz): <span id="lab-f4v">300</span></label>
+        <input type="range" id="lab-f4" min="1" max="500" value="300" class="w-full" oninput="document.getElementById('lab-f4v').textContent=this.value"></div>
+      <div><label class="text-xs font-medium">振幅: <span id="lab-a4v">0.00</span></label>
+        <input type="range" id="lab-a4" min="0" max="2" value="0" step="0.05" class="w-full" oninput="document.getElementById('lab-a4v').textContent=parseFloat(this.value).toFixed(2)"></div>
+      <div><label class="text-xs font-medium">相位 (deg): <span id="lab-p4v">0</span></label>
+        <input type="range" id="lab-p4" min="0" max="360" value="0" class="w-full" oninput="document.getElementById('lab-p4v').textContent=this.value"></div>
+      <div><label class="inline-flex items-center text-xs"><input type="checkbox" id="lab-en4" class="mr-1">啟用</label></div>
+    </div>
+
+    <!-- 雜訊與控制 -->
+    <div class="grid md:grid-cols-3 gap-4 mb-4 mt-4">
+      <div>
+        <label class="text-sm font-medium">雜訊強度: <span id="lab-nv">0.00</span></label>
+        <input type="range" id="lab-noise" min="0" max="2" value="0" step="0.05" class="w-full" oninput="document.getElementById('lab-nv').textContent=parseFloat(this.value).toFixed(2)">
+      </div>
+      <div>
+        <label class="text-sm font-medium">視窗函數：</label>
+        <select id="lab-win" class="w-full border rounded px-2 py-1 text-sm dark:bg-gray-700 dark:border-gray-600">
+          <option value="rectangular">Rectangular</option>
+          <option value="hann" selected>Hann</option>
+          <option value="hamming">Hamming</option>
+          <option value="blackman">Blackman</option>
+          <option value="kaiser">Kaiser (β=6)</option>
+        </select>
+      </div>
+      <div class="flex items-end">
+        <label class="inline-flex items-center text-sm mr-4">
+          <input type="checkbox" id="lab-compare" class="mr-1"> 前後對比（有窗 vs 無窗）
+        </label>
+      </div>
+    </div>
+
+    <div class="flex gap-3 mb-6">
+      <button onclick="runLabFFT()" class="px-6 py-2 bg-gradient-to-r from-cyan-500 to-emerald-500 text-white rounded-lg font-medium shadow hover:shadow-lg transition">計算 FFT</button>
+      <button onclick="exportLabPNG()" class="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-sm hover:bg-gray-100 dark:hover:bg-gray-700 transition">匯出 PNG</button>
+    </div>
+  </div>
+
+  <!-- 實驗室圖表 -->
+  <div class="info-card mb-6">
+    <h2 class="text-lg font-bold mb-3">時間域波形</h2>
+    <div id="labTimePlot" class="plot-container"></div>
+  </div>
+  <div class="info-card mb-6">
+    <h2 class="text-lg font-bold mb-3">幅度譜 (Magnitude Spectrum)</h2>
+    <div id="labMagPlot" class="plot-container"></div>
+  </div>
+  <div class="info-card mb-6">
+    <h2 class="text-lg font-bold mb-3">相位譜 (Phase Spectrum)</h2>
+    <div id="labPhasePlot" class="plot-container"></div>
+  </div>
+</section>
+
+<!-- ==================== 自我測驗 ==================== -->
+<section id="sec-quiz" class="section-content hidden">
+  <h1 class="text-3xl font-bold mb-2">自我測驗</h1>
+  <p class="text-gray-500 dark:text-gray-400 mb-6">10 題選擇題，測試你的傅立葉分析理解程度</p>
+
+  <div id="quizContainer"></div>
+
+  <div class="flex gap-4 mt-6">
+    <button onclick="submitQuiz()" class="px-6 py-3 bg-gradient-to-r from-cyan-500 to-emerald-500 text-white rounded-xl font-medium shadow-lg hover:shadow-xl transition">提交答案</button>
+    <button onclick="resetQuiz()" class="px-6 py-3 border-2 border-gray-300 dark:border-gray-600 rounded-xl font-medium hover:bg-gray-100 dark:hover:bg-gray-800 transition">重新作答</button>
+  </div>
+  <div id="quizResult" class="mt-6 hidden"></div>
+</section>
+
+<!-- ==================== 關於 ==================== -->
+<section id="sec-about" class="section-content hidden">
+  <h1 class="text-3xl font-bold mb-2">關於本平台</h1>
+  <p class="text-gray-500 dark:text-gray-400 mb-6">About This Platform</p>
+
+  <div class="info-card mb-6">
+    <h2 class="text-xl font-bold mb-3">設計理念</h2>
+    <p class="mb-3">「傅立葉分析教學平台」是一個 self-contained 的互動式教學工具，專為電子電機工程系的大學生與研究生設計。</p>
+    <ul class="list-disc pl-6 space-y-2">
+      <li><strong>工程導向</strong>：著重實際應用場景，而非純粹的數學推導</li>
+      <li><strong>互動學習</strong>：所有概念都搭配可調參數的即時圖表</li>
+      <li><strong>完整覆蓋</strong>：從基礎的傅立葉級數到進階的 STFT/Spectrogram</li>
+      <li><strong>雙語標注</strong>：所有專業術語都附上英文對照</li>
+    </ul>
+  </div>
+
+  <div class="info-card mb-6">
+    <h2 class="text-xl font-bold mb-3">技術實作</h2>
+    <table class="data-table">
+      <tbody>
+        <tr><td class="font-bold text-left">前端框架</td><td class="text-left">Tailwind CSS（CDN）</td></tr>
+        <tr><td class="font-bold text-left">數學公式</td><td class="text-left">MathJax 3</td></tr>
+        <tr><td class="font-bold text-left">互動圖表</td><td class="text-left">Plotly.js</td></tr>
+        <tr><td class="font-bold text-left">FFT 運算</td><td class="text-left">原生 JavaScript Radix-2 FFT 實作</td></tr>
+        <tr><td class="font-bold text-left">程式語言</td><td class="text-left">Vanilla JavaScript（無任何框架）</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="info-card">
+    <h2 class="text-xl font-bold mb-3">授權與使用</h2>
+    <p>本教學平台可自由使用於教育目的。所有程式碼與教學內容歡迎引用，請標註出處。</p>
+  </div>
+</section>
+
+</div>
+</main>
+
+<!-- ==================== JavaScript ==================== -->
+<script>
+// ============================================
+// 全域工具函式與 DSP 核心
+// ============================================
+
+/**
+ * Radix-2 Cooley-Tukey FFT 實作
+ * @param {number[]} real - 實部陣列
+ * @param {number[]} imag - 虛部陣列（可全為 0）
+ * @returns {{ real: number[], imag: number[] }} 頻域結果
+ */
+function fft(real, imag) {
+  const N = real.length;
+  // 確保長度為 2 的冪次
+  if (N <= 1) return { real: [...real], imag: [...imag] };
+
+  // 位元反轉排序 (Bit-Reversal Permutation)
+  const re = new Float64Array(N);
+  const im = new Float64Array(N);
+  const bits = Math.round(Math.log2(N));
+  for (let i = 0; i < N; i++) {
+    let rev = 0;
+    for (let b = 0; b < bits; b++) {
+      rev = (rev << 1) | ((i >> b) & 1);
+    }
+    re[rev] = real[i];
+    im[rev] = imag[i];
+  }
+
+  // 蝴蝶運算 (Butterfly Operations)
+  for (let size = 2; size <= N; size *= 2) {
+    const half = size / 2;
+    const angle = -2 * Math.PI / size;
+    for (let i = 0; i < N; i += size) {
+      for (let j = 0; j < half; j++) {
+        const wr = Math.cos(angle * j);
+        const wi = Math.sin(angle * j);
+        const tr = wr * re[i + j + half] - wi * im[i + j + half];
+        const ti = wr * im[i + j + half] + wi * re[i + j + half];
+        re[i + j + half] = re[i + j] - tr;
+        im[i + j + half] = im[i + j] - ti;
+        re[i + j] += tr;
+        im[i + j] += ti;
+      }
+    }
+  }
+  return { real: Array.from(re), imag: Array.from(im) };
+}
+
+/** 將陣列長度補零到下一個 2 的冪次 */
+function nextPow2(n) {
+  return Math.pow(2, Math.ceil(Math.log2(n)));
+}
+
+/** 零填充陣列 */
+function zeroPad(arr, len) {
+  const out = new Array(len).fill(0);
+  for (let i = 0; i < arr.length; i++) out[i] = arr[i];
+  return out;
+}
+
+// ============================================
+// 視窗函數 (Window Functions)
+// ============================================
+function windowRectangular(N) {
+  return new Array(N).fill(1);
+}
+
+function windowHann(N) {
+  const w = [];
+  for (let n = 0; n < N; n++) w.push(0.5 * (1 - Math.cos(2 * Math.PI * n / (N - 1))));
+  return w;
+}
+
+function windowHamming(N) {
+  const w = [];
+  for (let n = 0; n < N; n++) w.push(0.54 - 0.46 * Math.cos(2 * Math.PI * n / (N - 1)));
+  return w;
+}
+
+function windowBlackman(N) {
+  const w = [];
+  for (let n = 0; n < N; n++) {
+    w.push(0.42 - 0.5 * Math.cos(2 * Math.PI * n / (N - 1)) + 0.08 * Math.cos(4 * Math.PI * n / (N - 1)));
+  }
+  return w;
+}
+
+/** 零階修正貝塞爾函數 I0 近似 */
+function besselI0(x) {
+  let sum = 1, term = 1;
+  for (let k = 1; k <= 25; k++) {
+    term *= (x / (2 * k)) * (x / (2 * k));
+    sum += term;
+    if (term < 1e-12 * sum) break;
+  }
+  return sum;
+}
+
+function windowKaiser(N, beta) {
+  const w = [];
+  const denom = besselI0(beta);
+  for (let n = 0; n < N; n++) {
+    const val = 2 * n / (N - 1) - 1;
+    w.push(besselI0(beta * Math.sqrt(1 - val * val)) / denom);
+  }
+  return w;
+}
+
+/** 根據名稱取得視窗函數 */
+function getWindow(name, N, beta) {
+  switch (name) {
+    case 'rectangular': return windowRectangular(N);
+    case 'hann': return windowHann(N);
+    case 'hamming': return windowHamming(N);
+    case 'blackman': return windowBlackman(N);
+    case 'kaiser': return windowKaiser(N, beta || 6);
+    default: return windowHann(N);
+  }
+}
+
+/** 產生波形 */
+function generateWaveform(type, freq, amp, phase, t) {
+  const phi = phase * Math.PI / 180;
+  return t.map(ti => {
+    const angle = 2 * Math.PI * freq * ti + phi;
+    switch (type) {
+      case 'sine': return amp * Math.sin(angle);
+      case 'square': return amp * Math.sign(Math.sin(angle));
+      case 'sawtooth': return amp * 2 * ((freq * ti + phase / 360) % 1 - 0.5);
+      default: return amp * Math.sin(angle);
+    }
+  });
+}
+
+/** 產生時間軸 */
+function linspace(start, stop, N) {
+  const arr = [];
+  const step = (stop - start) / (N - 1 || 1);
+  for (let i = 0; i < N; i++) arr.push(start + i * step);
+  return arr;
+}
+
+/** 高斯隨機數 (Box-Muller) */
+function randn() {
+  let u = 0, v = 0;
+  while (u === 0) u = Math.random();
+  while (v === 0) v = Math.random();
+  return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v);
+}
+
+// ============================================
+// Plotly 佈局預設（含深色模式支援）
+// ============================================
+function isDark() { return document.documentElement.classList.contains('dark'); }
+
+function plotLayout(title, xlab, ylab, extra) {
+  const dark = isDark();
+  return Object.assign({
+    title: { text: title, font: { size: 14 } },
+    xaxis: { title: xlab, color: dark ? '#94a3b8' : '#475569', gridcolor: dark ? '#334155' : '#e2e8f0' },
+    yaxis: { title: ylab, color: dark ? '#94a3b8' : '#475569', gridcolor: dark ? '#334155' : '#e2e8f0' },
+    paper_bgcolor: dark ? '#1e293b' : '#ffffff',
+    plot_bgcolor: dark ? '#0f172a' : '#f8fafc',
+    font: { color: dark ? '#e2e8f0' : '#1e293b', family: 'system-ui, sans-serif' },
+    margin: { l: 60, r: 30, t: 40, b: 50 },
+    hovermode: 'x unified',
+  }, extra || {});
+}
+
+const plotConfig = { responsive: true, displaylogo: false, modeBarButtonsToAdd: ['toImage'] };
+
+// ============================================
+// SPA 導航與 UI 控制
+// ============================================
+let currentSection = 'home';
+
+function navigateTo(section) {
+  // 隱藏所有 section
+  document.querySelectorAll('[id^="sec-"]').forEach(el => el.classList.add('hidden'));
+  // 顯示目標 section
+  const target = document.getElementById('sec-' + section);
+  if (target) {
+    target.classList.remove('hidden');
+    // 重新添加動畫
+    target.classList.remove('section-content');
+    void target.offsetWidth; // 強制 reflow
+    target.classList.add('section-content');
+  }
+  // 更新側邊欄 active 狀態
+  document.querySelectorAll('.sidebar-item').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.section === section);
+  });
+  currentSection = section;
+  // 捲動到頂部
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  // 手機版自動收合側邊欄
+  if (window.innerWidth < 1024) closeSidebar();
+  // 初始化該章節的圖表
+  setTimeout(() => initSectionPlots(section), 100);
+  // 觸發 MathJax 渲染
+  if (window.MathJax && MathJax.typesetPromise) {
+    MathJax.typesetPromise([target]).catch(() => {});
+  }
+}
+
+function toggleSidebar() {
+  const sb = document.getElementById('sidebar');
+  const ov = document.getElementById('sidebar-overlay');
+  sb.classList.toggle('open');
+  ov.classList.toggle('open');
+  sb.classList.remove('hidden');
+}
+
+function closeSidebar() {
+  const sb = document.getElementById('sidebar');
+  const ov = document.getElementById('sidebar-overlay');
+  sb.classList.remove('open');
+  ov.classList.remove('open');
+}
+
+function toggleChapter(id) { /* placeholder for sub-sections */ }
+
+function toggleDark() {
+  document.documentElement.classList.toggle('dark');
+  localStorage.setItem('darkMode', isDark());
+  // 重繪所有目前可見的 Plotly 圖表
+  refreshVisiblePlots();
+}
+
+function refreshVisiblePlots() {
+  initSectionPlots(currentSection);
+}
+
+// ============================================
+// 程式碼頁籤切換
+// ============================================
+function showCodeTab(btn, showId, hideId) {
+  document.getElementById(showId).classList.remove('hidden');
+  document.getElementById(hideId).classList.add('hidden');
+  btn.parentElement.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+// ============================================
+// 初始化各章節圖表
+// ============================================
+const plotsInitialized = {};
+
+function initSectionPlots(section) {
+  switch (section) {
+    case 'home': updateHomeDemo(); break;
+    case 'ch1': updateCh1Demo(); break;
+    case 'ch2': updateCh2Demo(); break;
+    case 'ch3': updateCh3Demo(); break;
+    case 'ch4': updateCh4Demo(); break;
+    case 'ch5': updateCh5WinPlot(); updateCh5LeakDemo(); break;
+    case 'ch6': updateCh6Demo(); break;
+    case 'ch7': updateCh7AliasDemo(); break;
+    case 'lab': runLabFFT(); break;
+  }
+}
+
+// ============================================
+// 首頁示範
+// ============================================
+function updateHomeDemo() {
+  const N_harm = parseInt(document.getElementById('homeHarmonics').value);
+  document.getElementById('homeHarmonicsVal').textContent = N_harm;
+
+  const Ns = 1000;
+  const t = linspace(0, 2, Ns);
+  const ideal = t.map(ti => ((ti % 1) < 0.5) ? 1 : -1);
+
+  // 傅立葉合成
+  const synth = new Array(Ns).fill(0);
+  for (let n = 1; n <= N_harm * 2; n += 2) {
+    const coeff = 4 / (Math.PI * n);
+    for (let i = 0; i < Ns; i++) {
+      synth[i] += coeff * Math.sin(2 * Math.PI * n * t[i] / 1);
+    }
+  }
+
+  Plotly.react('homePlot', [
+    { x: t, y: ideal, name: '理想方波', line: { color: '#94a3b8', dash: 'dash', width: 1 } },
+    { x: t, y: synth, name: `傅立葉合成 (${N_harm} 項)`, line: { color: '#06b6d4', width: 2 } }
+  ], plotLayout('方波的傅立葉級數合成', '時間 (s)', '振幅'), plotConfig);
+}
+
+// ============================================
+// 第 1 章：時域 vs 頻域
+// ============================================
+function updateCh1Demo() {
+  const f1 = +document.getElementById('ch1f1').value;
+  const f2 = +document.getElementById('ch1f2').value;
+  const f3 = +document.getElementById('ch1f3').value;
+  const a1 = +document.getElementById('ch1a1').value;
+  const a2 = +document.getElementById('ch1a2').value;
+  const a3 = +document.getElementById('ch1a3').value;
+
+  document.getElementById('ch1f1v').textContent = f1;
+  document.getElementById('ch1f2v').textContent = f2;
+  document.getElementById('ch1f3v').textContent = f3;
+  document.getElementById('ch1a1v').textContent = a1.toFixed(1);
+  document.getElementById('ch1a2v').textContent = a2.toFixed(1);
+  document.getElementById('ch1a3v').textContent = a3.toFixed(1);
+
+  const fs = 1000, dur = 0.5;
+  const N = Math.round(fs * dur);
+  const t = [];
+  for (let i = 0; i < N; i++) t.push(i / fs);
+  const x = t.map(ti => a1 * Math.sin(2 * Math.PI * f1 * ti) + a2 * Math.sin(2 * Math.PI * f2 * ti) + a3 * Math.sin(2 * Math.PI * f3 * ti));
+
+  // FFT
+  const Nfft = nextPow2(N);
+  const re = zeroPad(x, Nfft);
+  const im = new Array(Nfft).fill(0);
+  const result = fft(re, im);
+  const mag = result.real.map((r, i) => 2 * Math.sqrt(r * r + result.imag[i] * result.imag[i]) / N);
+  const freqs = [];
+  for (let k = 0; k < Nfft / 2; k++) freqs.push(k * fs / Nfft);
+  const magHalf = mag.slice(0, Nfft / 2);
+
+  Plotly.react('ch1TimePlot', [{
+    x: t, y: x, line: { color: '#06b6d4', width: 1.5 }
+  }], plotLayout('時間域波形', '時間 (s)', '振幅'), plotConfig);
+
+  Plotly.react('ch1FreqPlot', [{
+    x: freqs, y: magHalf, type: 'bar', marker: { color: '#10b981' }, width: fs / Nfft * 0.8
+  }], plotLayout('頻率域（FFT 幅度譜）', '頻率 (Hz)', '振幅', { xaxis: { title: '頻率 (Hz)', range: [0, 60], color: isDark() ? '#94a3b8' : '#475569', gridcolor: isDark() ? '#334155' : '#e2e8f0' } }), plotConfig);
+}
+
+// ============================================
+// 第 2 章：傅立葉級數合成
+// ============================================
+function updateCh2Demo() {
+  const waveType = document.getElementById('ch2wave').value;
+  const N_harm = parseInt(document.getElementById('ch2N').value);
+  document.getElementById('ch2Nval').textContent = N_harm;
+
+  const Ns = 1000;
+  const t = linspace(0, 2, Ns);
+  const synth = new Array(Ns).fill(0);
+  const harmonicFreqs = [];
+  const harmonicAmps = [];
+
+  if (waveType === 'square') {
+    for (let n = 1; n <= N_harm * 2; n += 2) {
+      const amp = 4 / (Math.PI * n);
+      harmonicFreqs.push(n);
+      harmonicAmps.push(Math.abs(amp));
+      for (let i = 0; i < Ns; i++) synth[i] += amp * Math.sin(2 * Math.PI * n * t[i] / 2);
+    }
+  } else if (waveType === 'triangle') {
+    for (let n = 1; n <= N_harm * 2; n += 2) {
+      const k = (n - 1) / 2;
+      const amp = 8 / (Math.PI * Math.PI * n * n) * Math.pow(-1, k);
+      harmonicFreqs.push(n);
+      harmonicAmps.push(Math.abs(amp));
+      for (let i = 0; i < Ns; i++) synth[i] += amp * Math.sin(2 * Math.PI * n * t[i] / 2);
+    }
+  } else { // sawtooth
+    for (let n = 1; n <= N_harm; n++) {
+      const amp = 2 / (Math.PI * n) * Math.pow(-1, n + 1);
+      harmonicFreqs.push(n);
+      harmonicAmps.push(Math.abs(amp));
+      for (let i = 0; i < Ns; i++) synth[i] += amp * Math.sin(2 * Math.PI * n * t[i] / 2);
+    }
+  }
+
+  // 理想波形
+  const ideal = t.map(ti => {
+    const phase = (ti / 2) % 1;
+    if (waveType === 'square') return phase < 0.5 ? 1 : -1;
+    if (waveType === 'triangle') return phase < 0.5 ? (4 * phase - 1) : (3 - 4 * phase);
+    return 2 * phase - 1; // sawtooth
+  });
+
+  Plotly.react('ch2SynthPlot', [
+    { x: t, y: ideal, name: '理想波形', line: { color: '#94a3b8', dash: 'dash', width: 1 } },
+    { x: t, y: synth, name: `合成波形 (N=${N_harm})`, line: { color: '#06b6d4', width: 2 } }
+  ], plotLayout(`${waveType === 'square' ? '方波' : waveType === 'triangle' ? '三角波' : '鋸齒波'}傅立葉級數合成`, '時間 (s)', '振幅'), plotConfig);
+
+  Plotly.react('ch2SpecPlot', [{
+    x: harmonicFreqs, y: harmonicAmps, type: 'bar', marker: { color: '#10b981' }
+  }], plotLayout('諧波成分振幅', '諧波次數 (n)', '|c_n|'), plotConfig);
+}
+
+// ============================================
+// 第 3 章：CTFT rect/sinc
+// ============================================
+function updateCh3Demo() {
+  const tau = parseFloat(document.getElementById('ch3tau').value);
+  document.getElementById('ch3tauv').textContent = tau.toFixed(1);
+
+  // 時域：rect 脈衝
+  const Nt = 500;
+  const t = linspace(-3, 3, Nt);
+  const xt = t.map(ti => Math.abs(ti) <= tau / 2 ? 1 : 0);
+
+  // 頻域：tau * sinc(f*tau)
+  const Nf = 500;
+  const f = linspace(-15, 15, Nf);
+  const Xf = f.map(fi => {
+    if (Math.abs(fi) < 1e-10) return tau;
+    return tau * Math.sin(Math.PI * fi * tau) / (Math.PI * fi * tau);
+  });
+  const XfMag = Xf.map(v => Math.abs(v));
+
+  Plotly.react('ch3TimePlot', [{
+    x: t, y: xt, fill: 'tozeroy', fillcolor: 'rgba(6,182,212,0.2)', line: { color: '#06b6d4', width: 2 }
+  }], plotLayout('時間域：rect(t/τ)', 't', 'x(t)'), plotConfig);
+
+  Plotly.react('ch3FreqPlot', [{
+    x: f, y: XfMag, line: { color: '#10b981', width: 2 }
+  }], plotLayout('頻率域：|X(f)| = |τ sinc(fτ)|', 'f (Hz)', '|X(f)|'), plotConfig);
+}
+
+// ============================================
+// 第 4 章：FFT 與零填充
+// ============================================
+function updateCh4Demo() {
+  const zpFactor = parseInt(document.getElementById('ch4zp').value);
+  const fs = 500;
+  const duration = 0.1;
+  const N = Math.round(fs * duration); // 50 個取樣點
+  const t = [];
+  for (let i = 0; i < N; i++) t.push(i / fs);
+  const x = t.map(ti => Math.sin(2 * Math.PI * 50 * ti) + Math.sin(2 * Math.PI * 55 * ti));
+
+  // FFT with zero-padding
+  const Nfft = nextPow2(N * zpFactor);
+  const re = zeroPad(x, Nfft);
+  const im = new Array(Nfft).fill(0);
+  const result = fft(re, im);
+
+  const freqs = [];
+  const magDB = [];
+  for (let k = 0; k < Nfft / 2; k++) {
+    freqs.push(k * fs / Nfft);
+    const mag = Math.sqrt(result.real[k] ** 2 + result.imag[k] ** 2) * 2 / N;
+    magDB.push(20 * Math.log10(mag + 1e-12));
+  }
+
+  Plotly.react('ch4TimePlot', [{
+    x: t, y: x, mode: 'lines+markers', marker: { size: 4, color: '#06b6d4' }, line: { color: '#06b6d4', width: 1 }
+  }], plotLayout(`時間域（${N} 個取樣點）`, '時間 (s)', '振幅'), plotConfig);
+
+  Plotly.react('ch4FreqPlot', [{
+    x: freqs, y: magDB, line: { color: '#10b981', width: 2 }, name: `${zpFactor}x zero-padding`
+  }], plotLayout(`FFT 幅度譜（${zpFactor}x 零填充，NFFT=${Nfft}）`, '頻率 (Hz)', '幅度 (dB)', {
+    xaxis: { title: '頻率 (Hz)', range: [20, 100], color: isDark() ? '#94a3b8' : '#475569', gridcolor: isDark() ? '#334155' : '#e2e8f0' },
+    yaxis: { title: '幅度 (dB)', range: [-40, 10], color: isDark() ? '#94a3b8' : '#475569', gridcolor: isDark() ? '#334155' : '#e2e8f0' }
+  }), plotConfig);
+}
+
+// ============================================
+// 第 5 章：視窗函數波形
+// ============================================
+function updateCh5WinPlot() {
+  const winName = document.getElementById('ch5win').value;
+  const beta = parseFloat(document.getElementById('ch5beta').value);
+  document.getElementById('ch5betav').textContent = beta.toFixed(1);
+  document.getElementById('ch5betaDiv').style.display = winName === 'kaiser' ? 'block' : 'none';
+
+  const N = 128;
+  const win = getWindow(winName, N, beta);
+  const nArr = [];
+  for (let i = 0; i < N; i++) nArr.push(i);
+
+  // FFT of window (zero-padded)
+  const Nfft = 4096;
+  const re = zeroPad(win, Nfft);
+  const im = new Array(Nfft).fill(0);
+  const result = fft(re, im);
+  const magDB = [];
+  const freqBins = [];
+  // 中心化：shift
+  const half = Nfft / 2;
+  for (let k = 0; k < Nfft; k++) {
+    const idx = (k + half) % Nfft;
+    const mag = Math.sqrt(result.real[idx] ** 2 + result.imag[idx] ** 2);
+    const peak = Math.sqrt(result.real[0] ** 2 + result.imag[0] ** 2);
+    magDB.push(20 * Math.log10(mag / peak + 1e-12));
+    freqBins.push((k - half) * N / Nfft);
+  }
+
+  Plotly.react('ch5WinTimePlot', [{
+    x: nArr, y: win, fill: 'tozeroy', fillcolor: 'rgba(6,182,212,0.15)', line: { color: '#06b6d4', width: 2 }
+  }], plotLayout(`${winName} 視窗（時域）`, '樣本 n', 'w[n]'), plotConfig);
+
+  Plotly.react('ch5WinFreqPlot', [{
+    x: freqBins, y: magDB, line: { color: '#10b981', width: 1.5 }
+  }], plotLayout(`${winName} 視窗（頻域，dB）`, '正規化頻率 (bins)', '幅度 (dB)', {
+    xaxis: { title: '正規化頻率 (bins)', range: [-15, 15], color: isDark() ? '#94a3b8' : '#475569', gridcolor: isDark() ? '#334155' : '#e2e8f0' },
+    yaxis: { title: '幅度 (dB)', range: [-120, 5], color: isDark() ? '#94a3b8' : '#475569', gridcolor: isDark() ? '#334155' : '#e2e8f0' }
+  }), plotConfig);
+}
+
+// 第 5 章：頻譜洩漏比較
+let ch5SelectedWin = 'hann';
+
+function setCh5Win(name) {
+  ch5SelectedWin = name;
+  document.querySelectorAll('.ch5-win-btn').forEach(btn => {
+    if (btn.dataset.win === name) {
+      btn.classList.add('active', 'bg-cyan-500', 'text-white');
+    } else {
+      btn.classList.remove('active', 'bg-cyan-500', 'text-white');
+    }
+  });
+  updateCh5LeakDemo();
+}
+
+function updateCh5LeakDemo() {
+  const f1 = +document.getElementById('ch5f1').value;
+  const f2 = +document.getElementById('ch5f2').value;
+  const ampRatio = +document.getElementById('ch5amp').value;
+  const noiseLevel = +document.getElementById('ch5noise').value;
+
+  document.getElementById('ch5f1v').textContent = f1;
+  document.getElementById('ch5f2v').textContent = f2;
+  document.getElementById('ch5ampv').textContent = ampRatio.toFixed(2);
+  document.getElementById('ch5noisev').textContent = noiseLevel.toFixed(2);
+
+  const fs = 1000;
+  const N = 256;
+  const t = [];
+  for (let i = 0; i < N; i++) t.push(i / fs);
+
+  // 產生訊號
+  const x = t.map(ti => Math.sin(2 * Math.PI * f1 * ti) + ampRatio * Math.sin(2 * Math.PI * f2 * ti) + noiseLevel * randn());
+
+  // 套用視窗
+  const win = getWindow(ch5SelectedWin, N, 6);
+  const xw = x.map((v, i) => v * win[i]);
+
+  // FFT
+  const Nfft = nextPow2(N) * 4; // 4x 零填充
+  const re = zeroPad(xw, Nfft);
+  const im = new Array(Nfft).fill(0);
+  const result = fft(re, im);
+
+  // 計算正規化因子
+  const winSum = win.reduce((a, b) => a + b, 0);
+
+  const freqs = [];
+  const magDB = [];
+  for (let k = 0; k < Nfft / 2; k++) {
+    freqs.push(k * fs / Nfft);
+    const mag = Math.sqrt(result.real[k] ** 2 + result.imag[k] ** 2) * 2 / winSum;
+    magDB.push(20 * Math.log10(mag + 1e-12));
+  }
+
+  Plotly.react('ch5LeakTimePlot', [
+    { x: t, y: x, name: '原始訊號', line: { color: '#94a3b8', width: 1 } },
+    { x: t, y: xw, name: '加窗後', line: { color: '#06b6d4', width: 2 } }
+  ], plotLayout('時間域波形', '時間 (s)', '振幅'), plotConfig);
+
+  Plotly.react('ch5LeakFreqPlot', [{
+    x: freqs, y: magDB, line: { color: '#10b981', width: 1.5 }, name: ch5SelectedWin
+  }], plotLayout(`FFT 幅度譜（${ch5SelectedWin} 窗）`, '頻率 (Hz)', '幅度 (dB)', {
+    xaxis: { title: '頻率 (Hz)', range: [0, fs / 2], color: isDark() ? '#94a3b8' : '#475569', gridcolor: isDark() ? '#334155' : '#e2e8f0' },
+    yaxis: { title: '幅度 (dB)', range: [-100, 10], color: isDark() ? '#94a3b8' : '#475569', gridcolor: isDark() ? '#334155' : '#e2e8f0' },
+    shapes: [
+      { type: 'line', x0: f1, x1: f1, y0: -100, y1: 10, line: { color: '#f59e0b', dash: 'dot', width: 1 } },
+      { type: 'line', x0: f2, x1: f2, y0: -100, y1: 10, line: { color: '#f59e0b', dash: 'dot', width: 1 } }
+    ]
+  }), plotConfig);
+}
+
+// ============================================
+// 第 6 章：STFT / Spectrogram
+// ============================================
+function updateCh6Demo() {
+  const sigType = document.getElementById('ch6sig').value;
+  const winLen = parseInt(document.getElementById('ch6win').value);
+  const overlapPct = parseInt(document.getElementById('ch6ol').value);
+
+  document.getElementById('ch6winv').textContent = winLen;
+  document.getElementById('ch6olv').textContent = overlapPct;
+
+  const fs = 4000;
+  const duration = 2;
+  const N = fs * duration;
+  const t = [];
+  for (let i = 0; i < N; i++) t.push(i / fs);
+
+  // 產生訊號
+  let x;
+  if (sigType === 'chirp') {
+    // 線性 Chirp：50 Hz → 800 Hz
+    x = t.map(ti => {
+      const f = 50 + (800 - 50) * ti / duration;
+      return Math.sin(2 * Math.PI * (50 * ti + (800 - 50) / (2 * duration) * ti * ti));
+    });
+  } else if (sigType === 'two_tone') {
+    // 前半 200 Hz，後半 600 Hz
+    x = t.map(ti => ti < 1 ? Math.sin(2 * Math.PI * 200 * ti) : Math.sin(2 * Math.PI * 600 * ti));
+  } else { // AM
+    x = t.map(ti => (1 + 0.7 * Math.sin(2 * Math.PI * 3 * ti)) * Math.sin(2 * Math.PI * 400 * ti));
+  }
+
+  // 繪製時域
+  const tDown = [], xDown = [];
+  const step = Math.max(1, Math.floor(N / 2000));
+  for (let i = 0; i < N; i += step) { tDown.push(t[i]); xDown.push(x[i]); }
+
+  Plotly.react('ch6TimePlot', [{
+    x: tDown, y: xDown, line: { color: '#06b6d4', width: 1 }
+  }], plotLayout('時間域波形', '時間 (s)', '振幅'), plotConfig);
+
+  // 計算 STFT
+  const overlap = Math.round(winLen * overlapPct / 100);
+  const hopSize = winLen - overlap;
+  const win = windowHann(winLen);
+  const nfft = nextPow2(winLen);
+  const numFrames = Math.floor((N - winLen) / hopSize) + 1;
+
+  const spectData = [];
+  const timeAxis = [];
+  const freqAxis = [];
+  for (let k = 0; k <= nfft / 2; k++) freqAxis.push(k * fs / nfft);
+
+  for (let frame = 0; frame < numFrames; frame++) {
+    const start = frame * hopSize;
+    timeAxis.push((start + winLen / 2) / fs);
+    const segment = [];
+    for (let i = 0; i < winLen; i++) segment.push(x[start + i] * win[i]);
+    const re = zeroPad(segment, nfft);
+    const im = new Array(nfft).fill(0);
+    const result = fft(re, im);
+
+    const magCol = [];
+    for (let k = 0; k <= nfft / 2; k++) {
+      const mag = Math.sqrt(result.real[k] ** 2 + result.imag[k] ** 2) * 2 / winLen;
+      magCol.push(20 * Math.log10(mag + 1e-12));
+    }
+    spectData.push(magCol);
+  }
+
+  // 轉置為 Plotly heatmap 格式 (freqs x times)
+  const zData = [];
+  for (let fi = 0; fi < freqAxis.length; fi++) {
+    const row = [];
+    for (let ti = 0; ti < timeAxis.length; ti++) {
+      row.push(spectData[ti][fi]);
+    }
+    zData.push(row);
+  }
+
+  Plotly.react('ch6SpectPlot', [{
+    x: timeAxis, y: freqAxis, z: zData, type: 'heatmap',
+    colorscale: 'Viridis', zmin: -60, zmax: 0,
+    colorbar: { title: 'dB', titleside: 'right' }
+  }], plotLayout('Spectrogram', '時間 (s)', '頻率 (Hz)', {
+    yaxis: { title: '頻率 (Hz)', range: [0, fs / 2], color: isDark() ? '#94a3b8' : '#475569', gridcolor: isDark() ? '#334155' : '#e2e8f0' }
+  }), plotConfig);
+}
+
+// ============================================
+// 第 7 章：Aliasing 互動
+// ============================================
+function updateCh7AliasDemo() {
+  const fsamp = parseInt(document.getElementById('ch7fs').value);
+  document.getElementById('ch7fsv').textContent = fsamp;
+  const warn = document.getElementById('ch7aliasWarn');
+  warn.classList.toggle('hidden', fsamp >= 100);
+
+  const fSig = 50;
+  const dur = 0.1;
+
+  // 連續波形（高解析度）
+  const Nc = 2000;
+  const tc = linspace(0, dur, Nc);
+  const xc = tc.map(ti => Math.sin(2 * Math.PI * fSig * ti));
+
+  // 取樣點
+  const Ns = Math.max(2, Math.round(fsamp * dur));
+  const ts = linspace(0, dur, Ns);
+  const xs = ts.map(ti => Math.sin(2 * Math.PI * fSig * ti));
+
+  // 重建波形（若 aliasing，顯示 alias 頻率）
+  let fAlias = fSig;
+  if (fsamp < 2 * fSig) {
+    // 計算 alias 頻率
+    fAlias = Math.abs(fSig - fsamp * Math.round(fSig / fsamp));
+  }
+  const xr = tc.map(ti => Math.sin(2 * Math.PI * fAlias * ti));
+
+  const traces = [
+    { x: tc, y: xc, name: `原始 ${fSig} Hz`, line: { color: '#94a3b8', dash: 'dash', width: 1 } },
+    { x: ts, y: xs, name: `取樣點 (fs=${fsamp} Hz)`, mode: 'markers', marker: { size: 8, color: '#06b6d4' } }
+  ];
+  if (fsamp < 100) {
+    traces.push({ x: tc, y: xr, name: `混疊重建 (${fAlias.toFixed(1)} Hz)`, line: { color: '#ef4444', width: 2 } });
+  }
+
+  Plotly.react('ch7AliasPlot', traces, plotLayout(
+    fsamp >= 100 ? `正常取樣 (fs=${fsamp} Hz ≥ 2×${fSig} Hz)` : `混疊！(fs=${fsamp} Hz < 2×${fSig} Hz)`,
+    '時間 (s)', '振幅'
+  ), plotConfig);
+}
+
+// ============================================
+// 互動實驗室
+// ============================================
+function runLabFFT() {
+  const fs = 2048;
+  const dur = 0.5;
+  const N = Math.round(fs * dur);
+  const t = [];
+  for (let i = 0; i < N; i++) t.push(i / fs);
+
+  // 合成訊號
+  const x = new Array(N).fill(0);
+  for (let ch = 1; ch <= 4; ch++) {
+    const en = document.getElementById(`lab-en${ch}`);
+    if (!en || !en.checked) continue;
+    const wType = document.getElementById(`lab-w${ch}`).value;
+    const freq = +document.getElementById(`lab-f${ch}`).value;
+    const amp = +document.getElementById(`lab-a${ch}`).value;
+    const phase = +document.getElementById(`lab-p${ch}`).value;
+    const wave = generateWaveform(wType, freq, amp, phase, t);
+    for (let i = 0; i < N; i++) x[i] += wave[i];
+  }
+
+  // 加雜訊
+  const noiseAmp = parseFloat(document.getElementById('lab-noise').value);
+  for (let i = 0; i < N; i++) x[i] += noiseAmp * randn();
+
+  // 視窗
+  const winName = document.getElementById('lab-win').value;
+  const winBeta = winName === 'kaiser' ? 6 : undefined;
+  const win = getWindow(winName.replace(' (β=6)', ''), N, winBeta);
+  const xw = x.map((v, i) => v * win[i]);
+  const winSum = win.reduce((a, b) => a + b, 0);
+
+  // FFT
+  const Nfft = nextPow2(N) * 2;
+  const doCompare = document.getElementById('lab-compare').checked;
+
+  function computeFFT(signal, normFactor) {
+    const re = zeroPad(signal, Nfft);
+    const im = new Array(Nfft).fill(0);
+    const result = fft(re, im);
+    const freqs = [], magDB = [], phase = [];
+    for (let k = 0; k < Nfft / 2; k++) {
+      freqs.push(k * fs / Nfft);
+      const mag = Math.sqrt(result.real[k] ** 2 + result.imag[k] ** 2) * 2 / normFactor;
+      magDB.push(20 * Math.log10(mag + 1e-12));
+      phase.push(Math.atan2(result.imag[k], result.real[k]) * 180 / Math.PI);
+    }
+    return { freqs, magDB, phase };
+  }
+
+  const windowed = computeFFT(xw, winSum);
+  const traces_time = [{ x: t, y: xw, name: '加窗訊號', line: { color: '#06b6d4', width: 1.5 } }];
+  const traces_mag = [{ x: windowed.freqs, y: windowed.magDB, name: `${winName} 窗`, line: { color: '#10b981', width: 1.5 } }];
+  const traces_phase = [{ x: windowed.freqs, y: windowed.phase, name: `${winName} 窗`, line: { color: '#8b5cf6', width: 1 }, mode: 'markers', marker: { size: 2 } }];
+
+  if (doCompare) {
+    const nowin = computeFFT(x, N);
+    traces_time.unshift({ x: t, y: x, name: '原始訊號', line: { color: '#f59e0b', width: 1, dash: 'dash' } });
+    traces_mag.push({ x: nowin.freqs, y: nowin.magDB, name: 'Rectangular（無窗）', line: { color: '#f59e0b', width: 1, dash: 'dash' } });
+    traces_phase.push({ x: nowin.freqs, y: nowin.phase, name: 'Rectangular（無窗）', line: { color: '#f59e0b', width: 1 }, mode: 'markers', marker: { size: 2 } });
+  }
+
+  Plotly.react('labTimePlot', traces_time, plotLayout('時間域波形', '時間 (s)', '振幅'), plotConfig);
+  Plotly.react('labMagPlot', traces_mag, plotLayout('幅度譜', '頻率 (Hz)', '幅度 (dB)', {
+    yaxis: { title: '幅度 (dB)', range: [-100, 10], color: isDark() ? '#94a3b8' : '#475569', gridcolor: isDark() ? '#334155' : '#e2e8f0' }
+  }), plotConfig);
+  Plotly.react('labPhasePlot', traces_phase, plotLayout('相位譜', '頻率 (Hz)', '相位 (度)'), plotConfig);
+}
+
+function exportLabPNG() {
+  ['labTimePlot', 'labMagPlot', 'labPhasePlot'].forEach(id => {
+    Plotly.downloadImage(id, { format: 'png', width: 1200, height: 400, filename: id });
+  });
+}
+
+// ============================================
+// 自我測驗
+// ============================================
+const quizData = [
+  {
+    q: '傅立葉轉換將訊號從什麼域轉換到什麼域？',
+    opts: ['時間域 → 空間域', '時間域 → 頻率域', '頻率域 → z 域', '時間域 → 拉普拉斯域'],
+    ans: 1,
+    explain: '傅立葉轉換的核心功能是將訊號從時間域（Time Domain）轉換到頻率域（Frequency Domain），揭示訊號的頻率組成。'
+  },
+  {
+    q: '方波的傅立葉級數只包含哪些次諧波？',
+    opts: ['所有次諧波', '只有偶數次諧波', '只有奇數次諧波', '只有基頻'],
+    ans: 2,
+    explain: '對稱方波具有半波對稱性（Half-Wave Symmetry），因此只包含奇數次諧波（1, 3, 5, ...），且振幅以 1/n 衰減。'
+  },
+  {
+    q: 'FFT 的時間複雜度為何？',
+    opts: ['O(N)', 'O(N log N)', 'O(N²)', 'O(N² log N)'],
+    ans: 1,
+    explain: 'Cooley-Tukey FFT 演算法透過遞迴分解，將 DFT 的計算複雜度從 O(N²) 降低到 O(N log N)。'
+  },
+  {
+    q: '關於零填充（Zero-Padding），下列何者正確？',
+    opts: ['可以提高真正的頻率解析度', '等同於增加訊號觀測時間', '增加頻率域的內插密度', '可以消除頻譜洩漏'],
+    ans: 2,
+    explain: '零填充只是增加 DFT 在頻率域上的取樣密度（更細的 frequency bins），相當於對 DTFT 做更密集的取樣，但不會增加新的頻率資訊或提高真正的解析度。'
+  },
+  {
+    q: '下列哪種視窗函數的旁瓣衰減最大（動態範圍最好）？',
+    opts: ['Rectangular（矩形窗）', 'Hann 窗', 'Hamming 窗', 'Blackman 窗'],
+    ans: 3,
+    explain: 'Blackman 窗的旁瓣峰值約為 -58 dB，遠低於 Rectangular (-13 dB)、Hann (-31 dB)、Hamming (-42 dB)。代價是主瓣較寬。'
+  },
+  {
+    q: '根據 Nyquist-Shannon 取樣定理，取樣一個最高頻率為 1 kHz 的訊號，最低取樣率應為？',
+    opts: ['500 Hz', '1 kHz', '2 kHz', '4 kHz'],
+    ans: 2,
+    explain: '取樣定理要求 fs ≥ 2·fmax。因此取樣最高 1 kHz 的訊號，至少需要 2 kHz 的取樣率。低於此值會產生混疊（Aliasing）。'
+  },
+  {
+    q: '卷積定理（Convolution Theorem）指出時域卷積等同於頻域的什麼運算？',
+    opts: ['加法', '減法', '逐點相乘', '卷積'],
+    ans: 2,
+    explain: '卷積定理：x(t) * h(t) ↔ X(jω)·H(jω)。時域的卷積在頻域變成逐點相乘，這是濾波器設計和快速卷積的理論基礎。'
+  },
+  {
+    q: 'STFT 中增加視窗長度會造成什麼影響？',
+    opts: ['時間解析度和頻率解析度都提高', '時間解析度提高，頻率解析度降低', '時間解析度降低，頻率解析度提高', '兩者都不受影響'],
+    ans: 2,
+    explain: '這是不確定性原理的體現。較長的視窗提供更好的頻率解析度（較窄的頻率 bin），但時間解析度降低（較寬的時間 bin）。反之亦然。'
+  },
+  {
+    q: 'Gibbs 現象描述的是什麼？',
+    opts: ['頻譜洩漏效應', '有限項傅立葉級數在不連續點的過衝現象', '混疊效應', '量化誤差'],
+    ans: 1,
+    explain: 'Gibbs 現象是指用有限項傅立葉級數逼近不連續訊號時，在不連續點附近出現約 9% 的過衝（overshoot），即使項數趨近無限大也不會完全消失。'
+  },
+  {
+    q: '使用 Welch 法估計功率譜密度（PSD）相比單次 FFT 的主要優點是？',
+    opts: ['計算速度更快', '頻率解析度更高', '降低估計的變異數（更穩定）', '不需要加窗'],
+    ans: 2,
+    explain: 'Welch 法將訊號分成多個重疊的段落，分別加窗做 FFT 後取平均。這種平均操作可以顯著降低 PSD 估計的變異數，得到更穩定的結果，代價是頻率解析度略有下降。'
+  }
+];
+
+function renderQuiz() {
+  const container = document.getElementById('quizContainer');
+  container.innerHTML = quizData.map((q, i) => `
+    <div class="info-card mb-4" id="quiz-q${i}">
+      <p class="font-bold mb-3">${i + 1}. ${q.q}</p>
+      <div class="space-y-2">
+        ${q.opts.map((opt, j) => `
+          <label class="flex items-start gap-2 p-2 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700/50 cursor-pointer transition">
+            <input type="radio" name="q${i}" value="${j}" class="mt-1 accent-cyan-500">
+            <span class="text-sm">${opt}</span>
+          </label>
+        `).join('')}
+      </div>
+      <div id="quiz-explain${i}" class="hidden mt-3 p-3 rounded-lg text-sm"></div>
+    </div>
+  `).join('');
+}
+
+function submitQuiz() {
+  let score = 0;
+  quizData.forEach((q, i) => {
+    const selected = document.querySelector(`input[name="q${i}"]:checked`);
+    const explainDiv = document.getElementById(`quiz-explain${i}`);
+    const cardDiv = document.getElementById(`quiz-q${i}`);
+
+    explainDiv.classList.remove('hidden');
+    if (selected && parseInt(selected.value) === q.ans) {
+      score++;
+      explainDiv.className = 'mt-3 p-3 rounded-lg text-sm bg-emerald-50 dark:bg-emerald-900/30 text-emerald-800 dark:text-emerald-300';
+      explainDiv.innerHTML = `<strong>正確！</strong> ${q.explain}`;
+    } else {
+      explainDiv.className = 'mt-3 p-3 rounded-lg text-sm bg-red-50 dark:bg-red-900/30 text-red-800 dark:text-red-300';
+      explainDiv.innerHTML = `<strong>錯誤。</strong>正確答案：${q.opts[q.ans]}。${q.explain}`;
+    }
+  });
+
+  const resultDiv = document.getElementById('quizResult');
+  resultDiv.classList.remove('hidden');
+  const pct = Math.round(score / quizData.length * 100);
+  resultDiv.innerHTML = `
+    <div class="info-card text-center">
+      <p class="text-3xl font-bold mb-2 ${pct >= 70 ? 'text-emerald-500' : 'text-amber-500'}">${score} / ${quizData.length}</p>
+      <p class="text-lg">${pct >= 90 ? '太棒了！你對傅立葉分析掌握得非常好！' : pct >= 70 ? '不錯！建議複習一下答錯的部分。' : '建議重新閱讀相關章節後再試一次。'}</p>
+    </div>
+  `;
+}
+
+function resetQuiz() {
+  document.getElementById('quizResult').classList.add('hidden');
+  renderQuiz();
+}
+
+// ============================================
+// 初始化
+// ============================================
+document.addEventListener('DOMContentLoaded', () => {
+  // 讀取深色模式偏好
+  if (localStorage.getItem('darkMode') === 'true' || (!localStorage.getItem('darkMode') && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+    document.documentElement.classList.add('dark');
+  }
+
+  // 渲染測驗
+  renderQuiz();
+
+  // 初始化首頁圖表
+  setTimeout(() => {
+    navigateTo('home');
+  }, 300);
+});
+</script>
+</body>
+</html>
