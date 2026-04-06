@@ -1879,7 +1879,12 @@ $$x(t) = \sum_{n=-\infty}^{\infty}x(nT_s)\,\text{sinc}\!\left(\frac{t-nT_s}{T_s}
 <p class="text-xs font-bold text-slate-500 mb-1 mt-4">重建比對：經過「取樣 → 重建」後的波形 vs 原始波形</p>
 <p class="text-xs text-slate-400 mb-2">紅色 = 重建波形（你實際得到的），灰色虛線 = 原始波形（你想要的），橘色 = 兩者之差（誤差）。無混疊時誤差為零。</p>
 <div id="plotP26r" class="plot" style="min-height:300px"></div>
-<div id="p26err" class="text-center text-sm font-bold mt-2 mb-2"></div>
+<div id="p26err" class="text-center text-sm font-bold mt-2 mb-3"></div>
+<div class="text-xs text-slate-400 dark:text-slate-500 p-3 rounded-lg bg-slate-50 dark:bg-slate-800/50 mb-4">
+<p class="font-semibold text-slate-500 dark:text-slate-400 mb-1">SNR 計算方式：</p>
+$$\text{SNR (dB)} = 20\log_{10}\frac{\text{RMS}_{\text{original}}}{\text{RMS}_{\text{error}}} = 20\log_{10}\frac{\sqrt{\frac{1}{N}\sum_{i}x_{\text{orig}}^2[i]}}{\sqrt{\frac{1}{N}\sum_{i}(x_{\text{orig}}[i]-x_{\text{recon}}[i])^2}}$$
+<p class="mt-1">其中 $x_{\text{orig}}$ = 原始訊號，$x_{\text{recon}}$ = 經取樣重建後的訊號。SNR 越高表示重建越忠實；<strong>無混疊時 SNR = ∞（誤差為零）</strong>；混疊越嚴重 SNR 越低。</p>
+</div>
 
 <div class="tip mt-4">
 <p class="text-sm"><strong>觀察重點：</strong></p>
@@ -7458,19 +7463,19 @@ function updateP26(){
     {x:tcR,y:xReconR,name:'重建訊號（實際得到的）',line:{color:hasAlias?'#ef4444':'#10b981',width:2}},
     {x:tcR,y:xErr,name:'誤差 = 原始 − 重建',fill:'tozeroy',fillcolor:hasAlias?'rgba(239,68,68,0.15)':'rgba(16,185,129,0.08)',line:{color:hasAlias?'#f59e0b':'#10b981',width:1},yaxis:'y2'}
   ];
-  Plotly.react('plotP26r',trR,Object.assign(pl(
-    hasAlias?`⚠ 重建失真！SNR = ${snrDB.toFixed(1)} dB`:'✓ 完美重建（誤差 = 0）',
-    '時間 (s)','振幅'),{
+  const errRange=maxErr>0?maxErr*2.5:0.5;
+  Plotly.react('plotP26r',trR,Object.assign(pl('','時間 (s)',''),{
     yaxis:{title:'振幅',color:dk()?'#94a3b8':'#475569',gridcolor:dk()?'#1e293b':'#e2e8f0'},
-    yaxis2:{title:'誤差',overlaying:'y',side:'right',color:'#f59e0b',showgrid:false,range:[-maxErr*3||(-0.1),maxErr*3||(0.1)]},
-    legend:{x:0,y:1.15,orientation:'h',font:{size:10}}
+    yaxis2:{title:'',overlaying:'y',side:'right',showgrid:false,range:[-errRange,errRange],zeroline:false},
+    legend:{x:0.01,y:-0.22,orientation:'h',font:{size:10},bgcolor:'rgba(0,0,0,0)'},
+    margin:{l:55,r:40,t:10,b:70}
   }),pc);
   // Error summary
   const errEl=document.getElementById('p26err');
   if(hasAlias){
-    errEl.innerHTML=`<span class="text-red-500">失真不可逆！</span> 峰值誤差 = ${maxErr.toFixed(3)}，RMS 誤差 = ${rmsErr.toFixed(3)}，SNR = ${snrDB.toFixed(1)} dB — <span class="text-xs text-slate-500">混疊後無論用什麼演算法都無法恢復原始訊號</span>`;
+    errEl.innerHTML=`<span class="text-red-500 text-base">⚠ 失真不可逆</span><br><span class="text-slate-600 dark:text-slate-400">峰值誤差 = ${maxErr.toFixed(3)} | RMS 誤差 = ${rmsErr.toFixed(3)} | <strong>SNR = ${snrDB.toFixed(1)} dB</strong></span><br><span class="text-xs text-slate-400">混疊後無論用什麼演算法都無法恢復原始訊號</span>`;
   } else {
-    errEl.innerHTML=`<span class="text-emerald-500">完美重建 ✓</span> 誤差 = 0 — 取樣率足夠時，sinc 內插可精確恢復原始連續訊號`;
+    errEl.innerHTML=`<span class="text-emerald-500 text-base">✓ 完美重建</span><br><span class="text-slate-600 dark:text-slate-400">誤差 = 0 | <strong>SNR = ∞ dB</strong></span><br><span class="text-xs text-slate-400">取樣率足夠時，sinc 內插可精確恢復原始連續訊號</span>`;
   }
 }
 
