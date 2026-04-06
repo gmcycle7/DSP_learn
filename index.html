@@ -3413,9 +3413,9 @@ $$f_i[n] = \frac{f_s}{2\pi}\,\text{Im}\!\left(\frac{z[n]\,z^*[n-1]}{|z[n]\,z^*[n
     <button class="btn" onclick="updateP42()">分析</button>
   </div>
 
-  <div id="plotP42raw"    style="width:100%; height:220px;"></div>
-  <div id="plotP42fft"    style="width:100%; height:220px;"></div>
-  <div id="plotP42env"    style="width:100%; height:220px;"></div>
+  <div id="plotP42raw" class="plot" style="min-height:240px"></div>
+  <div id="plotP42fft" class="plot" style="min-height:240px"></div>
+  <div id="plotP42env" class="plot" style="min-height:240px"></div>
   <div id="plotP42envfft" style="width:100%; height:220px;"></div>
 </div>
 
@@ -5260,7 +5260,7 @@ for each freq in [697, 770, 852, 941, 1209, 1336, 1477, 1633]:
   </div>
 
   <div id="plotP61eff" class="plot" style="min-height:340px;"></div>
-  <div id="p61info" style="margin-top:8px; padding:8px; border-radius:6px; font-size:.8rem; text-align:center; background:rgba(6,182,212,0.08); border:1px solid rgba(6,182,212,0.2);">
+  <div id="p61info" class="mt-2" style=" padding:8px; border-radius:6px; font-size:.8rem; text-align:center; background:rgba(6,182,212,0.08); border:1px solid rgba(6,182,212,0.2);">
   </div>
 </div>
 
@@ -5926,10 +5926,10 @@ result = real(ifft2(ifftshift(G)))
     <span id="p65d0v">20</span>
   </div>
 
-  <div style="display:flex; flex-wrap:wrap; gap:8px; justify-content:center;">
-    <div id="plotP65img" style="width:320px; height:320px;"></div>
-    <div id="plotP65fft" style="width:320px; height:320px;"></div>
-    <div id="plotP65out" style="width:320px; height:320px;"></div>
+  <div class="grid md:grid-cols-3 gap-3">
+    <div><p class="text-xs text-center font-bold text-slate-500 mb-1">原始影像</p><div id="plotP65img" class="plot" style="min-height:280px"></div></div>
+    <div><p class="text-xs text-center font-bold text-slate-500 mb-1">2D FFT 頻譜</p><div id="plotP65fft" class="plot" style="min-height:280px"></div></div>
+    <div><p class="text-xs text-center font-bold text-slate-500 mb-1">濾波後影像</p><div id="plotP65out" class="plot" style="min-height:280px"></div></div>
   </div>
 </div>
 
@@ -6146,7 +6146,7 @@ result = real(ifft2(ifftshift(G)))
     <button class="px-3 py-1 bg-cyan-500 text-white rounded text-xs" onclick="updateP66full()">傳送 + 接收</button>
   </div>
 
-  <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
+  <div class="grid md:grid-cols-2 gap-3">
     <div id="plotP66tx" class="plot" style="min-height:280px"></div>
     <div id="plotP66rx" class="plot" style="min-height:280px"></div>
     <div id="plotP66td" class="plot" style="min-height:280px"></div>
@@ -6359,7 +6359,7 @@ v_max = λ / (4 × T_chirp) = 3.896×10⁻³ / (4 × 50×10⁻⁶) = 19.5 m/s �
   </div>
 
   <div id="plotRadarAF" class="plot" style="min-height:420px;"></div>
-  <div id="radarAFdesc" style="margin-top:8px; padding:10px; border-radius:6px; font-size:.85rem; background:rgba(6,182,212,0.08); border:1px solid rgba(6,182,212,0.2);">
+  <div id="radarAFdesc" class="mt-2" style=" padding:10px; border-radius:6px; font-size:.85rem; background:rgba(6,182,212,0.08); border:1px solid rgba(6,182,212,0.2);">
     波形說明將在此顯示
   </div>
 </div>
@@ -6403,7 +6403,7 @@ v_max = λ / (4 × T_chirp) = 3.896×10⁻³ / (4 × 50×10⁻⁶) = 19.5 m/s �
 
   <div id="plotRadarChirp" class="plot" style="min-height:220px;"></div>
   <div id="plotRadarMF"    class="plot" style="min-height:280px;"></div>
-  <div id="radarMFinfo" style="margin-top:8px; padding:10px; border-radius:6px; font-size:.85rem; font-family:monospace; text-align:center; background:rgba(6,182,212,0.08); border:1px solid rgba(6,182,212,0.2);">
+  <div id="radarMFinfo" class="mt-2" style=" padding:10px; border-radius:6px; font-size:.85rem; font-family:monospace; text-align:center; background:rgba(6,182,212,0.08); border:1px solid rgba(6,182,212,0.2);">
     壓縮比與解析度資訊將在此顯示
   </div>
 </div>
@@ -6472,7 +6472,7 @@ v_max = λ / (4 × T_chirp) = 3.896×10⁻³ / (4 × 50×10⁻⁶) = 19.5 m/s �
   </div>
 
   <div id="plotP67rd" class="plot" style="min-height:400px;"></div>
-  <div id="p67res" style="margin-top:8px; padding:8px; border-radius:6px; font-size:.8rem; font-family:monospace; background:rgba(6,182,212,0.08); border:1px solid rgba(6,182,212,0.2);">
+  <div id="p67res" class="mt-2" style=" padding:8px; border-radius:6px; font-size:.8rem; font-family:monospace; background:rgba(6,182,212,0.08); border:1px solid rgba(6,182,212,0.2);">
     解析度資訊將在此顯示
   </div>
 </div>
@@ -6867,7 +6867,7 @@ LF_HF_ratio = LF_power / HF_power
 
   <div id="plotP69eeg" class="plot" style="min-height:360px;"></div>
 
-  <div style="margin:12px 0;">
+  <div class="my-3">
     <label style="display:block; margin:4px 0;">
       <input type="radio" name="p69answer" value="awake"> 清醒 (Awake) — 強 &alpha;(8-13Hz) + &beta;(13-30Hz)
     </label>
@@ -6887,7 +6887,7 @@ LF_HF_ratio = LF_power / HF_power
 
   <button class="px-3 py-1 bg-emerald-500 text-white rounded text-xs" onclick="submitEEGDiag()">提交判讀</button>
 
-  <div id="p69result" style="margin-top:12px; padding:10px; border-radius:6px; display:none;"></div>
+  <div id="p69result" class="mt-3" style=" padding:10px; border-radius:6px; display:none;"></div>
 </div>
 <div class="ch-nav"><a onclick="go('p6-8')">← 6.8 陣列</a><a onclick="go('p6-10')">6.10 振動 →</a></div>
 </section>
@@ -7155,9 +7155,9 @@ FTF = (1/2) × 30 × (1 - 7.94/38.5) = 15 × 0.7938
     <button class="btn" onclick="generateVibCase()">產生新案例</button>
   </div>
 
-  <div id="plotP610diag" style="width:100%; height:320px;"></div>
+  <div id="plotP610diag" class="plot" style="min-height:320px"></div>
 
-  <div style="margin:12px 0;">
+  <div class="my-3">
     <label style="display:block; margin:4px 0;">
       <input type="radio" name="p610answer" id="p610answer" value="imbalance"> 不平衡 (1X 為主)
     </label>
@@ -7174,7 +7174,7 @@ FTF = (1/2) × 30 × (1 - 7.94/38.5) = 15 × 0.7938
 
   <button class="btn" onclick="submitVibDiag()">提交診斷</button>
 
-  <div id="p610result" style="margin-top:12px; padding:10px; border-radius:6px; display:none;"></div>
+  <div id="p610result" class="mt-3" style=" padding:10px; border-radius:6px; display:none;"></div>
 </div>
 <div class="ch-nav"><a onclick="go('p6-9')">← 6.9 生醫</a><a onclick="go('lab')">實驗室 →</a></div>
 </section>
