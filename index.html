@@ -2227,7 +2227,7 @@ $$\text{Var}[\hat{S}(\omega)] \approx S^2(\omega) \quad (\text{不隨 } N \text{
 <div class="card">
 <h2 class="text-lg font-bold mb-3">互動：洩漏與分辨能力</h2>
 <p class="text-sm text-slate-500 mb-3">兩個接近頻率的正弦波，切換視窗即時比較 FFT。當兩個頻率太接近時，某些視窗的主瓣太寬，會把兩個峰合併成一個。</p>
-<div class="grid grid-cols-2 gap-3 mb-3">
+<div class="grid md:grid-cols-2 gap-3 mb-3">
   <div><label class="text-xs">f1=<span id="p31f1v">100</span> Hz</label><input type="range" id="p31f1" min="50" max="200" value="100" class="w-full" oninput="updateP31b()"></div>
   <div><label class="text-xs">f2=<span id="p31f2v">108</span> Hz</label><input type="range" id="p31f2" min="50" max="200" value="108" class="w-full" oninput="updateP31b()"></div>
 </div>
@@ -5477,20 +5477,29 @@ for n in range(-36, 37):  // -M/2 到 M/2
   </table>
 
   <!-- 互動元素 -->
-  <div class="plot" id="plotP64" style="display:flex;align-items:center;justify-content:center;color:#94a3b8;font-size:.875rem;">調整上方參數後圖表將自動顯示</div>
-  <div style="margin:10px 0;">
-    <label>截止頻率 (Hz): <input type="range" id="p64f" min="10" max="400" value="100" step="5"><span id="p64f_v">100</span></label><br>
-    <label>濾波器階數: <input type="range" id="p64o" min="5" max="201" value="37" step="2"><span id="p64o_v">37</span></label><br>
-    <label>窗函數:
-      <select id="p64w">
+  <div class="flex flex-col gap-3 mb-4">
+    <div class="flex items-center gap-3">
+      <label class="text-xs font-medium whitespace-nowrap">截止頻率 (Hz):</label>
+      <input type="range" id="p64f" min="10" max="400" value="100" step="5" class="w-48" oninput="document.getElementById('p64f_v').textContent=this.value;updateP64()">
+      <span id="p64f_v" class="text-xs font-mono w-8">100</span>
+    </div>
+    <div class="flex items-center gap-3">
+      <label class="text-xs font-medium whitespace-nowrap">濾波器階數:</label>
+      <input type="range" id="p64o" min="5" max="201" value="37" step="2" class="w-48" oninput="document.getElementById('p64o_v').textContent=this.value;updateP64()">
+      <span id="p64o_v" class="text-xs font-mono w-8">37</span>
+    </div>
+    <div class="flex items-center gap-3">
+      <label class="text-xs font-medium whitespace-nowrap">窗函數:</label>
+      <select id="p64w" class="border rounded px-2 py-1 text-xs dark:bg-slate-700 dark:border-slate-600" onchange="updateP64()">
         <option value="rect">矩形 (Rectangular)</option>
         <option value="hann" selected>Hann</option>
         <option value="hamming">Hamming</option>
         <option value="blackman">Blackman</option>
         <option value="kaiser">Kaiser (β=5.65)</option>
       </select>
-    </label>
+    </div>
   </div>
+  <div id="plotP64" class="plot" style="display:flex;align-items:center;justify-content:center;color:#94a3b8;font-size:.875rem;">調整上方參數後圖表將自動顯示</div>
 
   <!-- 應用場景 -->
   <h3>應用場景</h3>
@@ -6136,11 +6145,19 @@ d = λ/2 = 5.36 mm (天線間距)
   <p>其中 $\mathbf{E}_n$ 是雜訊子空間。尖峰位置 = 訊號來向。可以分辨間隔遠小於波束寬度的訊號源。</p>
 
   <!-- 互動元素 -->
-  <div class="plot" id="plotP68" style="display:flex;align-items:center;justify-content:center;color:#94a3b8;font-size:.875rem;">調整上方參數後圖表將自動顯示</div>
-  <div style="margin:10px 0;">
-    <label>天線數量 M: <input type="range" id="p68m" min="4" max="64" value="16" step="1"><span id="p68m_v">16</span></label><br>
-    <label>天線間距 d/&lambda;: <input type="range" id="p68d" min="0.2" max="1.0" value="0.5" step="0.05"><span id="p68d_v">0.5</span></label>
+  <div class="flex flex-col gap-3 mb-4">
+    <div class="flex items-center gap-3">
+      <label class="text-xs font-medium whitespace-nowrap">天線數量 M:</label>
+      <input type="range" id="p68m" min="4" max="64" value="16" step="1" class="w-48" oninput="document.getElementById('p68m_v').textContent=this.value;updateP68()">
+      <span id="p68m_v" class="text-xs font-mono w-8">16</span>
+    </div>
+    <div class="flex items-center gap-3">
+      <label class="text-xs font-medium whitespace-nowrap">天線間距 d/λ:</label>
+      <input type="range" id="p68d" min="0.2" max="1.0" value="0.5" step="0.05" class="w-48" oninput="document.getElementById('p68d_v').textContent=(+this.value).toFixed(2);updateP68()">
+      <span id="p68d_v" class="text-xs font-mono w-8">0.5</span>
+    </div>
   </div>
+  <div id="plotP68" class="plot" style="display:flex;align-items:center;justify-content:center;color:#94a3b8;font-size:.875rem;">調整上方參數後圖表將自動顯示</div>
 
   <!-- 應用場景 -->
   <h3>應用場景</h3>
