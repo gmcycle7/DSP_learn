@@ -6702,83 +6702,60 @@ FTF = (1/2) × 30 × (1 - 7.94/38.5) = 15 × 0.7938
 
 
 <!-- ============================== Lab ============================== -->
-<section id="sec-lab" class="card">
-  <h2>實驗室：訊號產生器 + FFT 頻譜分析儀 (Lab: Signal Generator + FFT Spectrum Analyzer)</h2>
+<section id="sec-lab" class="sec hidden">
+  <h1 class="text-2xl font-bold mb-2">互動實驗室</h1>
+  <p class="text-slate-500 text-sm mb-4">Signal Generator + FFT Spectrum Analyzer</p>
 
-  <p class="lo">動手調參數，親眼觀察：頻率、振幅、雜訊、窗函數如何影響 FFT 結果。</p>
-
-  <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin:16px 0;">
-    <!-- 左側：控制面板 -->
-    <div class="card" style="padding:16px;">
-      <h3>訊號參數</h3>
-
-      <div style="margin-bottom:12px;">
-        <label><strong>成分 1 頻率 (Hz)：</strong>
-          <input type="range" id="lf1" min="1" max="500" value="50" step="1">
-          <span id="lf1_v">50</span> Hz
-        </label>
+  <div class="card">
+    <h2 class="text-lg font-bold mb-4">訊號產生器</h2>
+    <div class="grid md:grid-cols-2 gap-x-6 gap-y-3 mb-4">
+      <div class="flex items-center gap-3">
+        <label class="text-xs font-medium whitespace-nowrap w-28">成分 1 頻率：</label>
+        <input type="range" id="lf1" min="1" max="500" value="50" step="1" class="flex-1" oninput="document.getElementById('lf1_v').textContent=this.value">
+        <span id="lf1_v" class="text-xs font-mono w-10 text-right">50</span><span class="text-xs text-slate-400">Hz</span>
       </div>
-      <div style="margin-bottom:12px;">
-        <label><strong>成分 1 振幅：</strong>
-          <input type="range" id="la1" min="0" max="2" value="1" step="0.05">
-          <span id="la1_v">1.00</span>
-        </label>
+      <div class="flex items-center gap-3">
+        <label class="text-xs font-medium whitespace-nowrap w-28">成分 1 振幅：</label>
+        <input type="range" id="la1" min="0" max="2" value="1" step="0.05" class="flex-1" oninput="document.getElementById('la1_v').textContent=(+this.value).toFixed(2)">
+        <span id="la1_v" class="text-xs font-mono w-10 text-right">1.00</span>
       </div>
-      <div style="margin-bottom:12px;">
-        <label><strong>成分 2 頻率 (Hz)：</strong>
-          <input type="range" id="lf2" min="1" max="500" value="120" step="1">
-          <span id="lf2_v">120</span> Hz
-        </label>
+      <div class="flex items-center gap-3">
+        <label class="text-xs font-medium whitespace-nowrap w-28">成分 2 頻率：</label>
+        <input type="range" id="lf2" min="1" max="500" value="120" step="1" class="flex-1" oninput="document.getElementById('lf2_v').textContent=this.value">
+        <span id="lf2_v" class="text-xs font-mono w-10 text-right">120</span><span class="text-xs text-slate-400">Hz</span>
       </div>
-      <div style="margin-bottom:12px;">
-        <label><strong>成分 2 振幅：</strong>
-          <input type="range" id="la2" min="0" max="2" value="0.5" step="0.05">
-          <span id="la2_v">0.50</span>
-        </label>
+      <div class="flex items-center gap-3">
+        <label class="text-xs font-medium whitespace-nowrap w-28">成分 2 振幅：</label>
+        <input type="range" id="la2" min="0" max="2" value="0.5" step="0.05" class="flex-1" oninput="document.getElementById('la2_v').textContent=(+this.value).toFixed(2)">
+        <span id="la2_v" class="text-xs font-mono w-10 text-right">0.50</span>
       </div>
-      <div style="margin-bottom:12px;">
-        <label><strong>雜訊位準 (Noise Level)：</strong>
-          <input type="range" id="lnoise" min="0" max="2" value="0.1" step="0.05">
-          <span id="lnoise_v">0.10</span>
-        </label>
+      <div class="flex items-center gap-3">
+        <label class="text-xs font-medium whitespace-nowrap w-28">雜訊位準：</label>
+        <input type="range" id="lnoise" min="0" max="2" value="0.1" step="0.05" class="flex-1" oninput="document.getElementById('lnoise_v').textContent=(+this.value).toFixed(2)">
+        <span id="lnoise_v" class="text-xs font-mono w-10 text-right">0.10</span>
       </div>
-      <div style="margin-bottom:12px;">
-        <label><strong>窗函數 (Window Function)：</strong>
-          <select id="lwin">
-            <option value="rect">矩形窗 (Rectangular)</option>
-            <option value="hann" selected>Hann 窗</option>
-            <option value="hamming">Hamming 窗</option>
-            <option value="blackman">Blackman 窗</option>
-          </select>
-        </label>
-      </div>
-      <div style="margin-top:16px;">
-        <button onclick="runLab()" style="padding:8px 24px; font-size:16px; cursor:pointer;">計算 FFT</button>
+      <div class="flex items-center gap-3">
+        <label class="text-xs font-medium whitespace-nowrap w-28">窗函數：</label>
+        <select id="lwin" class="flex-1 border rounded-lg px-3 py-1.5 text-sm dark:bg-slate-700 dark:border-slate-600">
+          <option value="rectangular">Rectangular（矩形窗）</option>
+          <option value="hann" selected>Hann</option>
+          <option value="hamming">Hamming</option>
+          <option value="blackman">Blackman</option>
+        </select>
       </div>
     </div>
-
-    <!-- 右側：說明 -->
-    <div class="tip" style="padding:16px;">
-      <h3>實驗指引</h3>
-      <p><strong>實驗 1：頻率解析度</strong></p>
-      <p>設定 f1=50Hz, f2=55Hz（相差僅 5Hz）。用矩形窗觀察——能分辨嗎？切換到 Hann 窗呢？增加取樣長度（N 點更多）呢？</p>
-
-      <p><strong>實驗 2：頻譜洩漏</strong></p>
-      <p>設定 f1=50Hz, A1=1, f2 關掉（A2=0）。取樣率 1024Hz, N=1024。50Hz 剛好是整數 bin → 沒有洩漏。改成 f1=50.5Hz → 能量洩漏到鄰近 bin。用 Hann 窗改善了多少？</p>
-
-      <p><strong>實驗 3：雜訊的影響</strong></p>
-      <p>設定 f1=100Hz, A1=1。逐步增加雜訊位準。觀察頻譜底噪 (noise floor) 如何上升。什麼時候訊號峰值被淹沒？</p>
-
-      <p><strong>實驗 4：窗函數比較</strong></p>
-      <p>設定 f1=100Hz, A1=1, f2=105Hz, A2=0.01（相差 40dB）。矩形窗的旁瓣會蓋住弱訊號。切換到 Blackman 窗——能看到 f2 了嗎？</p>
-    </div>
+    <button onclick="runLab()" class="px-6 py-2.5 bg-gradient-to-r from-cyan-500 to-emerald-500 text-white rounded-xl font-medium shadow-lg shadow-cyan-500/25 hover:shadow-xl transition text-sm">計算 FFT</button>
   </div>
 
-  <!-- 時域圖 -->
-  <div class="plot" id="plotLabT" style="text-align:center;color:#94a3b8;font-size:.875rem;padding:2rem 0;min-height:300px">調整上方參數後圖表將自動顯示</div>
+  <div class="card">
+    <h2 class="text-lg font-bold mb-2">時域波形</h2>
+    <div id="plotLabT" class="plot" style="min-height:320px"></div>
+  </div>
 
-  <!-- 頻域圖 -->
-  <div class="plot" id="plotLabF" style="text-align:center;color:#94a3b8;font-size:.875rem;padding:2rem 0;min-height:300px">調整上方參數後圖表將自動顯示</div>
+  <div class="card">
+    <h2 class="text-lg font-bold mb-2">FFT 幅度譜</h2>
+    <div id="plotLabF" class="plot" style="min-height:320px"></div>
+  </div>
 
   <div class="tip" style="margin-top:16px;">
     <strong>技術細節：</strong>
