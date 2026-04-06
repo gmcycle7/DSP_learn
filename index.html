@@ -1858,10 +1858,33 @@ $$x(t) = \sum_{n=-\infty}^{\infty}x(nT_s)\,\text{sinc}\!\left(\frac{t-nT_s}{T_s}
 
 <!-- 互動 -->
 <div class="card">
-<h2 class="text-lg font-bold mb-3">互動：混疊 (Aliasing) 演示</h2>
-<p class="text-sm text-slate-500 mb-3">一個 80 Hz 的正弦波。調整取樣率 $f_s$。當 $f_s < 160$ Hz（Nyquist）時，觀察混疊現象——取樣後的訊號看起來像不同頻率。</p>
-<div class="mb-3"><label class="text-xs font-medium">$f_s$ = <span id="p26fv">200</span> Hz</label><input type="range" id="p26f" min="30" max="500" value="200" step="5" class="w-48" oninput="updateP26()"><span id="p26warn" class="text-xs text-red-500 font-bold ml-2 hidden">ALIASING!</span></div>
-<div id="plotP26" class="plot" style="text-align:center;color:#94a3b8;font-size:.875rem;padding:2rem 0;">調整上方參數後圖表將自動顯示</div>
+<h2 class="text-lg font-bold mb-3">互動：混疊 (Aliasing) 完整演示</h2>
+<p class="text-sm text-slate-500 mb-3">原始訊號包含三個成分：<strong>50 Hz + 120 Hz + 200 Hz</strong>。調整取樣率，觀察：(1) 時域中取樣點重建出錯誤的波形 (2) 頻譜中高頻成分折疊到低頻位置 (3) 哪些成分存活、哪些被混疊。</p>
+
+<div class="flex flex-wrap items-center gap-4 mb-2">
+  <div>
+    <label class="text-xs font-medium">取樣率 $f_s$ = <span id="p26fv" class="text-cyan-600 font-bold">500</span> Hz</label>
+    <input type="range" id="p26f" min="60" max="800" value="500" step="10" class="w-56" oninput="updateP26()">
+  </div>
+  <span id="p26warn" class="text-xs font-bold hidden"></span>
+</div>
+<div id="p26info" class="text-xs mb-3 p-2 rounded-lg bg-slate-50 dark:bg-slate-800 font-mono"></div>
+
+<p class="text-xs font-bold text-slate-500 mb-1">時域：原始 vs 取樣重建</p>
+<div id="plotP26t" class="plot" style="min-height:280px"></div>
+
+<p class="text-xs font-bold text-slate-500 mb-1 mt-4">頻域：原始頻譜 vs 取樣後頻譜（含混疊折疊）</p>
+<div id="plotP26f" class="plot" style="min-height:280px"></div>
+
+<div class="tip mt-4">
+<p class="text-sm"><strong>觀察重點：</strong></p>
+<ul class="text-xs space-y-1 mt-1 list-disc pl-5">
+<li><strong>$f_s = 500$ Hz：</strong>Nyquist = 250 Hz，三個成分 (50, 120, 200) 全在範圍內 → 無混疊，頻譜正確。</li>
+<li><strong>$f_s = 350$ Hz：</strong>Nyquist = 175 Hz，200 Hz 超出 → 折疊到 $|200 - 350| = 150$ Hz。頻譜出現假的 150 Hz 峰。</li>
+<li><strong>$f_s = 200$ Hz：</strong>Nyquist = 100 Hz，120 Hz 和 200 Hz 都超出 → 120 折疊到 80 Hz，200 折疊到 0 Hz（DC）。原始訊號被嚴重扭曲。</li>
+<li><strong>這就是為什麼 ADC 前面一定要放抗混疊濾波器 (AAF)。</strong></li>
+</ul>
+</div>
 </div>
 
 <!-- 陷阱 -->
@@ -7336,14 +7359,77 @@ function updateP25(){
 
 // === 2.6 Aliasing ===
 function updateP26(){
-  const fs=parseInt(document.getElementById('p26f').value);document.getElementById('p26fv').textContent=fs;
-  document.getElementById('p26warn').classList.toggle('hidden',fs>=100);
-  const fSig=50,dur=0.1,tc=ls(0,dur,1000),xc=tc.map(t=>Math.sin(2*Math.PI*fSig*t));
-  const Ns=Math.max(2,Math.round(fs*dur)),ts=ls(0,dur,Ns),xs=ts.map(t=>Math.sin(2*Math.PI*fSig*t));
-  let fA=fSig;if(fs<2*fSig)fA=Math.abs(fSig-fs*Math.round(fSig/fs));
-  const tr=[{x:tc,y:xc,name:'原始 50Hz',line:{color:'#94a3b8',dash:'dash',width:1}},{x:ts,y:xs,name:`取樣 fs=${fs}`,mode:'markers',marker:{size:7,color:'#06b6d4'}}];
-  if(fs<100)tr.push({x:tc,y:tc.map(t=>Math.sin(2*Math.PI*fA*t)),name:`混疊 ${fA.toFixed(1)}Hz`,line:{color:'#ef4444',width:2}});
-  Plotly.react('plotP26',tr,pl(fs>=100?'正常取樣':`混疊！fs=${fs}<100`,'t (s)','振幅'),pc);
+  const fs=parseInt(document.getElementById('p26f').value);
+  document.getElementById('p26fv').textContent=fs;
+  const fNyq=fs/2;
+  const freqs=[50,120,200], amps=[1.0,0.7,0.5];
+  // Check which components alias
+  const aliased=freqs.map((f,i)=>{
+    if(f<fNyq) return {orig:f,alias:f,amp:amps[i],ok:true};
+    // Folding: f_alias = |f - round(f/fs)*fs|
+    const fa=Math.abs(f-Math.round(f/fs)*fs);
+    return {orig:f,alias:fa,amp:amps[i],ok:false};
+  });
+  const hasAlias=aliased.some(a=>!a.ok);
+  // Info box
+  const warnEl=document.getElementById('p26warn');
+  const infoEl=document.getElementById('p26info');
+  if(hasAlias){
+    warnEl.classList.remove('hidden');
+    warnEl.innerHTML='<span class="text-red-500">⚠ ALIASING</span>';
+    let info='Nyquist = '+fNyq+' Hz | ';
+    aliased.forEach(a=>{
+      if(a.ok) info+=`<span class="text-emerald-600">${a.orig}Hz ✓</span> `;
+      else info+=`<span class="text-red-500">${a.orig}Hz → 折疊到 ${a.alias.toFixed(1)}Hz ✗</span> `;
+    });
+    infoEl.innerHTML=info;
+  } else {
+    warnEl.classList.add('hidden');
+    infoEl.innerHTML='Nyquist = '+fNyq+' Hz | <span class="text-emerald-600">所有成分 (50, 120, 200 Hz) 均在範圍內 ✓ 無混疊</span>';
+  }
+  // Time domain
+  const dur=0.05, Nc=2000;
+  const tc=ls(0,dur,Nc);
+  const xOrig=tc.map(t=>freqs.reduce((s,f,i)=>s+amps[i]*Math.sin(2*Math.PI*f*t),0));
+  const Ns=Math.max(3,Math.round(fs*dur));
+  const ts=ls(0,dur,Ns);
+  const xSamp=ts.map(t=>freqs.reduce((s,f,i)=>s+amps[i]*Math.sin(2*Math.PI*f*t),0));
+  // Reconstructed (what you'd hear: only the aliased frequencies)
+  const xRecon=tc.map(t=>aliased.reduce((s,a)=>s+a.amp*Math.sin(2*Math.PI*a.alias*t),0));
+  const trT=[
+    {x:tc,y:xOrig,name:'原始訊號 (50+120+200 Hz)',line:{color:'#94a3b8',width:1,dash:'dash'}},
+    {x:ts,y:xSamp,name:`取樣點 (fs=${fs})`,mode:'markers',marker:{size:6,color:'#06b6d4'}},
+    {x:tc,y:xRecon,name:'重建訊號 (你實際聽到的)',line:{color:hasAlias?'#ef4444':'#10b981',width:2}}
+  ];
+  Plotly.react('plotP26t',trT,pl(hasAlias?'⚠ 混疊！重建波形已失真':'✓ 正確重建','時間 (s)','振幅'),pc);
+  // Frequency domain
+  const Nfft=1024;
+  // Original spectrum (3 peaks)
+  const origPeaks=freqs.map((f,i)=>({x:f,y:amps[i],name:`${f} Hz (原始)`}));
+  // Aliased spectrum
+  const aliasPeaks=aliased.map(a=>({x:a.alias,y:a.amp,name:a.ok?`${a.orig} Hz ✓`:`${a.orig}→${a.alias.toFixed(0)} Hz ✗`,color:a.ok?'#10b981':'#ef4444'}));
+  // Build bar chart: original as gray, aliased as colored
+  const fAxis=[],magOrig=[],magAlias=[],colors=[];
+  // Create a simple bar representation
+  const trF=[
+    {x:freqs,y:amps,name:'原始頻譜',type:'bar',marker:{color:'rgba(148,163,184,0.4)'},width:8},
+    {x:aliased.map(a=>a.alias),y:aliased.map(a=>a.amp),name:'取樣後頻譜',type:'bar',marker:{color:aliased.map(a=>a.ok?'#10b981':'#ef4444')},width:5}
+  ];
+  // Add folding arrows as annotations
+  const annotations=[];
+  aliased.forEach(a=>{
+    if(!a.ok){
+      annotations.push({x:a.alias,y:a.amp+0.05,text:`← ${a.orig}Hz`,showarrow:false,font:{size:10,color:'#ef4444'}});
+    }
+  });
+  // Add Nyquist line
+  const shapes=[{type:'line',x0:fNyq,x1:fNyq,y0:0,y1:1.2,line:{color:'#f59e0b',dash:'dash',width:2}}];
+  annotations.push({x:fNyq,y:1.15,text:`Nyquist = ${fNyq} Hz`,showarrow:false,font:{size:10,color:'#f59e0b'}});
+  Plotly.react('plotP26f',trF,Object.assign(pl('頻譜：灰色=原始，彩色=取樣後','頻率 (Hz)','振幅'),{
+    xaxis:{title:'頻率 (Hz)',range:[0,Math.max(300,fNyq*1.5)],color:dk()?'#94a3b8':'#475569',gridcolor:dk()?'#1e293b':'#e2e8f0'},
+    yaxis:{title:'振幅',range:[0,1.3]},
+    shapes:shapes,annotations:annotations,barmode:'overlay'
+  }),pc);
 }
 
 // === Window functions ===
