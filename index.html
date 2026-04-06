@@ -9,45 +9,95 @@
 <script src="https://cdn.plot.ly/plotly-2.35.0.min.js"></script>
 <script>window.MathJax={tex:{inlineMath:[['$','$']],displayMath:[['$$','$$']]},startup:{typeset:false}};</script>
 <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" async></script>
-<style type="text/tailwindcss">
-::-webkit-scrollbar{width:5px}::-webkit-scrollbar-thumb{background:#0891b2;border-radius:3px}
+<style>
+/* Scrollbar */
+::-webkit-scrollbar{width:5px}
+::-webkit-scrollbar-thumb{background:#0891b2;border-radius:3px}
 .dark ::-webkit-scrollbar-thumb{background:#22d3ee}
-.sec{animation:fi .3s ease}@keyframes fi{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
-.card{@apply bg-white dark:bg-slate-800 rounded-xl p-5 border border-slate-200 dark:border-slate-700 shadow-sm mb-6}
-.fm{@apply bg-gradient-to-r from-cyan-50 to-emerald-50 dark:from-cyan-950/30 dark:to-emerald-950/30 border border-cyan-200 dark:border-cyan-800 rounded-xl p-5 my-4}
-.tip{@apply border-l-4 border-cyan-500 bg-cyan-50/50 dark:bg-cyan-950/20 p-4 rounded-r-lg my-4}
-.warn{@apply border-l-4 border-amber-500 bg-amber-50/50 dark:bg-amber-950/20 p-4 rounded-r-lg my-4}
-.hist{@apply border-l-4 border-violet-500 bg-violet-50/50 dark:bg-violet-950/20 p-4 rounded-r-lg my-4}
-.lo{@apply border-l-4 border-emerald-500 p-4 rounded-r-lg bg-emerald-50/30 dark:bg-emerald-950/20 mb-6}
-.lo h3{@apply font-bold text-emerald-700 dark:text-emerald-400 mb-2 text-sm uppercase tracking-wider}
-.code{@apply bg-slate-900 text-slate-200 rounded-lg p-4 overflow-x-auto text-sm font-mono leading-relaxed whitespace-pre my-4}
-.plot{@apply w-full rounded-lg overflow-hidden;min-height:340px}
-.dt{@apply w-full border-collapse text-sm}
-.dt th{@apply bg-cyan-800 text-white p-2.5 text-center font-medium}
-.dt td{@apply p-2.5 border-b border-slate-200 dark:border-slate-700 text-center}
-.dt tr:hover td{@apply bg-cyan-50/50 dark:bg-cyan-900/20}
-.sb-item{@apply w-full text-left px-3 py-1.5 rounded-lg text-sm transition-all duration-150}
-.sb-item:hover{@apply bg-slate-100 dark:bg-slate-700 pl-4}
-.sb-item.active{@apply border-l-3 border-cyan-500 bg-cyan-50 dark:bg-cyan-900/30 font-semibold}
-.deriv>summary{@apply cursor-pointer font-semibold text-cyan-700 dark:text-cyan-400 hover:underline select-none}
-.deriv>div{@apply mt-3 pl-4 border-l-2 border-cyan-200 dark:border-cyan-800 space-y-2}
-.ch-nav{@apply flex justify-between mt-8 pt-6 border-t border-slate-200 dark:border-slate-700}
-.ch-nav a{@apply inline-flex items-center gap-1 px-4 py-2 rounded-lg text-sm font-medium cursor-pointer hover:bg-cyan-50 dark:hover:bg-cyan-900/30 transition}
-.ref-box{@apply text-xs text-slate-500 dark:text-slate-400 mt-6 pt-4 border-t border-slate-200 dark:border-slate-700}
+
+/* Section animation */
+.sec{animation:fi .3s ease}
+@keyframes fi{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+/* Card */
+.card{background:#fff;border-radius:.75rem;padding:1.25rem;border:1px solid #e2e8f0;box-shadow:0 1px 2px rgba(0,0,0,.05);margin-bottom:1.5rem}
+.dark .card{background:#1e293b;border-color:#334155}
+
+/* Formula box */
+.fm{background:linear-gradient(to right,#ecfeff,#ecfdf5);border:1px solid #a5f3fc;border-radius:.75rem;padding:1.25rem;margin:1rem 0}
+.dark .fm{background:linear-gradient(to right,rgba(8,145,178,.1),rgba(5,150,105,.1));border-color:#155e75}
+
+/* Tip / Warn / Hist / LO boxes */
+.tip{border-left:4px solid #06b6d4;background:rgba(236,254,255,.5);padding:1rem;border-radius:0 .5rem .5rem 0;margin:1rem 0}
+.dark .tip{background:rgba(8,145,178,.08)}
+.warn{border-left:4px solid #f59e0b;background:rgba(255,251,235,.5);padding:1rem;border-radius:0 .5rem .5rem 0;margin:1rem 0}
+.dark .warn{background:rgba(245,158,11,.08)}
+.hist{border-left:4px solid #8b5cf6;background:rgba(245,243,255,.5);padding:1rem;border-radius:0 .5rem .5rem 0;margin:1rem 0}
+.dark .hist{background:rgba(139,92,246,.08)}
+.lo{border-left:4px solid #10b981;padding:1rem;border-radius:0 .5rem .5rem 0;background:rgba(236,253,245,.3);margin-bottom:1.5rem}
+.dark .lo{background:rgba(5,150,105,.08)}
+.lo h3{font-weight:700;color:#047857;margin-bottom:.5rem;font-size:.875rem;text-transform:uppercase;letter-spacing:.05em}
+.dark .lo h3{color:#34d399}
+
+/* Code block */
+.code{background:#0f172a;color:#e2e8f0;border-radius:.5rem;padding:1rem;overflow-x:auto;font-size:.875rem;font-family:ui-monospace,monospace;line-height:1.625;white-space:pre;margin:1rem 0}
+
+/* Plot container */
+.plot{width:100%;border-radius:.5rem;overflow:hidden;min-height:340px}
+
+/* Data table */
+.dt{width:100%;border-collapse:collapse;font-size:.875rem}
+.dt th{background:#155e75;color:#fff;padding:.625rem;text-align:center;font-weight:500}
+.dt td{padding:.625rem;border-bottom:1px solid #e2e8f0;text-align:center}
+.dark .dt td{border-color:#334155}
+.dt tr:hover td{background:rgba(236,254,255,.5)}
+.dark .dt tr:hover td{background:rgba(8,145,178,.08)}
+
+/* Sidebar items */
+.sb-item{width:100%;text-align:left;padding:.375rem .75rem;border-radius:.5rem;font-size:.875rem;transition:all .15s;cursor:pointer;background:none;border:none;color:inherit}
+.sb-item:hover{background:#f1f5f9;padding-left:1rem}
+.dark .sb-item:hover{background:#334155}
+.sb-item.active{border-left:3px solid #06b6d4;background:#ecfeff;font-weight:600}
+.dark .sb-item.active{background:rgba(8,145,178,.12)}
+
+/* Derivation toggle */
+.deriv>summary{cursor:pointer;font-weight:600;color:#0e7490;user-select:none}
+.deriv>summary:hover{text-decoration:underline}
+.dark .deriv>summary{color:#22d3ee}
+.deriv>div{margin-top:.75rem;padding-left:1rem;border-left:2px solid #a5f3fc}
+.dark .deriv>div{border-color:#155e75}
+.deriv>div>*+*{margin-top:.5rem}
+details.deriv[open]>summary::before{content:'▼ '}
+details.deriv:not([open])>summary::before{content:'▶ '}
+
+/* Chapter navigation */
+.ch-nav{display:flex;justify-content:space-between;margin-top:2rem;padding-top:1.5rem;border-top:1px solid #e2e8f0}
+.dark .ch-nav{border-color:#334155}
+.ch-nav a{display:inline-flex;align-items:center;gap:.25rem;padding:.5rem 1rem;border-radius:.5rem;font-size:.875rem;font-weight:500;cursor:pointer;transition:all .2s}
+.ch-nav a:hover{background:#ecfeff}
+.dark .ch-nav a:hover{background:rgba(8,145,178,.12)}
+
+/* References */
+.ref-box{font-size:.75rem;color:#64748b;margin-top:1.5rem;padding-top:1rem;border-top:1px solid #e2e8f0}
+.dark .ref-box{color:#94a3b8;border-color:#334155}
+
+/* Range inputs */
 input[type=range]{-webkit-appearance:none;height:5px;border-radius:3px;background:#cbd5e1;outline:none}
 input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:16px;height:16px;border-radius:50%;background:#0891b2;cursor:pointer}
 .dark input[type=range]{background:#475569}
+
+/* Sidebar parts */
+.sb-part[open]>summary .details-arrow{transform:rotate(90deg)}
+.sb-part>summary{list-style:none}
+.sb-part>summary::-webkit-details-marker{display:none}
+
+/* Mobile sidebar */
 @media(max-width:1024px){
   #sb{position:fixed;left:-280px;top:56px;bottom:0;z-index:40;transition:left .3s}
   #sb.open{left:0}
   #sb-ov{display:none;position:fixed;inset:0;top:56px;background:rgba(0,0,0,.5);z-index:35}
   #sb-ov.open{display:block}
 }
-details.deriv[open]>summary::before{content:'▼ '}
-details.deriv:not([open])>summary::before{content:'▶ '}
-.sb-part[open]>.summary .details-arrow,.sb-part[open]>summary .details-arrow{transform:rotate(90deg)}
-.sb-part>summary{list-style:none}
-.sb-part>summary::-webkit-details-marker{display:none}
 </style>
 </head>
 <body class="bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-200 transition-colors">
