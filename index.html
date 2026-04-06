@@ -45,6 +45,9 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:16px;heigh
 }
 details.deriv[open]>summary::before{content:'▼ '}
 details.deriv:not([open])>summary::before{content:'▶ '}
+.sb-part[open]>.summary .details-arrow,.sb-part[open]>summary .details-arrow{transform:rotate(90deg)}
+.sb-part>summary{list-style:none}
+.sb-part>summary::-webkit-details-marker{display:none}
 </style>
 </head>
 <body class="bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-200 transition-colors">
@@ -68,79 +71,117 @@ details.deriv:not([open])>summary::before{content:'▶ '}
 
 <!-- Sidebar -->
 <aside id="sb" class="fixed top-14 left-0 w-[260px] h-[calc(100vh-3.5rem)] bg-white dark:bg-slate-800 border-r border-slate-200 dark:border-slate-700 overflow-y-auto z-40 hidden lg:block text-[13px]">
-<div class="p-3 space-y-0.5">
-  <button onclick="go('home')" class="sb-item active" data-s="home">首頁</button>
+<div class="p-3">
+  <button onclick="go('home')" class="sb-item active mb-3" data-s="home">
+    <span class="inline-block w-5 text-center mr-1">🏠</span>首頁
+  </button>
 
-  <details open class="mt-2"><summary class="px-3 py-1.5 font-bold text-xs uppercase tracking-wider text-slate-400 cursor-pointer select-none">Part I — 數學基礎</summary>
-    <div class="ml-2 mt-1 space-y-0.5">
-      <button onclick="go('p1-1')" class="sb-item" data-s="p1-1">1.1 Hilbert 空間與 L²</button>
-      <button onclick="go('p1-2')" class="sb-item" data-s="p1-2">1.2 分佈理論</button>
-      <button onclick="go('p1-3')" class="sb-item" data-s="p1-3">1.3 收斂理論</button>
-      <button onclick="go('p1-4')" class="sb-item" data-s="p1-4">1.4 不確定性原理</button>
+  <!-- Part I -->
+  <details open class="sb-part mb-1">
+    <summary class="flex items-center gap-2 px-3 py-2 font-bold text-xs uppercase tracking-wider text-cyan-700 dark:text-cyan-400 cursor-pointer select-none rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700">
+      <svg class="w-3 h-3 transition-transform duration-200 details-arrow" viewBox="0 0 12 12" fill="currentColor"><path d="M4 2l4 4-4 4"/></svg>
+      Part I — 數學基礎
+    </summary>
+    <div class="ml-3 mt-0.5 pl-3 border-l-2 border-cyan-200 dark:border-cyan-800 space-y-px">
+      <button onclick="go('p1-1')" class="sb-item block" data-s="p1-1">1.1 Hilbert 空間與 L²</button>
+      <button onclick="go('p1-2')" class="sb-item block" data-s="p1-2">1.2 分佈理論</button>
+      <button onclick="go('p1-3')" class="sb-item block" data-s="p1-3">1.3 收斂理論</button>
+      <button onclick="go('p1-4')" class="sb-item block" data-s="p1-4">1.4 不確定性原理</button>
     </div>
   </details>
 
-  <details open><summary class="px-3 py-1.5 font-bold text-xs uppercase tracking-wider text-slate-400 cursor-pointer select-none">Part II — 轉換理論</summary>
-    <div class="ml-2 mt-1 space-y-0.5">
-      <button onclick="go('p2-1')" class="sb-item" data-s="p2-1">2.1 傅立葉級數</button>
-      <button onclick="go('p2-2')" class="sb-item" data-s="p2-2">2.2 CTFT</button>
-      <button onclick="go('p2-3')" class="sb-item" data-s="p2-3">2.3 DTFT</button>
-      <button onclick="go('p2-4')" class="sb-item" data-s="p2-4">2.4 DFT 與 FFT</button>
-      <button onclick="go('p2-5')" class="sb-item" data-s="p2-5">2.5 Z 轉換</button>
-      <button onclick="go('p2-6')" class="sb-item" data-s="p2-6">2.6 取樣定理</button>
-      <button onclick="go('p2-7')" class="sb-item" data-s="p2-7">2.7 轉換關係總覽</button>
+  <!-- Part II -->
+  <details open class="sb-part mb-1">
+    <summary class="flex items-center gap-2 px-3 py-2 font-bold text-xs uppercase tracking-wider text-cyan-700 dark:text-cyan-400 cursor-pointer select-none rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700">
+      <svg class="w-3 h-3 transition-transform duration-200 details-arrow" viewBox="0 0 12 12" fill="currentColor"><path d="M4 2l4 4-4 4"/></svg>
+      Part II — 轉換理論
+    </summary>
+    <div class="ml-3 mt-0.5 pl-3 border-l-2 border-cyan-200 dark:border-cyan-800 space-y-px">
+      <button onclick="go('p2-1')" class="sb-item block" data-s="p2-1">2.1 傅立葉級數</button>
+      <button onclick="go('p2-2')" class="sb-item block" data-s="p2-2">2.2 CTFT</button>
+      <button onclick="go('p2-3')" class="sb-item block" data-s="p2-3">2.3 DTFT</button>
+      <button onclick="go('p2-4')" class="sb-item block" data-s="p2-4">2.4 DFT 與 FFT</button>
+      <button onclick="go('p2-5')" class="sb-item block" data-s="p2-5">2.5 Z 轉換</button>
+      <button onclick="go('p2-6')" class="sb-item block" data-s="p2-6">2.6 取樣定理</button>
+      <button onclick="go('p2-7')" class="sb-item block" data-s="p2-7">2.7 轉換關係總覽</button>
     </div>
   </details>
 
-  <details><summary class="px-3 py-1.5 font-bold text-xs uppercase tracking-wider text-slate-400 cursor-pointer select-none">Part III — 頻譜估計</summary>
-    <div class="ml-2 mt-1 space-y-0.5">
-      <button onclick="go('p3-1')" class="sb-item" data-s="p3-1">3.1 週期圖與視窗函數</button>
-      <button onclick="go('p3-2')" class="sb-item" data-s="p3-2">3.2 Welch 與 Multitaper</button>
-      <button onclick="go('p3-3')" class="sb-item" data-s="p3-3">3.3 參數式方法 (AR)</button>
-      <button onclick="go('p3-4')" class="sb-item" data-s="p3-4">3.4 MUSIC / ESPRIT</button>
-      <button onclick="go('p3-5')" class="sb-item" data-s="p3-5">3.5 Chirp-Z 轉換</button>
+  <!-- Part III -->
+  <details class="sb-part mb-1">
+    <summary class="flex items-center gap-2 px-3 py-2 font-bold text-xs uppercase tracking-wider text-cyan-700 dark:text-cyan-400 cursor-pointer select-none rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700">
+      <svg class="w-3 h-3 transition-transform duration-200 details-arrow" viewBox="0 0 12 12" fill="currentColor"><path d="M4 2l4 4-4 4"/></svg>
+      Part III — 頻譜估計
+    </summary>
+    <div class="ml-3 mt-0.5 pl-3 border-l-2 border-emerald-200 dark:border-emerald-800 space-y-px">
+      <button onclick="go('p3-1')" class="sb-item block" data-s="p3-1">3.1 週期圖與視窗函數</button>
+      <button onclick="go('p3-2')" class="sb-item block" data-s="p3-2">3.2 Welch 與 Multitaper</button>
+      <button onclick="go('p3-3')" class="sb-item block" data-s="p3-3">3.3 參數式方法 (AR)</button>
+      <button onclick="go('p3-4')" class="sb-item block" data-s="p3-4">3.4 MUSIC / ESPRIT</button>
+      <button onclick="go('p3-5')" class="sb-item block" data-s="p3-5">3.5 Chirp-Z 轉換</button>
     </div>
   </details>
 
-  <details><summary class="px-3 py-1.5 font-bold text-xs uppercase tracking-wider text-slate-400 cursor-pointer select-none">Part IV — 解析訊號</summary>
-    <div class="ml-2 mt-1 space-y-0.5">
-      <button onclick="go('p4-1')" class="sb-item" data-s="p4-1">4.1 Hilbert 轉換</button>
-      <button onclick="go('p4-2')" class="sb-item" data-s="p4-2">4.2 包絡與瞬時頻率</button>
-      <button onclick="go('p4-3')" class="sb-item" data-s="p4-3">4.3 倒頻譜分析</button>
+  <!-- Part IV -->
+  <details class="sb-part mb-1">
+    <summary class="flex items-center gap-2 px-3 py-2 font-bold text-xs uppercase tracking-wider text-cyan-700 dark:text-cyan-400 cursor-pointer select-none rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700">
+      <svg class="w-3 h-3 transition-transform duration-200 details-arrow" viewBox="0 0 12 12" fill="currentColor"><path d="M4 2l4 4-4 4"/></svg>
+      Part IV — 解析訊號
+    </summary>
+    <div class="ml-3 mt-0.5 pl-3 border-l-2 border-emerald-200 dark:border-emerald-800 space-y-px">
+      <button onclick="go('p4-1')" class="sb-item block" data-s="p4-1">4.1 Hilbert 轉換</button>
+      <button onclick="go('p4-2')" class="sb-item block" data-s="p4-2">4.2 包絡與瞬時頻率</button>
+      <button onclick="go('p4-3')" class="sb-item block" data-s="p4-3">4.3 倒頻譜分析</button>
     </div>
   </details>
 
-  <details><summary class="px-3 py-1.5 font-bold text-xs uppercase tracking-wider text-slate-400 cursor-pointer select-none">Part V — 時頻分析</summary>
-    <div class="ml-2 mt-1 space-y-0.5">
-      <button onclick="go('p5-1')" class="sb-item" data-s="p5-1">5.1 STFT</button>
-      <button onclick="go('p5-2')" class="sb-item" data-s="p5-2">5.2 Wigner-Ville</button>
-      <button onclick="go('p5-3')" class="sb-item" data-s="p5-3">5.3 Cohen's Class</button>
-      <button onclick="go('p5-4')" class="sb-item" data-s="p5-4">5.4 連續小波 CWT</button>
-      <button onclick="go('p5-5')" class="sb-item" data-s="p5-5">5.5 離散小波 DWT</button>
-      <button onclick="go('p5-6')" class="sb-item" data-s="p5-6">5.6 EMD / HHT</button>
-      <button onclick="go('p5-7')" class="sb-item" data-s="p5-7">5.7 Synchrosqueezing</button>
+  <!-- Part V -->
+  <details class="sb-part mb-1">
+    <summary class="flex items-center gap-2 px-3 py-2 font-bold text-xs uppercase tracking-wider text-cyan-700 dark:text-cyan-400 cursor-pointer select-none rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700">
+      <svg class="w-3 h-3 transition-transform duration-200 details-arrow" viewBox="0 0 12 12" fill="currentColor"><path d="M4 2l4 4-4 4"/></svg>
+      Part V — 時頻分析
+    </summary>
+    <div class="ml-3 mt-0.5 pl-3 border-l-2 border-violet-200 dark:border-violet-800 space-y-px">
+      <button onclick="go('p5-1')" class="sb-item block" data-s="p5-1">5.1 STFT</button>
+      <button onclick="go('p5-2')" class="sb-item block" data-s="p5-2">5.2 Wigner-Ville</button>
+      <button onclick="go('p5-3')" class="sb-item block" data-s="p5-3">5.3 Cohen's Class</button>
+      <button onclick="go('p5-4')" class="sb-item block" data-s="p5-4">5.4 連續小波 CWT</button>
+      <button onclick="go('p5-5')" class="sb-item block" data-s="p5-5">5.5 離散小波 DWT</button>
+      <button onclick="go('p5-6')" class="sb-item block" data-s="p5-6">5.6 EMD / HHT</button>
+      <button onclick="go('p5-7')" class="sb-item block" data-s="p5-7">5.7 Synchrosqueezing</button>
     </div>
   </details>
 
-  <details><summary class="px-3 py-1.5 font-bold text-xs uppercase tracking-wider text-slate-400 cursor-pointer select-none">Part VI — 工程實務</summary>
-    <div class="ml-2 mt-1 space-y-0.5">
-      <button onclick="go('p6-1')" class="sb-item" data-s="p6-1">6.1 進階 FFT</button>
-      <button onclick="go('p6-2')" class="sb-item" data-s="p6-2">6.2 數值精度</button>
-      <button onclick="go('p6-3')" class="sb-item" data-s="p6-3">6.3 OLA / OLS</button>
-      <button onclick="go('p6-4')" class="sb-item" data-s="p6-4">6.4 濾波器設計</button>
-      <button onclick="go('p6-5')" class="sb-item" data-s="p6-5">6.5 2D FFT 影像</button>
-      <button onclick="go('p6-6')" class="sb-item" data-s="p6-6">6.6 OFDM 通訊</button>
-      <button onclick="go('p6-7')" class="sb-item" data-s="p6-7">6.7 雷達處理</button>
-      <button onclick="go('p6-8')" class="sb-item" data-s="p6-8">6.8 陣列訊號</button>
-      <button onclick="go('p6-9')" class="sb-item" data-s="p6-9">6.9 生醫訊號</button>
-      <button onclick="go('p6-10')" class="sb-item" data-s="p6-10">6.10 振動分析</button>
+  <!-- Part VI -->
+  <details class="sb-part mb-1">
+    <summary class="flex items-center gap-2 px-3 py-2 font-bold text-xs uppercase tracking-wider text-cyan-700 dark:text-cyan-400 cursor-pointer select-none rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700">
+      <svg class="w-3 h-3 transition-transform duration-200 details-arrow" viewBox="0 0 12 12" fill="currentColor"><path d="M4 2l4 4-4 4"/></svg>
+      Part VI — 工程實務
+    </summary>
+    <div class="ml-3 mt-0.5 pl-3 border-l-2 border-amber-200 dark:border-amber-800 space-y-px">
+      <button onclick="go('p6-1')" class="sb-item block" data-s="p6-1">6.1 進階 FFT</button>
+      <button onclick="go('p6-2')" class="sb-item block" data-s="p6-2">6.2 數值精度</button>
+      <button onclick="go('p6-3')" class="sb-item block" data-s="p6-3">6.3 OLA / OLS</button>
+      <button onclick="go('p6-4')" class="sb-item block" data-s="p6-4">6.4 濾波器設計</button>
+      <button onclick="go('p6-5')" class="sb-item block" data-s="p6-5">6.5 2D FFT 影像</button>
+      <button onclick="go('p6-6')" class="sb-item block" data-s="p6-6">6.6 OFDM 通訊</button>
+      <button onclick="go('p6-7')" class="sb-item block" data-s="p6-7">6.7 雷達處理</button>
+      <button onclick="go('p6-8')" class="sb-item block" data-s="p6-8">6.8 陣列訊號</button>
+      <button onclick="go('p6-9')" class="sb-item block" data-s="p6-9">6.9 生醫訊號</button>
+      <button onclick="go('p6-10')" class="sb-item block" data-s="p6-10">6.10 振動分析</button>
     </div>
   </details>
 
-  <hr class="my-2 border-slate-200 dark:border-slate-700">
-  <button onclick="go('lab')" class="sb-item text-cyan-600 dark:text-cyan-400 font-medium" data-s="lab">互動實驗室</button>
-  <button onclick="go('quiz')" class="sb-item text-emerald-600 dark:text-emerald-400 font-medium" data-s="quiz">自我測驗</button>
-  <button onclick="go('about')" class="sb-item" data-s="about">關於</button>
+  <hr class="my-3 border-slate-200 dark:border-slate-700">
+  <button onclick="go('lab')" class="sb-item block mb-0.5 text-cyan-600 dark:text-cyan-400 font-medium" data-s="lab">
+    <span class="inline-block w-5 text-center mr-1">🔬</span>互動實驗室
+  </button>
+  <button onclick="go('quiz')" class="sb-item block mb-0.5 text-emerald-600 dark:text-emerald-400 font-medium" data-s="quiz">
+    <span class="inline-block w-5 text-center mr-1">📝</span>自我測驗
+  </button>
+  <button onclick="go('about')" class="sb-item block" data-s="about">
+    <span class="inline-block w-5 text-center mr-1">ℹ️</span>關於
+  </button>
 </div>
 </aside>
 
@@ -6459,6 +6500,9 @@ function go(s){
   const t=document.getElementById('sec-'+s);
   if(t){t.classList.remove('hidden');t.classList.remove('sec');void t.offsetWidth;t.classList.add('sec');}
   document.querySelectorAll('.sb-item').forEach(b=>b.classList.toggle('active',b.dataset.s===s));
+  // Auto-expand parent <details> in sidebar when navigating to a subsection
+  const activeBtn=document.querySelector(`.sb-item[data-s="${s}"]`);
+  if(activeBtn){const parentDetails=activeBtn.closest('details.sb-part');if(parentDetails)parentDetails.open=true;}
   cur=s;window.scrollTo({top:0,behavior:'smooth'});
   if(window.innerWidth<1024)closeSB();
   setTimeout(()=>initPlots(s),150);
