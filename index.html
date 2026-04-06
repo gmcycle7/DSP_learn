@@ -1876,6 +1876,11 @@ $$x(t) = \sum_{n=-\infty}^{\infty}x(nT_s)\,\text{sinc}\!\left(\frac{t-nT_s}{T_s}
 <p class="text-xs font-bold text-slate-500 mb-1 mt-4">頻域：原始頻譜 vs 取樣後頻譜（含混疊折疊）</p>
 <div id="plotP26f" class="plot" style="min-height:280px"></div>
 
+<p class="text-xs font-bold text-slate-500 mb-1 mt-4">重建比對：經過「取樣 → 重建」後的波形 vs 原始波形</p>
+<p class="text-xs text-slate-400 mb-2">紅色 = 重建波形（你實際得到的），灰色虛線 = 原始波形（你想要的），橘色 = 兩者之差（誤差）。無混疊時誤差為零。</p>
+<div id="plotP26r" class="plot" style="min-height:300px"></div>
+<div id="p26err" class="text-center text-sm font-bold mt-2 mb-2"></div>
+
 <div class="tip mt-4">
 <p class="text-sm"><strong>觀察重點：</strong></p>
 <ul class="text-xs space-y-1 mt-1 list-disc pl-5">
@@ -7430,6 +7435,43 @@ function updateP26(){
     yaxis:{title:'振幅',range:[0,1.3]},
     shapes:shapes,annotations:annotations,barmode:'overlay'
   }),pc);
+
+  // === Third plot: reconstruction comparison ===
+  // Simulate the full process: sample → reconstruct via sinc interpolation (low-pass at Nyquist)
+  // The reconstructed signal only contains the aliased frequencies
+  const durR=0.04, NcR=2000;
+  const tcR=ls(0,durR,NcR);
+  // Original (what we wanted)
+  const xOrigR=tcR.map(t=>freqs.reduce((s,f,i)=>s+amps[i]*Math.sin(2*Math.PI*f*t),0));
+  // Reconstructed (what we actually get after sampling+reconstruction)
+  // = sum of aliased frequencies (this is what comes out of the DAC)
+  const xReconR=tcR.map(t=>aliased.reduce((s,a)=>s+a.amp*Math.sin(2*Math.PI*a.alias*t),0));
+  // Error
+  const xErr=xOrigR.map((v,i)=>v-xReconR[i]);
+  const maxErr=Math.max(...xErr.map(Math.abs));
+  const rmsErr=Math.sqrt(xErr.reduce((s,v)=>s+v*v,0)/xErr.length);
+  const rmsOrig=Math.sqrt(xOrigR.reduce((s,v)=>s+v*v,0)/xOrigR.length);
+  const snrDB=rmsOrig>0&&rmsErr>0?20*Math.log10(rmsOrig/rmsErr):Infinity;
+
+  const trR=[
+    {x:tcR,y:xOrigR,name:'原始訊號（想要的）',line:{color:'#94a3b8',dash:'dash',width:1.5}},
+    {x:tcR,y:xReconR,name:'重建訊號（實際得到的）',line:{color:hasAlias?'#ef4444':'#10b981',width:2}},
+    {x:tcR,y:xErr,name:'誤差 = 原始 − 重建',fill:'tozeroy',fillcolor:hasAlias?'rgba(239,68,68,0.15)':'rgba(16,185,129,0.08)',line:{color:hasAlias?'#f59e0b':'#10b981',width:1},yaxis:'y2'}
+  ];
+  Plotly.react('plotP26r',trR,Object.assign(pl(
+    hasAlias?`⚠ 重建失真！SNR = ${snrDB.toFixed(1)} dB`:'✓ 完美重建（誤差 = 0）',
+    '時間 (s)','振幅'),{
+    yaxis:{title:'振幅',color:dk()?'#94a3b8':'#475569',gridcolor:dk()?'#1e293b':'#e2e8f0'},
+    yaxis2:{title:'誤差',overlaying:'y',side:'right',color:'#f59e0b',showgrid:false,range:[-maxErr*3||(-0.1),maxErr*3||(0.1)]},
+    legend:{x:0,y:1.15,orientation:'h',font:{size:10}}
+  }),pc);
+  // Error summary
+  const errEl=document.getElementById('p26err');
+  if(hasAlias){
+    errEl.innerHTML=`<span class="text-red-500">失真不可逆！</span> 峰值誤差 = ${maxErr.toFixed(3)}，RMS 誤差 = ${rmsErr.toFixed(3)}，SNR = ${snrDB.toFixed(1)} dB — <span class="text-xs text-slate-500">混疊後無論用什麼演算法都無法恢復原始訊號</span>`;
+  } else {
+    errEl.innerHTML=`<span class="text-emerald-500">完美重建 ✓</span> 誤差 = 0 — 取樣率足夠時，sinc 內插可精確恢復原始連續訊號`;
+  }
 }
 
 // === Window functions ===
