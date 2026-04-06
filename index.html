@@ -2088,6 +2088,17 @@ $$\text{SNR (dB)} = 20\log_{10}\frac{\text{RMS}_{\text{original}}}{\text{RMS}_{\
 </div>
 
 <div class="ref-box"><p><strong>References:</strong> [1] Oppenheim & Willsky, <em>Signals and Systems</em>, Ch.3-5. [2] Oppenheim & Schafer, <em>Discrete-Time Signal Processing</em>, Ch.2-8. [3] Haykin & Van Veen, <em>Signals and Systems</em>.</p></div>
+
+<div class="card">
+<h3 class="font-bold text-base mb-3">互動：轉換關係圖</h3>
+<p class="text-sm text-slate-500 mb-3">
+  點擊節點或將滑鼠移至節點上方，查看各轉換之間的推導關係。
+</p>
+<div id="plotP27map" class="plot" style="min-height:420px"></div>
+<div id="p27desc" class="text-sm mt-2 p-3 rounded bg-slate-100 dark:bg-slate-800" style="min-height:2em;">
+  將滑鼠移至節點查看說明。
+</div>
+</div>
 <div class="ch-nav"><a onclick="go('p2-6')">← 2.6 取樣定理</a><a onclick="go('p3-1')">3.1 週期圖與視窗 →</a></div>
 </section>
 
@@ -2998,6 +3009,32 @@ X = czt(x, M, w=np.exp(-1j*2*np.pi*(f2-f1)/(M*fs)),
 </div>
 
 <div class="ref-box"><p><strong>References:</strong> [1] Rabiner, Schafer &amp; Rader, <em>The Chirp z-Transform Algorithm</em>, IEEE Trans. Audio Electroacoustics, 1969. [2] Bluestein, <em>A Linear Filtering Approach to the Computation of Discrete Fourier Transform</em>, IEEE Trans. AU, 1970. [3] Oppenheim &amp; Schafer, <em>Discrete-Time Signal Processing</em>, Section 9.6.</p></div>
+
+<div class="card">
+<h3 class="font-bold text-base mb-3">互動：Chirp-Z 頻率放大鏡</h3>
+<p class="text-sm text-slate-500 mb-3">
+  兩個相距僅 1Hz 的正弦波（99.5Hz + 100.5Hz）。FFT 的 &Delta;f&approx;3.9Hz 無法解析；CZT 可在任意頻帶放大，清楚分開雙峰。
+</p>
+<div class="flex gap-3 mb-3 flex-wrap items-center">
+  <div>
+    <label class="text-xs">放大中心頻率：<span id="p35centerv">100</span> Hz</label>
+    <input type="range" id="p35center" min="90" max="110" value="100" step="0.5" class="w-32"
+           oninput="document.getElementById('p35centerv').textContent=this.value; updateP35()">
+  </div>
+  <div>
+    <label class="text-xs">放大頻寬：<span id="p35widthv">10</span> Hz</label>
+    <input type="range" id="p35width" min="1" max="20" value="10" step="0.5" class="w-32"
+           oninput="document.getElementById('p35widthv').textContent=this.value; updateP35()">
+  </div>
+</div>
+<div id="plotP35fft" class="plot" style="min-height:260px"></div>
+<div id="plotP35czt" class="plot" style="min-height:260px"></div>
+</div>
+
+
+<!-- ============================================================
+     Demo 4: Transform Relationship Interactive Diagram
+     ============================================================ -->
 <div class="ch-nav"><a onclick="go('p3-4')">← 3.4 MUSIC / ESPRIT</a><a onclick="go('p4-1')">4.1 Hilbert 轉換 →</a></div>
 </section>
 
@@ -3349,6 +3386,43 @@ $$f_i[n] = \frac{f_s}{2\pi}\,\text{Im}\!\left(\frac{z[n]\,z^*[n-1]}{|z[n]\,z^*[n
   </details>
 </div>
 </div>
+
+<div class="card demo-card">
+  <h3>互動：軸承故障包絡譜分析</h3>
+  <p>
+    軸承故障產生的週期性衝擊會激發結構共振，但在原始 FFT 中看不到明確的故障頻率。
+    透過<b>包絡分析</b>（帶通 &rarr; Hilbert 包絡 &rarr; 包絡譜）可將隱藏的 BPFO 調變頻率提取出來。
+  </p>
+
+  <div class="demo-controls" style="margin-bottom:10px;">
+    <label><b>轉速 RPM：</b></label>
+    <input type="range" id="p42rpm" min="600" max="3600" step="60" value="1800"
+           oninput="document.getElementById('p42rpmv').textContent=this.value">
+    <span id="p42rpmv">1800</span>
+    &nbsp;&nbsp;
+    <label><b>共振頻率 (Hz)：</b></label>
+    <input type="range" id="p42fres" min="1000" max="8000" step="100" value="3200"
+           oninput="document.getElementById('p42fresv').textContent=this.value">
+    <span id="p42fresv">3200</span>
+    &nbsp;&nbsp;
+    <label><b>雜訊位準：</b></label>
+    <input type="range" id="p42noise" min="0" max="100" step="5" value="40"
+           oninput="document.getElementById('p42noisev').textContent=this.value">
+    <span id="p42noisev">40</span>
+    &nbsp;&nbsp;
+    <button class="btn" onclick="updateP42()">分析</button>
+  </div>
+
+  <div id="plotP42raw"    style="width:100%; height:220px;"></div>
+  <div id="plotP42fft"    style="width:100%; height:220px;"></div>
+  <div id="plotP42env"    style="width:100%; height:220px;"></div>
+  <div id="plotP42envfft" style="width:100%; height:220px;"></div>
+</div>
+
+
+<!-- ============================================================
+     Demo 3: Vibration Diagnosis Game
+     ============================================================ -->
 <div class="ch-nav"><a onclick="go('p4-1')">← 4.1 Hilbert 轉換</a><a onclick="go('p4-3')">4.3 倒頻譜分析 →</a></div>
 </section>
 
@@ -3939,6 +4013,32 @@ end</div>
 <div class="ref-box">
 <p><strong>References:</strong> [1] Wigner, E., <em>On the Quantum Correction for Thermodynamic Equilibrium</em>, Phys. Rev., 40:749-759, 1932. [2] Ville, J., <em>Theorie et Applications de la Notion de Signal Analytique</em>, Cables et Transmission, 2(1):61-74, 1948. [3] Claasen, T.A.C.M. & Mecklenbräuker, W.F.G., <em>The Wigner Distribution</em>, Philips J. Res., 1980. [4] Cohen, L., <em>Time-Frequency Analysis</em>, Prentice Hall, 1995.</p>
 </div>
+
+<div class="card">
+<h3 class="font-bold text-base mb-3">互動：WVD vs STFT 並排比較</h3>
+<p class="text-sm text-slate-500 mb-3">
+  比較 STFT 頻譜圖與 Pseudo-WVD。WVD 有更好的時頻解析度，但雙成分訊號會出現<b>交叉項</b>。
+</p>
+<div class="flex gap-3 mb-3 flex-wrap items-center">
+  <div>
+    <label class="text-xs">訊號選擇：</label>
+    <select id="p52sig" class="border rounded px-2 py-1 text-xs dark:bg-slate-700 dark:border-slate-600" onchange="updateP52()">
+      <option value="linchirp">線性 Chirp</option>
+      <option value="dual">雙成分 Chirp</option>
+      <option value="hop">跳頻</option>
+    </select>
+  </div>
+</div>
+<div class="grid md:grid-cols-2 gap-3">
+  <div id="plotP52stft" class="plot" style="min-height:340px"></div>
+  <div id="plotP52wvd"  class="plot" style="min-height:340px"></div>
+</div>
+</div>
+
+
+<!-- ============================================================
+     Demo 2: EMD Sifting Animation
+     ============================================================ -->
 <div class="ch-nav"><a onclick="go('p5-1')">← 5.1 STFT</a><a onclick="go('p5-3')">5.3 Cohen's Class →</a></div>
 </section>
 
@@ -4755,6 +4855,26 @@ hht = emd.spectra.hilbert_huang(IF, IA, freq_range=(0, fs/2))</div>
 <div class="ref-box">
 <p><strong>References:</strong> [1] Huang, N.E. et al., <em>The Empirical Mode Decomposition and the Hilbert Spectrum for Nonlinear and Non-Stationary Time Series Analysis</em>, Proc. R. Soc. Lond. A, 454:903-995, 1998. [2] Wu, Z. & Huang, N.E., <em>Ensemble Empirical Mode Decomposition</em>, Adv. Adaptive Data Analysis, 1(1):1-41, 2009. [3] Torres, M.E. et al., <em>A Complete Ensemble Empirical Mode Decomposition with Adaptive Noise</em>, IEEE ICASSP, 2011. [4] Dragomiretskiy, K. & Zosso, D., <em>Variational Mode Decomposition</em>, IEEE Trans. Signal Process., 62(3):531-544, 2014.</p>
 </div>
+
+<div class="card">
+<h3 class="font-bold text-base mb-3">互動：EMD Sifting 過程動畫</h3>
+<p class="text-sm text-slate-500 mb-3">
+  觀察 EMD 逐步「篩選」出各 IMF 的過程：找極值 &rarr; 包絡 &rarr; 均值 &rarr; 扣除 &rarr; 收斂。
+</p>
+<div class="flex gap-3 mb-3 flex-wrap items-center">
+  <button id="p56start" onclick="startEMD()" class="px-3 py-1 bg-cyan-500 text-white rounded text-xs">開始分解</button>
+  <button id="p56step" onclick="stepEMD()" class="px-3 py-1 bg-emerald-500 text-white rounded text-xs" disabled>下一步</button>
+</div>
+<div id="p56status" class="text-xs font-mono mb-2 p-2 rounded bg-slate-100 dark:bg-slate-800" style="min-height:1.5em;">
+  按「開始分解」以初始化訊號。
+</div>
+<div id="plotP56emd" class="plot" style="min-height:400px"></div>
+</div>
+
+
+<!-- ============================================================
+     Demo 3: Chirp-Z Frequency Zoom
+     ============================================================ -->
 <div class="ch-nav"><a onclick="go('p5-5')">← 5.5 離散小波 DWT</a><a onclick="go('p5-7')">5.7 Synchrosqueezing →</a></div>
 </section>
 
@@ -5110,6 +5230,44 @@ for each freq in [697, 770, 852, 941, 1209, 1336, 1477, 1633]:
   </div>
 </div>
 </div>
+
+<div class="card demo-card">
+  <h3 class="font-bold text-base mb-3">互動：Goertzel vs FFT 效率比較</h3>
+  <p class="text-sm text-slate-500 mb-3">
+    比較 Goertzel（只算 K 個頻率）和完整 FFT 的運算量。當 K &lt; log<sub>2</sub>N 時 Goertzel 較省，否則 FFT 較省。
+  </p>
+
+  <div class="demo-controls" style="margin-bottom:10px;">
+    <div style="display:flex; flex-wrap:wrap; gap:12px; align-items:center;">
+      <div>
+        <label class="text-xs">需要計算的頻率數量 K：<b><span id="p61kv">8</span></b></label>
+        <input type="range" id="p61k" min="1" max="100" value="8" class="w-36"
+               oninput="document.getElementById('p61kv').textContent=this.value; updateP61()">
+      </div>
+      <div>
+        <label class="text-xs">資料長度 N：<b><span id="p61nv">256</span></b></label>
+        <select id="p61n" class="border rounded px-2 py-1 text-xs dark:bg-slate-700 dark:border-slate-600" onchange="document.getElementById('p61nv').textContent=this.value; updateP61()">
+          <option value="64">64</option>
+          <option value="128">128</option>
+          <option value="256" selected>256</option>
+          <option value="512">512</option>
+          <option value="1024">1024</option>
+          <option value="2048">2048</option>
+          <option value="4096">4096</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <div id="plotP61eff" class="plot" style="min-height:340px;"></div>
+  <div id="p61info" style="margin-top:8px; padding:8px; border-radius:6px; font-size:.8rem; text-align:center; background:rgba(6,182,212,0.08); border:1px solid rgba(6,182,212,0.2);">
+  </div>
+</div>
+
+
+<!-- ============================================================
+     Demo 4: EEG Sleep Staging Game
+     ============================================================ -->
 <div class="ch-nav"><a onclick="go('p5-7')">← 5.7 SST</a><a onclick="go('p6-2')">6.2 數值精度 →</a></div>
 </section>
 
@@ -5740,6 +5898,45 @@ result = real(ifft2(ifftshift(G)))
       <li><strong>替代方案：</strong>小波轉換 (wavelet) 在多尺度分析上比 2D FFT 更強大，是現代影像壓縮（JPEG 2000）和去噪的主流。</li>
     </ul>
   </div>
+
+<div class="card demo-card">
+  <h3>互動：2D FFT 影像濾波</h3>
+  <p>選擇測試圖案，觀察其二維頻譜，並套用不同的頻域濾波器。</p>
+
+  <div class="demo-controls" style="margin-bottom:10px;">
+    <label><b>圖案：</b></label>
+    <select id="p65pattern" onchange="updateP65()">
+      <option value="circles">圓形</option>
+      <option value="stripes">條紋</option>
+      <option value="blocks">方塊</option>
+      <option value="custom">自訂</option>
+    </select>
+    &nbsp;&nbsp;
+    <label><b>濾波器：</b></label>
+    <select id="p65filter" onchange="updateP65()">
+      <option value="none">原始</option>
+      <option value="lowpass">低通</option>
+      <option value="highpass">高通</option>
+      <option value="bandpass">帶通</option>
+    </select>
+    &nbsp;&nbsp;
+    <label><b>截止半徑 D<sub>0</sub>：</b></label>
+    <input type="range" id="p65d0" min="5" max="60" value="20"
+           oninput="document.getElementById('p65d0v').textContent=this.value; updateP65()">
+    <span id="p65d0v">20</span>
+  </div>
+
+  <div style="display:flex; flex-wrap:wrap; gap:8px; justify-content:center;">
+    <div id="plotP65img" style="width:320px; height:320px;"></div>
+    <div id="plotP65fft" style="width:320px; height:320px;"></div>
+    <div id="plotP65out" style="width:320px; height:320px;"></div>
+  </div>
+</div>
+
+
+<!-- ============================================================
+     Demo 2: Bearing Fault Envelope Spectrum
+     ============================================================ -->
 <div class="ch-nav"><a onclick="go('p6-4')">← 6.4 濾波器設計</a><a onclick="go('p6-6')">6.6 OFDM →</a></div>
 </section>
 
@@ -5897,6 +6094,74 @@ result = real(ifft2(ifftshift(G)))
   <div id="plotP66b" class="plot" style="text-align:center;color:#94a3b8;font-size:.875rem;padding:2rem 0;min-height:280px">調整上方參數後圖表將自動顯示</div>
 </div>
 </div>
+
+<div class="card demo-card">
+  <h3 class="font-bold text-base mb-3">互動：OFDM 完整收發模擬</h3>
+  <p class="text-sm text-slate-500 mb-3">
+    完整模擬 OFDM 收發鏈：IFFT 產生符號 → 加 CP → 多路徑通道 → 加雜訊 → 移除 CP → FFT → LS 通道估計 → 等化 → 解調。
+  </p>
+
+  <div class="demo-controls" style="margin-bottom:10px;">
+    <div style="display:flex; flex-wrap:wrap; gap:10px; align-items:center; margin-bottom:8px;">
+      <div>
+        <label class="text-xs"><b>FFT size：</b></label>
+        <select id="p66fft" class="border rounded px-2 py-1 text-xs dark:bg-slate-700 dark:border-slate-600">
+          <option value="64">64</option>
+          <option value="128" selected>128</option>
+          <option value="256">256</option>
+        </select>
+      </div>
+      <div>
+        <label class="text-xs"><b>調變：</b></label>
+        <select id="p66mod" class="border rounded px-2 py-1 text-xs dark:bg-slate-700 dark:border-slate-600">
+          <option value="QPSK" selected>QPSK</option>
+          <option value="16QAM">16-QAM</option>
+        </select>
+      </div>
+    </div>
+    <div style="display:flex; flex-wrap:wrap; gap:10px; align-items:center; margin-bottom:8px;">
+      <div>
+        <label class="text-xs">通道延遲 (samples)：<span id="p66delayv">5</span></label>
+        <input type="range" id="p66delay" min="0" max="20" value="5" class="w-28"
+               oninput="document.getElementById('p66delayv').textContent=this.value">
+      </div>
+      <div>
+        <label class="text-xs">通道衰減：<span id="p66alphav">0.60</span></label>
+        <input type="range" id="p66alpha" min="0" max="1" step="0.05" value="0.6" class="w-28"
+               oninput="document.getElementById('p66alphav').textContent=(+this.value).toFixed(2)">
+      </div>
+    </div>
+    <div style="display:flex; flex-wrap:wrap; gap:10px; align-items:center; margin-bottom:8px;">
+      <div>
+        <label class="text-xs">SNR (dB)：<span id="p66snrv">25</span></label>
+        <input type="range" id="p66snr" min="5" max="40" value="25" class="w-28"
+               oninput="document.getElementById('p66snrv').textContent=this.value">
+      </div>
+      <div>
+        <label class="text-xs">CP 長度：<span id="p66cpv">16</span></label>
+        <input type="range" id="p66cp" min="0" max="32" value="16" class="w-28"
+               oninput="document.getElementById('p66cpv').textContent=this.value">
+      </div>
+    </div>
+    <button class="px-3 py-1 bg-cyan-500 text-white rounded text-xs" onclick="updateP66full()">傳送 + 接收</button>
+  </div>
+
+  <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
+    <div id="plotP66tx" class="plot" style="min-height:280px"></div>
+    <div id="plotP66rx" class="plot" style="min-height:280px"></div>
+    <div id="plotP66td" class="plot" style="min-height:280px"></div>
+    <div id="plotP66ch" class="plot" style="min-height:280px"></div>
+  </div>
+
+  <div id="p66ber" style="margin-top:10px; padding:10px; border-radius:6px; font-size:.875rem; font-weight:600; text-align:center; background:rgba(6,182,212,0.1); border:1px solid rgba(6,182,212,0.3);">
+    BER: ---
+  </div>
+</div>
+
+
+<!-- ============================================================
+     Demo 2: Radar Target Placement + Range-Doppler
+     ============================================================ -->
 <div class="ch-nav"><a onclick="go('p6-5')">← 6.5 2D FFT</a><a onclick="go('p6-7')">6.7 雷達 →</a></div>
 </section>
 
@@ -6067,6 +6332,155 @@ v_max = λ / (4 × T_chirp) = 3.896×10⁻³ / (4 × 50×10⁻⁶) = 19.5 m/s �
   </div>
 </div>
 </div>
+
+<div class="card demo-card">
+  <h3 class="font-bold text-base mb-3">互動：模糊函數 (Ambiguity Function)</h3>
+  <p class="text-sm text-slate-500 mb-3">
+    模糊函數描述雷達波形在距離（延遲 &tau;）和速度（都卜勒 f<sub>d</sub>）兩個維度上的分辨能力。它的形狀決定了波形的性能。
+  </p>
+
+  <div class="demo-controls" style="margin-bottom:10px;">
+    <div style="display:flex; flex-wrap:wrap; gap:10px; align-items:center; margin-bottom:6px;">
+      <div>
+        <label class="text-xs"><b>波形選擇：</b></label>
+        <select id="radarAFwave" class="border rounded px-2 py-1 text-xs dark:bg-slate-700 dark:border-slate-600"
+                onchange="updateRadarAF()">
+          <option value="pulse">單脈衝 (Simple Pulse)</option>
+          <option value="lfm" selected>線性調頻 LFM Chirp</option>
+          <option value="barker">巴克碼 Barker-13 (Phase Coded)</option>
+        </select>
+      </div>
+      <div id="radarAFbtWrap">
+        <label class="text-xs"><b>BT 乘積：</b><span id="radarAFbtv">50</span></label>
+        <input type="range" id="radarAFbt" min="10" max="200" step="5" value="50" class="w-32"
+               oninput="document.getElementById('radarAFbtv').textContent=this.value; updateRadarAF()">
+      </div>
+    </div>
+  </div>
+
+  <div id="plotRadarAF" class="plot" style="min-height:420px;"></div>
+  <div id="radarAFdesc" style="margin-top:8px; padding:10px; border-radius:6px; font-size:.85rem; background:rgba(6,182,212,0.08); border:1px solid rgba(6,182,212,0.2);">
+    波形說明將在此顯示
+  </div>
+</div>
+
+<div class="card demo-card">
+  <h3 class="font-bold text-base mb-3">互動：匹配濾波與脈衝壓縮 (Matched Filter &amp; Pulse Compression)</h3>
+  <p class="text-sm text-slate-500 mb-3">
+    雷達發射一個長 chirp 脈衝，透過匹配濾波器在接收端壓縮成尖銳的峰值。長脈衝 = 高能量（遠距離偵測），壓縮後 = 高距離解析度（分辨近距離目標）。
+  </p>
+
+  <div class="demo-controls" style="margin-bottom:10px;">
+    <div style="display:flex; flex-wrap:wrap; gap:10px; align-items:center; margin-bottom:6px;">
+      <div>
+        <label class="text-xs"><b>Chirp 頻寬 B：</b><span id="radarBv">100</span> MHz</label>
+        <input type="range" id="radarB" min="1" max="500" value="100" class="w-32"
+               oninput="document.getElementById('radarBv').textContent=this.value; updateRadarMF()">
+      </div>
+      <div>
+        <label class="text-xs"><b>脈衝長度 T：</b><span id="radarTv">10</span> &mu;s</label>
+        <input type="range" id="radarT" min="1" max="100" value="10" class="w-32"
+               oninput="document.getElementById('radarTv').textContent=this.value; updateRadarMF()">
+      </div>
+    </div>
+    <div style="display:flex; flex-wrap:wrap; gap:10px; align-items:center; margin-bottom:6px;">
+      <div>
+        <label class="text-xs"><b>目標數量：</b></label>
+        <select id="radarTargets" class="border rounded px-2 py-1 text-xs dark:bg-slate-700 dark:border-slate-600"
+                onchange="updateRadarMF()">
+          <option value="1">1</option>
+          <option value="2">2</option>
+          <option value="3" selected>3</option>
+        </select>
+      </div>
+      <div>
+        <label class="text-xs"><b>目標間距：</b><span id="radarSepv">10.0</span> m</label>
+        <input type="range" id="radarSep" min="0.5" max="50" step="0.5" value="10" class="w-32"
+               oninput="document.getElementById('radarSepv').textContent=(+this.value).toFixed(1); updateRadarMF()">
+      </div>
+    </div>
+  </div>
+
+  <div id="plotRadarChirp" class="plot" style="min-height:220px;"></div>
+  <div id="plotRadarMF"    class="plot" style="min-height:280px;"></div>
+  <div id="radarMFinfo" style="margin-top:8px; padding:10px; border-radius:6px; font-size:.85rem; font-family:monospace; text-align:center; background:rgba(6,182,212,0.08); border:1px solid rgba(6,182,212,0.2);">
+    壓縮比與解析度資訊將在此顯示
+  </div>
+</div>
+
+
+<!-- ============================================================
+     Demo 2: Ambiguity Function Visualization
+     ============================================================ -->
+
+<div class="card demo-card">
+  <h3 class="font-bold text-base mb-3">互動：雷達目標放置與 Range-Doppler</h3>
+  <p class="text-sm text-slate-500 mb-3">
+    設定 3 個目標的距離、速度和振幅，觀察 Range-Doppler Map 上的反應。
+  </p>
+
+  <div class="demo-controls" style="margin-bottom:10px;">
+    <div style="display:flex; flex-wrap:wrap; gap:6px; align-items:center; margin-bottom:6px;">
+      <span class="text-xs font-bold" style="width:60px;">目標 1：</span>
+      <label class="text-xs">距離=<span id="p67r1v">80</span>m</label>
+      <input type="range" id="p67r1" min="10" max="200" value="80" class="w-24"
+             oninput="document.getElementById('p67r1v').textContent=this.value">
+      <label class="text-xs">速度=<span id="p67v1v">10</span>m/s</label>
+      <input type="range" id="p67v1" min="-50" max="50" value="10" class="w-24"
+             oninput="document.getElementById('p67v1v').textContent=this.value">
+      <label class="text-xs">振幅=<span id="p67a1v">1.00</span></label>
+      <input type="range" id="p67a1" min="0.1" max="1" step="0.05" value="1" class="w-20"
+             oninput="document.getElementById('p67a1v').textContent=(+this.value).toFixed(2)">
+    </div>
+    <div style="display:flex; flex-wrap:wrap; gap:6px; align-items:center; margin-bottom:6px;">
+      <span class="text-xs font-bold" style="width:60px;">目標 2：</span>
+      <label class="text-xs">距離=<span id="p67r2v">150</span>m</label>
+      <input type="range" id="p67r2" min="10" max="200" value="150" class="w-24"
+             oninput="document.getElementById('p67r2v').textContent=this.value">
+      <label class="text-xs">速度=<span id="p67v2v">-20</span>m/s</label>
+      <input type="range" id="p67v2" min="-50" max="50" value="-20" class="w-24"
+             oninput="document.getElementById('p67v2v').textContent=this.value">
+      <label class="text-xs">振幅=<span id="p67a2v">0.70</span></label>
+      <input type="range" id="p67a2" min="0.1" max="1" step="0.05" value="0.7" class="w-20"
+             oninput="document.getElementById('p67a2v').textContent=(+this.value).toFixed(2)">
+    </div>
+    <div style="display:flex; flex-wrap:wrap; gap:6px; align-items:center; margin-bottom:6px;">
+      <span class="text-xs font-bold" style="width:60px;">目標 3：</span>
+      <label class="text-xs">距離=<span id="p67r3v">50</span>m</label>
+      <input type="range" id="p67r3" min="10" max="200" value="50" class="w-24"
+             oninput="document.getElementById('p67r3v').textContent=this.value">
+      <label class="text-xs">速度=<span id="p67v3v">30</span>m/s</label>
+      <input type="range" id="p67v3" min="-50" max="50" value="30" class="w-24"
+             oninput="document.getElementById('p67v3v').textContent=this.value">
+      <label class="text-xs">振幅=<span id="p67a3v">0.50</span></label>
+      <input type="range" id="p67a3" min="0.1" max="1" step="0.05" value="0.5" class="w-20"
+             oninput="document.getElementById('p67a3v').textContent=(+this.value).toFixed(2)">
+    </div>
+    <div style="display:flex; flex-wrap:wrap; gap:10px; align-items:center; margin-bottom:6px;">
+      <div>
+        <label class="text-xs"><b>頻寬 B (MHz)：</b><span id="p67bwv">500</span></label>
+        <input type="range" id="p67bw" min="100" max="2000" step="50" value="500" class="w-28"
+               oninput="document.getElementById('p67bwv').textContent=this.value">
+      </div>
+      <div>
+        <label class="text-xs"><b>Chirp 數量：</b><span id="p67ncv">64</span></label>
+        <input type="range" id="p67nc" min="32" max="256" step="32" value="64" class="w-28"
+               oninput="document.getElementById('p67ncv').textContent=this.value">
+      </div>
+    </div>
+    <button class="px-3 py-1 bg-cyan-500 text-white rounded text-xs" onclick="updateP67full()">發射脈衝</button>
+  </div>
+
+  <div id="plotP67rd" class="plot" style="min-height:400px;"></div>
+  <div id="p67res" style="margin-top:8px; padding:8px; border-radius:6px; font-size:.8rem; font-family:monospace; background:rgba(6,182,212,0.08); border:1px solid rgba(6,182,212,0.2);">
+    解析度資訊將在此顯示
+  </div>
+</div>
+
+
+<!-- ============================================================
+     Demo 3: Goertzel vs FFT Efficiency Comparison
+     ============================================================ -->
 <div class="ch-nav"><a onclick="go('p6-6')">← 6.6 OFDM</a><a onclick="go('p6-8')">6.8 陣列 →</a></div>
 </section>
 
@@ -6440,6 +6854,41 @@ LF_HF_ratio = LF_power / HF_power
   </div>
 </div>
 </div>
+
+<div class="card demo-card">
+  <h3 class="font-bold text-base mb-3">互動：EEG 睡眠分期練習</h3>
+  <p class="text-sm text-slate-500 mb-3">
+    系統產生模擬 EEG 功率譜，請根據各頻帶的功率分佈判斷睡眠階段。
+  </p>
+
+  <div class="demo-controls" style="margin-bottom:10px;">
+    <button class="px-3 py-1 bg-cyan-500 text-white rounded text-xs" onclick="generateEEGCase()">產生新案例</button>
+  </div>
+
+  <div id="plotP69eeg" class="plot" style="min-height:360px;"></div>
+
+  <div style="margin:12px 0;">
+    <label style="display:block; margin:4px 0;">
+      <input type="radio" name="p69answer" value="awake"> 清醒 (Awake) — 強 &alpha;(8-13Hz) + &beta;(13-30Hz)
+    </label>
+    <label style="display:block; margin:4px 0;">
+      <input type="radio" name="p69answer" value="n1"> N1 淺睡 — &theta;(4-8Hz) 增加，&alpha; 減少
+    </label>
+    <label style="display:block; margin:4px 0;">
+      <input type="radio" name="p69answer" value="n2"> N2 — 睡眠紡錘波 (12-14Hz)，K-complex
+    </label>
+    <label style="display:block; margin:4px 0;">
+      <input type="radio" name="p69answer" value="n3"> N3 深睡 — 主導 &delta;(0.5-4Hz)，很少 &alpha;/&beta;
+    </label>
+    <label style="display:block; margin:4px 0;">
+      <input type="radio" name="p69answer" value="rem"> REM — 低振幅混合頻率，類似清醒但多 &theta;
+    </label>
+  </div>
+
+  <button class="px-3 py-1 bg-emerald-500 text-white rounded text-xs" onclick="submitEEGDiag()">提交判讀</button>
+
+  <div id="p69result" style="margin-top:12px; padding:10px; border-radius:6px; display:none;"></div>
+</div>
 <div class="ch-nav"><a onclick="go('p6-8')">← 6.8 陣列</a><a onclick="go('p6-10')">6.10 振動 →</a></div>
 </section>
 
@@ -6696,6 +7145,36 @@ FTF = (1/2) × 30 × (1 - 7.94/38.5) = 15 × 0.7938
     <details><summary class="text-cyan-600 cursor-pointer text-xs">顯示答案</summary><p class="mt-1 text-slate-600 dark:text-slate-400 text-xs">因為 RMS 只反映總能量，無法區分故障類型。例如不平衡(1X)和軸承缺陷(BPFO)的 RMS 可能相近，但頻譜完全不同。</p></details>
   </div>
 </div>
+</div>
+
+<div class="card demo-card">
+  <h3>互動：振動故障診斷練習</h3>
+  <p>系統隨機產生一組振動頻譜，請根據頻譜特徵判斷故障類型。</p>
+
+  <div class="demo-controls" style="margin-bottom:10px;">
+    <button class="btn" onclick="generateVibCase()">產生新案例</button>
+  </div>
+
+  <div id="plotP610diag" style="width:100%; height:320px;"></div>
+
+  <div style="margin:12px 0;">
+    <label style="display:block; margin:4px 0;">
+      <input type="radio" name="p610answer" id="p610answer" value="imbalance"> 不平衡 (1X 為主)
+    </label>
+    <label style="display:block; margin:4px 0;">
+      <input type="radio" name="p610answer" value="misalignment"> 不對準 (2X 為主)
+    </label>
+    <label style="display:block; margin:4px 0;">
+      <input type="radio" name="p610answer" value="looseness"> 機械鬆動 (多倍頻 + 次諧波)
+    </label>
+    <label style="display:block; margin:4px 0;">
+      <input type="radio" name="p610answer" value="bearing"> 軸承外環故障 (BPFO)
+    </label>
+  </div>
+
+  <button class="btn" onclick="submitVibDiag()">提交診斷</button>
+
+  <div id="p610result" style="margin-top:12px; padding:10px; border-radius:6px; display:none;"></div>
 </div>
 <div class="ch-nav"><a onclick="go('p6-9')">← 6.9 生醫</a><a onclick="go('lab')">實驗室 →</a></div>
 </section>
@@ -7233,10 +7712,10 @@ function initPlots(s){
     case'p2-5':updateP25();break;case'p2-6':updateP26();break;
     case'p2-4':updateP24();break;case'p3-1':updateP31();updateP31b();break;
     case'p3-2':updateP32();break;case'p3-3':updateP33();break;case'p3-4':updateP34();break;
-    case'p4-1':updateP41();break;case'p4-3':updateP43();break;
-    case'p5-1':updateP51();break;case'p5-5':updateP55();break;
+    case'p4-1':updateP41();break;case'p4-2':updateP42();break;case'p4-3':updateP43();break;
+    case'p5-1':updateP51();break;case'p5-2':updateP52();break;case'p5-5':updateP55();break;
     case'p5-4':updateP54();break;
-    case'p6-3':updateP63();break;case'p6-4':updateP64();break;case'p6-6':updateP66();break;case'p6-7':updateP67();break;case'p6-8':updateP68();break;case'p6-9':updateP69();break;
+    case'p6-3':updateP63();break;case'p6-4':updateP64();break;case'p6-6':updateP66();break;case'p6-7':updateP67();break;case'p6-8':updateP68();break;case'p6-10':if(typeof generateVibCase==='function')generateVibCase();break;case'p6-9':updateP69();break;
     case'lab':runLab();break;
   }
 }
@@ -8313,6 +8792,2860 @@ function updateProgress(){
     }
   });
 }
+
+// === parts/demos_tier1.js ===
+/* =============================================================
+   demos_tier1.js
+   Three interactive demos: 2D FFT filtering, Bearing envelope,
+   Vibration diagnosis game.
+   Depends on helpers: fft(), np2(), zp(), ls(), randn(),
+                       wHann(), getW(), dk(), pl(), pc()
+   ============================================================= */
+
+/* =============================================================
+   DEMO 1 — 2D FFT Image Filtering  (sec-p6-5)
+   ============================================================= */
+
+/** Tiny complex-number helpers for 2D FFT */
+function _cx(re, im) { return [re, im || 0]; }
+function _cxMul(a, b) { return [a[0]*b[0]-a[1]*b[1], a[0]*b[1]+a[1]*b[0]]; }
+function _cxAdd(a, b) { return [a[0]+b[0], a[1]+b[1]]; }
+function _cxSub(a, b) { return [a[0]-b[0], a[1]-b[1]]; }
+function _cxAbs(a) { return Math.sqrt(a[0]*a[0] + a[1]*a[1]); }
+
+/**
+ * Radix-2 Cooley-Tukey FFT (in-place, complex input).
+ * X = array of [re, im] pairs, length must be power of 2.
+ * dir = 1 for forward, -1 for inverse.
+ */
+function _fft1d(X, dir) {
+  var N = X.length;
+  // bit-reversal permutation
+  for (var i = 1, j = 0; i < N; i++) {
+    var bit = N >> 1;
+    while (j & bit) { j ^= bit; bit >>= 1; }
+    j ^= bit;
+    if (i < j) { var tmp = X[i]; X[i] = X[j]; X[j] = tmp; }
+  }
+  for (var len = 2; len <= N; len *= 2) {
+    var ang = dir * 2 * Math.PI / len;
+    var wBase = [Math.cos(ang), Math.sin(ang)];
+    for (var i = 0; i < N; i += len) {
+      var w = [1, 0];
+      for (var jj = 0; jj < len / 2; jj++) {
+        var u = X[i + jj];
+        var v = _cxMul(w, X[i + jj + len / 2]);
+        X[i + jj]           = _cxAdd(u, v);
+        X[i + jj + len / 2] = _cxSub(u, v);
+        w = _cxMul(w, wBase);
+      }
+    }
+  }
+  if (dir === -1) {
+    for (var i = 0; i < N; i++) { X[i][0] /= N; X[i][1] /= N; }
+  }
+}
+
+/**
+ * 2D FFT via row-then-column 1D FFTs.
+ * data = 2D array [rows][cols] of [re,im].
+ * dir = 1 forward, -1 inverse.
+ */
+function fft2d(data, dir) {
+  var rows = data.length, cols = data[0].length;
+  // rows
+  for (var r = 0; r < rows; r++) _fft1d(data[r], dir);
+  // columns
+  var col = new Array(rows);
+  for (var c = 0; c < cols; c++) {
+    for (var r = 0; r < rows; r++) col[r] = data[r][c];
+    _fft1d(col, dir);
+    for (var r = 0; r < rows; r++) data[r][c] = col[r];
+  }
+}
+
+/** Shift zero-frequency to center (swap quadrants). */
+function fftShift2d(mag, N) {
+  var half = N / 2;
+  var out = [];
+  for (var r = 0; r < N; r++) {
+    out[r] = new Array(N);
+    for (var c = 0; c < N; c++) {
+      var sr = (r + half) % N;
+      var sc = (c + half) % N;
+      out[r][c] = mag[sr][sc];
+    }
+  }
+  return out;
+}
+
+function updateP65() {
+  var N = 128;
+  var pattern = document.getElementById('p65pattern').value;
+  var filterType = document.getElementById('p65filter').value;
+  var D0 = +document.getElementById('p65d0').value;
+
+  // --- Generate image ---
+  var img = [];
+  for (var y = 0; y < N; y++) {
+    img[y] = new Float64Array(N);
+    for (var x = 0; x < N; x++) {
+      var val = 0;
+      if (pattern === 'circles') {
+        var r = Math.sqrt((x - 64) * (x - 64) + (y - 64) * (y - 64));
+        val = Math.sin(r * 0.3) * 127 + 128;
+      } else if (pattern === 'stripes') {
+        val = Math.sin(x * 0.2 + y * 0.15) * 127 + 128;
+      } else if (pattern === 'blocks') {
+        val = ((Math.floor(x / 16) + Math.floor(y / 16)) % 2) * 255;
+      } else {
+        // custom: circles + stripes blend
+        var r = Math.sqrt((x - 64) * (x - 64) + (y - 64) * (y - 64));
+        val = (Math.sin(r * 0.3) + Math.sin(x * 0.25)) * 64 + 128;
+      }
+      img[y][x] = val;
+    }
+  }
+
+  // --- Build complex data for FFT ---
+  var data = [];
+  for (var r = 0; r < N; r++) {
+    data[r] = [];
+    for (var c = 0; c < N; c++) {
+      data[r][c] = [img[r][c], 0];
+    }
+  }
+
+  // --- Forward 2D FFT ---
+  fft2d(data, 1);
+
+  // --- Magnitude (log scale) for display ---
+  var mag = [];
+  for (var r = 0; r < N; r++) {
+    mag[r] = new Float64Array(N);
+    for (var c = 0; c < N; c++) {
+      mag[r][c] = Math.log(1 + _cxAbs(data[r][c]));
+    }
+  }
+  var magShifted = fftShift2d(mag, N);
+
+  // --- Apply frequency-domain filter ---
+  var half = N / 2;
+  var filtered = [];
+  for (var r = 0; r < N; r++) {
+    filtered[r] = [];
+    for (var c = 0; c < N; c++) {
+      // frequency distance (shifted coordinates)
+      var u = ((r + half) % N) - half;
+      var v = ((c + half) % N) - half;
+      var dist = Math.sqrt(u * u + v * v);
+      var H = 1;
+      if (filterType === 'lowpass') {
+        H = dist <= D0 ? 1 : 0;
+      } else if (filterType === 'highpass') {
+        H = dist <= D0 ? 0 : 1;
+      } else if (filterType === 'bandpass') {
+        H = (dist >= D0 - 10 && dist <= D0 + 10) ? 1 : 0;
+      }
+      filtered[r][c] = [data[r][c][0] * H, data[r][c][1] * H];
+    }
+  }
+
+  // --- Inverse 2D FFT ---
+  fft2d(filtered, -1);
+
+  var outImg = [];
+  for (var r = 0; r < N; r++) {
+    outImg[r] = new Float64Array(N);
+    for (var c = 0; c < N; c++) {
+      outImg[r][c] = filtered[r][c][0];
+    }
+  }
+
+  // --- Convert 2D arrays to plain arrays for Plotly ---
+  var imgPlot = [], magPlot = [], outPlot = [];
+  for (var r = 0; r < N; r++) {
+    imgPlot.push(Array.from(img[r]));
+    magPlot.push(Array.from(magShifted[r]));
+    outPlot.push(Array.from(outImg[r]));
+  }
+
+  var layoutBase = {
+    margin: { t: 30, b: 30, l: 30, r: 30 },
+    xaxis: { visible: false },
+    yaxis: { visible: false, scaleanchor: 'x' }
+  };
+
+  Plotly.react('plotP65img', [{
+    z: imgPlot, type: 'heatmap', colorscale: 'Greys', reversescale: true,
+    showscale: false
+  }], Object.assign({}, layoutBase, { title: { text: '原始影像', font: { size: 13 } } }), { responsive: true });
+
+  Plotly.react('plotP65fft', [{
+    z: magPlot, type: 'heatmap', colorscale: 'Viridis',
+    showscale: false
+  }], Object.assign({}, layoutBase, { title: { text: 'log|F(u,v)| 頻譜', font: { size: 13 } } }), { responsive: true });
+
+  Plotly.react('plotP65out', [{
+    z: outPlot, type: 'heatmap', colorscale: 'Greys', reversescale: true,
+    showscale: false
+  }], Object.assign({}, layoutBase, { title: { text: '濾波結果', font: { size: 13 } } }), { responsive: true });
+}
+
+
+/* =============================================================
+   DEMO 2 — Bearing Fault Envelope Spectrum  (sec-p4-2)
+   ============================================================= */
+
+/**
+ * Simple FIR bandpass filter (windowed-sinc).
+ * Returns filtered array.
+ */
+function _bandpass(x, fLow, fHigh, fs, order) {
+  order = order || 128;
+  if (order % 2 === 0) order++;
+  var M = (order - 1) / 2;
+  var h = new Float64Array(order);
+  var wL = 2 * Math.PI * fLow / fs;
+  var wH = 2 * Math.PI * fHigh / fs;
+  for (var n = 0; n < order; n++) {
+    var k = n - M;
+    if (k === 0) {
+      h[n] = (wH - wL) / Math.PI;
+    } else {
+      h[n] = (Math.sin(wH * k) - Math.sin(wL * k)) / (Math.PI * k);
+    }
+    // Hamming window
+    h[n] *= 0.54 - 0.46 * Math.cos(2 * Math.PI * n / (order - 1));
+  }
+  // convolve
+  var y = new Float64Array(x.length);
+  for (var n = 0; n < x.length; n++) {
+    var sum = 0;
+    for (var k = 0; k < order; k++) {
+      var idx = n - k + M;
+      if (idx >= 0 && idx < x.length) sum += h[k] * x[idx];
+    }
+    y[n] = sum;
+  }
+  return y;
+}
+
+/**
+ * Hilbert-transform-based analytic signal envelope.
+ * Uses FFT: zero out negative frequencies, IFFT, take magnitude.
+ */
+function _envelope(x) {
+  var N = 1;
+  while (N < x.length) N *= 2;
+  // pad to power of 2
+  var re = new Float64Array(N);
+  var im = new Float64Array(N);
+  for (var i = 0; i < x.length; i++) re[i] = x[i];
+  // FFT
+  var cx = [];
+  for (var i = 0; i < N; i++) cx[i] = [re[i], 0];
+  _fft1d(cx, 1);
+  // Construct analytic signal in freq domain
+  // DC and Nyquist unchanged, positive freqs *2, negative freqs *0
+  for (var i = 1; i < N / 2; i++) { cx[i][0] *= 2; cx[i][1] *= 2; }
+  for (var i = N / 2 + 1; i < N; i++) { cx[i][0] = 0; cx[i][1] = 0; }
+  // IFFT
+  _fft1d(cx, -1);
+  // envelope = magnitude
+  var env = new Float64Array(x.length);
+  for (var i = 0; i < x.length; i++) {
+    env[i] = Math.sqrt(cx[i][0] * cx[i][0] + cx[i][1] * cx[i][1]);
+  }
+  return env;
+}
+
+/**
+ * Compute magnitude spectrum of a real signal.
+ * Returns { freq: Float64Array, mag: Float64Array } (single-sided).
+ */
+function _spectrum(x, fs) {
+  var N = 1;
+  while (N < x.length) N *= 2;
+  var cx = [];
+  for (var i = 0; i < N; i++) cx[i] = [i < x.length ? x[i] : 0, 0];
+  _fft1d(cx, 1);
+  var half = N / 2 + 1;
+  var freq = new Float64Array(half);
+  var mag  = new Float64Array(half);
+  for (var i = 0; i < half; i++) {
+    freq[i] = i * fs / N;
+    mag[i]  = _cxAbs(cx[i]) * 2 / N;
+  }
+  mag[0] /= 2;
+  return { freq: freq, mag: mag };
+}
+
+function updateP42() {
+  var RPM   = +document.getElementById('p42rpm').value;
+  var fres  = +document.getElementById('p42fres').value;
+  var noise = +document.getElementById('p42noise').value / 100;
+
+  var fs = 25600;
+  var dur = 0.5;
+  var Ns = Math.round(fs * dur);
+  var fr = RPM / 60;
+  var BPFO = 3.5 * fr;
+  var dt = 1 / fs;
+  var alpha = 800; // decay rate for impulse bursts
+
+  // --- Generate bearing vibration signal ---
+  var sig = new Float64Array(Ns);
+
+  // Periodic impulses at BPFO rate, each exciting resonance
+  var period = fs / BPFO; // samples between impacts
+  for (var k = 0; k < Math.ceil(dur * BPFO) + 1; k++) {
+    var t0 = Math.round(k * period);
+    // small random jitter (1-2% of period)
+    t0 += Math.round((Math.random() - 0.5) * period * 0.02);
+    for (var n = 0; n < Math.min(Math.round(period * 0.8), Ns - t0); n++) {
+      if (t0 + n >= 0 && t0 + n < Ns) {
+        var env = Math.exp(-alpha * n * dt);
+        sig[t0 + n] += env * Math.sin(2 * Math.PI * fres * n * dt);
+      }
+    }
+  }
+
+  // Add random background vibration (shaft rotation harmonics)
+  for (var i = 0; i < Ns; i++) {
+    sig[i] += 0.3 * Math.sin(2 * Math.PI * fr * i * dt);
+    sig[i] += 0.15 * Math.sin(2 * Math.PI * 2 * fr * i * dt + 0.5);
+  }
+
+  // Add noise
+  for (var i = 0; i < Ns; i++) {
+    sig[i] += noise * 2 * (Math.random() - 0.5);
+  }
+
+  // Time axis (show only first 0.1s for clarity)
+  var showN = Math.min(Math.round(0.1 * fs), Ns);
+  var tAxis = [];
+  var sigShow = [];
+  for (var i = 0; i < showN; i++) {
+    tAxis.push(i * dt * 1000); // ms
+    sigShow.push(sig[i]);
+  }
+
+  // --- Plot 1: raw time signal ---
+  Plotly.react('plotP42raw', [{
+    x: tAxis, y: sigShow, type: 'scatter', mode: 'lines',
+    line: { width: 0.8, color: '#1f77b4' }
+  }], {
+    title: { text: '原始振動信號（時域）', font: { size: 13 } },
+    xaxis: { title: '時間 (ms)' }, yaxis: { title: '振幅' },
+    margin: { t: 40, b: 45, l: 50, r: 20 }, height: 220
+  }, { responsive: true });
+
+  // --- Plot 2: raw FFT ---
+  var sp = _spectrum(sig, fs);
+  var maxF = 10000;
+  var freqPlot = [], magPlot = [];
+  for (var i = 0; i < sp.freq.length; i++) {
+    if (sp.freq[i] > maxF) break;
+    freqPlot.push(sp.freq[i]);
+    magPlot.push(sp.mag[i]);
+  }
+
+  Plotly.react('plotP42fft', [{
+    x: freqPlot, y: magPlot, type: 'scatter', mode: 'lines',
+    line: { width: 0.8, color: '#ff7f0e' }
+  }], {
+    title: { text: '原始 FFT（注意：看不到 BPFO！）', font: { size: 13 } },
+    xaxis: { title: '頻率 (Hz)' }, yaxis: { title: '|X(f)|' },
+    margin: { t: 40, b: 45, l: 50, r: 20 }, height: 220,
+    annotations: [{
+      x: fres, y: 0, yref: 'paper', yanchor: 'bottom',
+      text: 'f<sub>res</sub>=' + fres + 'Hz', showarrow: true,
+      arrowhead: 2, ax: 0, ay: -30, font: { size: 10 }
+    }]
+  }, { responsive: true });
+
+  // --- Bandpass filter around resonance ---
+  var bw = 500;
+  var fLow = Math.max(fres - bw, 100);
+  var fHigh = Math.min(fres + bw, fs / 2 - 100);
+  var filtered = _bandpass(sig, fLow, fHigh, fs, 201);
+
+  // --- Hilbert envelope ---
+  var env = _envelope(filtered);
+
+  // Remove DC from envelope
+  var envMean = 0;
+  for (var i = 0; i < env.length; i++) envMean += env[i];
+  envMean /= env.length;
+  for (var i = 0; i < env.length; i++) env[i] -= envMean;
+
+  // Show envelope in time domain
+  var envShow = [], filtShow = [];
+  for (var i = 0; i < showN; i++) {
+    filtShow.push(filtered[i]);
+    envShow.push(env[i] + envMean);
+  }
+
+  Plotly.react('plotP42env', [
+    { x: tAxis, y: filtShow, type: 'scatter', mode: 'lines',
+      line: { width: 0.6, color: '#aaa' }, name: '帶通信號' },
+    { x: tAxis, y: envShow, type: 'scatter', mode: 'lines',
+      line: { width: 1.5, color: '#d62728' }, name: '包絡' }
+  ], {
+    title: { text: '帶通濾波 + Hilbert 包絡（時域）', font: { size: 13 } },
+    xaxis: { title: '時間 (ms)' }, yaxis: { title: '振幅' },
+    margin: { t: 40, b: 45, l: 50, r: 20 }, height: 220,
+    showlegend: true, legend: { x: 0.7, y: 1 }
+  }, { responsive: true });
+
+  // --- Plot 4: envelope spectrum ---
+  var envSp = _spectrum(env, fs);
+  var envFreqPlot = [], envMagPlot = [];
+  var maxEnvF = BPFO * 6;
+  for (var i = 0; i < envSp.freq.length; i++) {
+    if (envSp.freq[i] > maxEnvF) break;
+    envFreqPlot.push(envSp.freq[i]);
+    envMagPlot.push(envSp.mag[i]);
+  }
+
+  // BPFO annotations
+  var annots = [];
+  for (var h = 1; h <= 4; h++) {
+    annots.push({
+      x: BPFO * h, y: 0, yref: 'paper', yanchor: 'bottom',
+      text: h + 'x BPFO<br>' + (BPFO * h).toFixed(1) + 'Hz',
+      showarrow: true, arrowhead: 2, ax: 0, ay: -35,
+      font: { size: 10, color: '#d62728' }
+    });
+  }
+
+  Plotly.react('plotP42envfft', [{
+    x: envFreqPlot, y: envMagPlot, type: 'scatter', mode: 'lines',
+    line: { width: 1, color: '#2ca02c' }
+  }], {
+    title: { text: '包絡譜 — BPFO 峰值清晰可見！', font: { size: 13 } },
+    xaxis: { title: '頻率 (Hz)' }, yaxis: { title: '|Envelope(f)|' },
+    margin: { t: 40, b: 45, l: 50, r: 20 }, height: 220,
+    annotations: annots
+  }, { responsive: true });
+}
+
+
+/* =============================================================
+   DEMO 3 — Vibration Diagnosis Game  (sec-p6-10)
+   ============================================================= */
+
+var _vibCorrectAnswer = null;
+var _vibExplanations = {
+  imbalance:    '不平衡的特徵是 1X（轉速頻率）分量佔絕對優勢，2X 很小。這是最常見的振動問題。',
+  misalignment: '不對準的特徵是 2X 分量最大，且 1X 和 3X 也明顯存在。軸向振動通常也很大。',
+  looseness:    '機械鬆動的特徵是出現大量倍頻（1X~8X 甚至更高），且有 0.5X 等次諧波。頻譜看起來「雜亂」。',
+  bearing:      '軸承外環故障（BPFO）的特徵是故障頻率不是轉速的整數倍，而是 BPFO = Nb/2 * (1 - Bd/Pd * cos(alpha)) * fr。' +
+                '峰值出現在 BPFO 及其倍頻處，與 1X 的位置無關。'
+};
+
+function generateVibCase() {
+  var faultTypes = ['imbalance', 'misalignment', 'looseness', 'bearing'];
+  var pick = faultTypes[Math.floor(Math.random() * faultTypes.length)];
+  _vibCorrectAnswer = pick;
+
+  var fr = 25; // 1500 RPM
+  var fs = 2048;
+  var N  = 2048;
+  var dt = 1 / fs;
+  var sig = new Float64Array(N);
+
+  // noise floor
+  for (var i = 0; i < N; i++) sig[i] = 0.05 * (Math.random() - 0.5);
+
+  if (pick === 'imbalance') {
+    // strong 1X, weak 2X
+    for (var i = 0; i < N; i++) {
+      sig[i] += 1.0  * Math.sin(2 * Math.PI * fr * i * dt + Math.random() * 0.1);
+      sig[i] += 0.12 * Math.sin(2 * Math.PI * 2 * fr * i * dt + 1.2);
+      sig[i] += 0.05 * Math.sin(2 * Math.PI * 3 * fr * i * dt + 2.0);
+    }
+  } else if (pick === 'misalignment') {
+    // strong 2X, moderate 1X and 3X
+    for (var i = 0; i < N; i++) {
+      sig[i] += 0.45 * Math.sin(2 * Math.PI * fr * i * dt + 0.3);
+      sig[i] += 1.0  * Math.sin(2 * Math.PI * 2 * fr * i * dt + 1.7);
+      sig[i] += 0.4  * Math.sin(2 * Math.PI * 3 * fr * i * dt + 0.8);
+      sig[i] += 0.08 * Math.sin(2 * Math.PI * 4 * fr * i * dt + 2.1);
+    }
+  } else if (pick === 'looseness') {
+    // many harmonics 1X through 10X + sub-harmonic 0.5X
+    var amps = [0, 0.5, 0.45, 0.35, 0.3, 0.25, 0.2, 0.18, 0.15, 0.1, 0.08];
+    for (var i = 0; i < N; i++) {
+      sig[i] += 0.25 * Math.sin(2 * Math.PI * 0.5 * fr * i * dt + 0.4);
+      for (var h = 1; h <= 10; h++) {
+        sig[i] += amps[h] * Math.sin(2 * Math.PI * h * fr * i * dt + h * 0.7);
+      }
+    }
+  } else if (pick === 'bearing') {
+    // BPFO = 3.56 * fr (non-integer multiple)
+    var BPFO = 3.56 * fr;
+    for (var i = 0; i < N; i++) {
+      for (var h = 1; h <= 4; h++) {
+        sig[i] += (0.6 / h) * Math.sin(2 * Math.PI * h * BPFO * i * dt + h * 1.3);
+      }
+      // some 1X from normal rotation
+      sig[i] += 0.15 * Math.sin(2 * Math.PI * fr * i * dt + 0.2);
+    }
+  }
+
+  // Compute FFT
+  var sp = _spectrum(sig, fs);
+  var maxPlotF = 400; // show up to 400 Hz (covers ~16X at 25Hz)
+  var freqPlot = [], magPlot = [];
+  for (var i = 0; i < sp.freq.length; i++) {
+    if (sp.freq[i] > maxPlotF) break;
+    freqPlot.push(sp.freq[i]);
+    magPlot.push(sp.mag[i]);
+  }
+
+  // Build annotations for 1X, 2X, ... reference lines
+  var shapes = [];
+  var annots = [];
+  for (var h = 1; h <= 10; h++) {
+    var f = h * fr;
+    if (f > maxPlotF) break;
+    shapes.push({
+      type: 'line', x0: f, x1: f, y0: 0, y1: 1, yref: 'paper',
+      line: { color: 'rgba(150,150,150,0.4)', width: 1, dash: 'dot' }
+    });
+    annots.push({
+      x: f, y: 1, yref: 'paper', yanchor: 'bottom',
+      text: h + 'X', showarrow: false,
+      font: { size: 9, color: '#888' }
+    });
+  }
+  // Also mark 0.5X
+  shapes.push({
+    type: 'line', x0: 0.5 * fr, x1: 0.5 * fr, y0: 0, y1: 1, yref: 'paper',
+    line: { color: 'rgba(255,150,150,0.4)', width: 1, dash: 'dot' }
+  });
+  annots.push({
+    x: 0.5 * fr, y: 1, yref: 'paper', yanchor: 'bottom',
+    text: '0.5X', showarrow: false, font: { size: 9, color: '#c88' }
+  });
+
+  Plotly.react('plotP610diag', [{
+    x: freqPlot, y: magPlot, type: 'scatter', mode: 'lines',
+    line: { width: 1, color: '#1f77b4' }
+  }], {
+    title: { text: '未知故障頻譜（fr = ' + fr + ' Hz = 1X）', font: { size: 13 } },
+    xaxis: { title: '頻率 (Hz)', dtick: 25 },
+    yaxis: { title: '振幅' },
+    margin: { t: 40, b: 50, l: 50, r: 20 }, height: 320,
+    shapes: shapes,
+    annotations: annots
+  }, { responsive: true });
+
+  // Reset UI
+  var radios = document.querySelectorAll('input[name="p610answer"]');
+  radios.forEach(function(r) { r.checked = false; });
+  var resultDiv = document.getElementById('p610result');
+  resultDiv.style.display = 'none';
+  resultDiv.innerHTML = '';
+}
+
+function submitVibDiag() {
+  if (!_vibCorrectAnswer) {
+    alert('請先按「產生新案例」！');
+    return;
+  }
+  var selected = null;
+  var radios = document.querySelectorAll('input[name="p610answer"]');
+  radios.forEach(function(r) { if (r.checked) selected = r.value; });
+  if (!selected) {
+    alert('請選擇一個診斷結果！');
+    return;
+  }
+
+  var resultDiv = document.getElementById('p610result');
+  resultDiv.style.display = 'block';
+
+  var correct = selected === _vibCorrectAnswer;
+  var labels = {
+    imbalance: '不平衡 (1X)',
+    misalignment: '不對準 (2X)',
+    looseness: '機械鬆動 (多倍頻)',
+    bearing: '軸承外環故障 (BPFO)'
+  };
+
+  if (correct) {
+    resultDiv.style.background = '#d4edda';
+    resultDiv.style.border = '1px solid #28a745';
+    resultDiv.innerHTML = '<b>正確！</b><br>' + _vibExplanations[_vibCorrectAnswer];
+  } else {
+    resultDiv.style.background = '#f8d7da';
+    resultDiv.style.border = '1px solid #dc3545';
+    resultDiv.innerHTML = '<b>不正確。</b> 正確答案是：<b>' +
+      labels[_vibCorrectAnswer] + '</b><br>' +
+      _vibExplanations[_vibCorrectAnswer];
+  }
+}
+
+
+/* =============================================================
+   Initialise demos when DOM is ready
+   ============================================================= */
+document.addEventListener('DOMContentLoaded', function() {
+  if (document.getElementById('p65pattern'))  updateP65();
+  if (document.getElementById('p42rpm'))      updateP42();
+  if (document.getElementById('plotP610diag')) generateVibCase();
+});
+
+// === parts/demos_tier2.js ===
+/* =============================================================
+   demos_tier2.js
+   Four interactive demos:
+     1. WVD vs STFT side-by-side   (sec-p5-2)
+     2. EMD sifting animation       (sec-p5-6)
+     3. Chirp-Z frequency zoom      (sec-p3-5)
+     4. Transform relationship map  (sec-p2-7)
+   Depends on helpers: fft(), np2(), zp(), ls(), randn(),
+                       wHann(), dk(), pl(), pc
+   ============================================================= */
+
+
+/* =============================================================
+   DEMO 1 -- WVD vs STFT Side-by-Side  (sec-p5-2)
+   ============================================================= */
+
+/**
+ * Generate test signal for WVD / STFT comparison.
+ * Returns { x: Float64Array, fs: number, N: number }
+ */
+function _p52Signal(type) {
+  var fs = 256, dur = 1.0;
+  var N = Math.round(fs * dur);
+  var x = new Float64Array(N);
+  var dt = 1 / fs;
+
+  if (type === 'linchirp') {
+    // Linear chirp 20 -> 100 Hz
+    for (var i = 0; i < N; i++) {
+      var t = i * dt;
+      var f0 = 20, f1 = 100;
+      var phi = 2 * Math.PI * (f0 * t + (f1 - f0) / (2 * dur) * t * t);
+      x[i] = Math.sin(phi);
+    }
+  } else if (type === 'dual') {
+    // Two crossing chirps (generates WVD cross-terms)
+    for (var i = 0; i < N; i++) {
+      var t = i * dt;
+      var phi1 = 2 * Math.PI * (20 * t + 80 / (2 * dur) * t * t);
+      var phi2 = 2 * Math.PI * (100 * t - 80 / (2 * dur) * t * t);
+      x[i] = Math.sin(phi1) + Math.sin(phi2);
+    }
+  } else {
+    // Hop: 30Hz for first half, 90Hz for second half
+    for (var i = 0; i < N; i++) {
+      var t = i * dt;
+      var freq = (t < dur / 2) ? 30 : 90;
+      x[i] = Math.sin(2 * Math.PI * freq * t);
+    }
+  }
+  return { x: x, fs: fs, N: N };
+}
+
+/**
+ * Short-Time Fourier Transform.
+ * Returns { t: [], f: [], S: 2D array [timeFrames][freqBins] } (magnitude in dB).
+ */
+function _stft(x, fs, winLen, hopLen) {
+  winLen = winLen || 64;
+  hopLen = hopLen || 16;
+  var N = x.length;
+  var nfft = np2(winLen);
+  var win = wHann(winLen);
+  var halfBins = Math.floor(nfft / 2) + 1;
+  var frames = [];
+  var tAxis = [];
+
+  for (var start = 0; start + winLen <= N; start += hopLen) {
+    var re = new Array(nfft).fill(0);
+    var im = new Array(nfft).fill(0);
+    for (var j = 0; j < winLen; j++) {
+      re[j] = x[start + j] * win[j];
+    }
+    var F = fft(re, im);
+    var mag = new Float64Array(halfBins);
+    for (var k = 0; k < halfBins; k++) {
+      mag[k] = 20 * Math.log10(Math.sqrt(F.re[k] * F.re[k] + F.im[k] * F.im[k]) + 1e-12);
+    }
+    frames.push(mag);
+    tAxis.push((start + winLen / 2) / fs);
+  }
+
+  var fAxis = [];
+  for (var k = 0; k < halfBins; k++) fAxis.push(k * fs / nfft);
+
+  // Transpose: S[freq][time]
+  var S = [];
+  for (var k = 0; k < halfBins; k++) {
+    S[k] = new Float64Array(frames.length);
+    for (var m = 0; m < frames.length; m++) {
+      S[k][m] = frames[m][k];
+    }
+  }
+  return { t: tAxis, f: fAxis, S: S };
+}
+
+/**
+ * Pseudo Wigner-Ville Distribution (smoothed with short window).
+ * Computes a discrete approximation. Returns { t: [], f: [], W: 2D [freq][time] }.
+ */
+function _pseudoWVD(x, fs, winLen) {
+  winLen = winLen || 63;
+  if (winLen % 2 === 0) winLen++;
+  var halfWin = Math.floor(winLen / 2);
+  var N = x.length;
+  var nfft = np2(winLen);
+  var halfBins = Math.floor(nfft / 2) + 1;
+  var hop = 2;
+
+  var tAxis = [];
+  var frames = [];
+  var win = wHann(winLen);
+
+  for (var n = 0; n < N; n += hop) {
+    var re = new Array(nfft).fill(0);
+    var im = new Array(nfft).fill(0);
+    for (var tau = -halfWin; tau <= halfWin; tau++) {
+      var i1 = n + tau;
+      var i2 = n - tau;
+      var v1 = (i1 >= 0 && i1 < N) ? x[i1] : 0;
+      var v2 = (i2 >= 0 && i2 < N) ? x[i2] : 0;
+      // Windowed instantaneous autocorrelation
+      var wIdx = tau + halfWin;
+      re[wIdx] = v1 * v2 * win[wIdx];
+    }
+    var F = fft(re, im);
+    var mag = new Float64Array(halfBins);
+    for (var k = 0; k < halfBins; k++) {
+      // WVD is real-valued; take the real part (magnitude for display)
+      mag[k] = F.re[k];
+    }
+    frames.push(mag);
+    tAxis.push(n / fs);
+  }
+
+  var fAxis = [];
+  for (var k = 0; k < halfBins; k++) fAxis.push(k * fs / nfft);
+
+  // Transpose: W[freq][time]
+  var W = [];
+  for (var k = 0; k < halfBins; k++) {
+    W[k] = new Float64Array(frames.length);
+    for (var m = 0; m < frames.length; m++) {
+      W[k][m] = frames[m][k];
+    }
+  }
+  return { t: tAxis, f: fAxis, W: W };
+}
+
+function updateP52() {
+  var sigType = document.getElementById('p52sig').value;
+  var sig = _p52Signal(sigType);
+
+  // Compute STFT
+  var stftRes = _stft(sig.x, sig.fs, 64, 8);
+
+  // Compute Pseudo-WVD
+  var wvdRes = _pseudoWVD(sig.x, sig.fs, 63);
+
+  // Convert STFT S to plain arrays for Plotly
+  var stftZ = [];
+  for (var k = 0; k < stftRes.S.length; k++) {
+    stftZ.push(Array.from(stftRes.S[k]));
+  }
+
+  // Convert WVD W to plain arrays, use dB scale for display
+  var wvdZ = [];
+  for (var k = 0; k < wvdRes.W.length; k++) {
+    var row = new Float64Array(wvdRes.W[k].length);
+    for (var m = 0; m < row.length; m++) {
+      // Clip small/negative values for log scale
+      row[m] = wvdRes.W[k][m];
+    }
+    wvdZ.push(Array.from(row));
+  }
+
+  var d = dk();
+  var layoutBase = {
+    margin: { t: 35, b: 45, l: 55, r: 25 },
+    xaxis: { title: 'Time (s)', color: d ? '#94a3b8' : '#475569', gridcolor: d ? '#1e293b' : '#e2e8f0' },
+    yaxis: { title: 'Frequency (Hz)', color: d ? '#94a3b8' : '#475569', gridcolor: d ? '#1e293b' : '#e2e8f0' },
+    paper_bgcolor: d ? '#1e293b' : '#fff',
+    plot_bgcolor: d ? '#0f172a' : '#f8fafc',
+    font: { color: d ? '#e2e8f0' : '#1e293b', family: 'system-ui' }
+  };
+
+  Plotly.react('plotP52stft', [{
+    x: stftRes.t, y: stftRes.f, z: stftZ,
+    type: 'heatmap', colorscale: 'Viridis', showscale: false,
+    zsmooth: 'best'
+  }], Object.assign({}, layoutBase, {
+    title: { text: 'STFT Spectrogram', font: { size: 13 } }
+  }), pc);
+
+  Plotly.react('plotP52wvd', [{
+    x: wvdRes.t, y: wvdRes.f, z: wvdZ,
+    type: 'heatmap', colorscale: 'RdBu', showscale: false,
+    zsmooth: 'best', zmid: 0
+  }], Object.assign({}, layoutBase, {
+    title: { text: 'Pseudo Wigner-Ville Distribution', font: { size: 13 } }
+  }), pc);
+}
+
+
+/* =============================================================
+   DEMO 2 -- EMD Sifting Animation  (sec-p5-6)
+   ============================================================= */
+
+var _emdState = null;
+
+/**
+ * Find local maxima and minima indices of array x.
+ * Returns { maxIdx: [], maxVal: [], minIdx: [], minVal: [] }
+ */
+function _findExtrema(x) {
+  var maxIdx = [], maxVal = [], minIdx = [], minVal = [];
+  for (var i = 1; i < x.length - 1; i++) {
+    if (x[i] > x[i - 1] && x[i] >= x[i + 1]) {
+      maxIdx.push(i); maxVal.push(x[i]);
+    }
+    if (x[i] < x[i - 1] && x[i] <= x[i + 1]) {
+      minIdx.push(i); minVal.push(x[i]);
+    }
+  }
+  return { maxIdx: maxIdx, maxVal: maxVal, minIdx: minIdx, minVal: minVal };
+}
+
+/**
+ * Cubic spline interpolation for envelope.
+ * Given (xs, ys) data points, evaluate at every integer index 0..N-1.
+ * Uses natural cubic spline.
+ */
+function _splineInterp(xs, ys, N) {
+  var n = xs.length;
+  if (n === 0) return new Float64Array(N);
+  if (n === 1) {
+    var out = new Float64Array(N);
+    for (var i = 0; i < N; i++) out[i] = ys[0];
+    return out;
+  }
+  if (n === 2) {
+    // Linear interpolation
+    var out = new Float64Array(N);
+    var slope = (ys[1] - ys[0]) / (xs[1] - xs[0]);
+    for (var i = 0; i < N; i++) {
+      out[i] = ys[0] + slope * (i - xs[0]);
+    }
+    return out;
+  }
+
+  // Natural cubic spline
+  var h = new Float64Array(n - 1);
+  var alpha = new Float64Array(n - 1);
+  for (var i = 0; i < n - 1; i++) h[i] = xs[i + 1] - xs[i];
+  for (var i = 1; i < n - 1; i++) {
+    alpha[i] = (3 / h[i]) * (ys[i + 1] - ys[i]) - (3 / h[i - 1]) * (ys[i] - ys[i - 1]);
+  }
+
+  var l = new Float64Array(n);
+  var mu = new Float64Array(n);
+  var z = new Float64Array(n);
+  l[0] = 1;
+  for (var i = 1; i < n - 1; i++) {
+    l[i] = 2 * (xs[i + 1] - xs[i - 1]) - h[i - 1] * mu[i - 1];
+    mu[i] = h[i] / l[i];
+    z[i] = (alpha[i] - h[i - 1] * z[i - 1]) / l[i];
+  }
+  l[n - 1] = 1;
+
+  var c = new Float64Array(n);
+  var b = new Float64Array(n - 1);
+  var d = new Float64Array(n - 1);
+  for (var j = n - 2; j >= 0; j--) {
+    c[j] = z[j] - mu[j] * c[j + 1];
+    b[j] = (ys[j + 1] - ys[j]) / h[j] - h[j] * (c[j + 1] + 2 * c[j]) / 3;
+    d[j] = (c[j + 1] - c[j]) / (3 * h[j]);
+  }
+
+  var out = new Float64Array(N);
+  for (var i = 0; i < N; i++) {
+    // Find the segment
+    var seg = 0;
+    if (i <= xs[0]) {
+      seg = 0;
+    } else if (i >= xs[n - 1]) {
+      seg = n - 2;
+    } else {
+      for (var j = 0; j < n - 1; j++) {
+        if (i >= xs[j] && i <= xs[j + 1]) { seg = j; break; }
+      }
+    }
+    var dx = i - xs[seg];
+    out[i] = ys[seg] + b[seg] * dx + c[seg] * dx * dx + d[seg] * dx * dx * dx;
+  }
+  return out;
+}
+
+/**
+ * Compute upper and lower envelopes of x using cubic spline on extrema.
+ * Returns { upper: Float64Array, lower: Float64Array, mean: Float64Array }
+ */
+function _envelopes(x) {
+  var N = x.length;
+  var ext = _findExtrema(x);
+
+  // Add boundary points for better interpolation
+  var maxXs = [0].concat(ext.maxIdx).concat([N - 1]);
+  var maxYs = [x[0]].concat(ext.maxVal).concat([x[N - 1]]);
+  var minXs = [0].concat(ext.minIdx).concat([N - 1]);
+  var minYs = [x[0]].concat(ext.minVal).concat([x[N - 1]]);
+
+  var upper = _splineInterp(maxXs, maxYs, N);
+  var lower = _splineInterp(minXs, minYs, N);
+  var mean = new Float64Array(N);
+  for (var i = 0; i < N; i++) {
+    mean[i] = (upper[i] + lower[i]) / 2;
+  }
+  return { upper: upper, lower: lower, mean: mean };
+}
+
+function startEMD() {
+  // Generate a composite test signal
+  var N = 512, fs = 512;
+  var t = ls(0, 1, N);
+  var x = new Float64Array(N);
+  for (var i = 0; i < N; i++) {
+    // IMF1: high-freq component
+    x[i] = Math.sin(2 * Math.PI * 30 * t[i]) * 0.5;
+    // IMF2: mid-freq component
+    x[i] += Math.sin(2 * Math.PI * 8 * t[i]);
+    // IMF3 / trend: slow component
+    x[i] += 0.8 * Math.sin(2 * Math.PI * 2 * t[i]);
+    // Small noise
+    x[i] += 0.05 * randn();
+  }
+
+  _emdState = {
+    original: Array.from(x),
+    residual: Array.from(x),
+    t: t,
+    N: N,
+    fs: fs,
+    imfs: [],
+    siftIter: 0,
+    currentH: Array.from(x),  // current sifting candidate
+    phase: 'start',  // 'start', 'sifting', 'extracted', 'done'
+    maxIMFs: 4
+  };
+
+  document.getElementById('p56step').disabled = false;
+  document.getElementById('p56status').textContent =
+    'IMF #1 sifting: press "next step" to iterate. Sifting iteration = 0';
+
+  _plotEMDState();
+}
+
+function stepEMD() {
+  if (!_emdState) return;
+  var st = _emdState;
+
+  if (st.phase === 'done') {
+    document.getElementById('p56status').textContent = 'Decomposition complete! All IMFs extracted.';
+    document.getElementById('p56step').disabled = true;
+    return;
+  }
+
+  // One sifting iteration
+  var h = st.currentH;
+  var env = _envelopes(h);
+  var newH = new Array(st.N);
+  for (var i = 0; i < st.N; i++) {
+    newH[i] = h[i] - env.mean[i];
+  }
+  st.currentH = newH;
+  st.siftIter++;
+
+  // Check convergence: Cauchy-like criterion
+  var sd = 0, denom = 0;
+  for (var i = 0; i < st.N; i++) {
+    var diff = newH[i] - h[i];
+    sd += diff * diff;
+    denom += h[i] * h[i];
+  }
+  var converged = (denom > 0 && sd / denom < 0.01) || st.siftIter >= 15;
+
+  if (converged) {
+    // Extract this IMF
+    st.imfs.push(Array.from(st.currentH));
+    var newRes = new Array(st.N);
+    for (var i = 0; i < st.N; i++) {
+      newRes[i] = st.residual[i] - st.currentH[i];
+    }
+    st.residual = newRes;
+
+    if (st.imfs.length >= st.maxIMFs) {
+      st.phase = 'done';
+      document.getElementById('p56status').textContent =
+        'Decomposition complete! Extracted ' + st.imfs.length + ' IMFs. Residual shown below.';
+      document.getElementById('p56step').disabled = true;
+    } else {
+      // Start sifting next IMF
+      st.currentH = Array.from(st.residual);
+      st.siftIter = 0;
+      st.phase = 'sifting';
+      document.getElementById('p56status').textContent =
+        'IMF #' + st.imfs.length + ' extracted (converged). Starting IMF #' +
+        (st.imfs.length + 1) + ' sifting...';
+    }
+  } else {
+    st.phase = 'sifting';
+    document.getElementById('p56status').textContent =
+      'IMF #' + (st.imfs.length + 1) + ' sifting iteration ' + st.siftIter +
+      '  |  SD = ' + (denom > 0 ? (sd / denom).toExponential(2) : '---');
+  }
+
+  _plotEMDState();
+}
+
+function _plotEMDState() {
+  var st = _emdState;
+  if (!st) return;
+  var traces = [];
+  var d = dk();
+
+  // Subplot approach: show original, current sifting, all extracted IMFs, residual
+  var nRows = 2 + st.imfs.length + (st.phase === 'done' ? 1 : 0);
+
+  // We use Plotly subplots via a single plot with multiple yaxis
+  var t = Array.from(st.t);
+
+  // --- Original signal ---
+  traces.push({
+    x: t, y: st.original, type: 'scatter', mode: 'lines',
+    line: { color: '#1f77b4', width: 1 },
+    name: 'Original', xaxis: 'x', yaxis: 'y'
+  });
+
+  // --- Current sifting state with envelopes ---
+  if (st.phase !== 'done') {
+    var env = _envelopes(st.currentH);
+    traces.push({
+      x: t, y: st.currentH, type: 'scatter', mode: 'lines',
+      line: { color: '#ff7f0e', width: 1.2 },
+      name: 'h(t) iter ' + st.siftIter, xaxis: 'x', yaxis: 'y2'
+    });
+    traces.push({
+      x: t, y: Array.from(env.upper), type: 'scatter', mode: 'lines',
+      line: { color: '#2ca02c', width: 0.8, dash: 'dash' },
+      name: 'Upper env', xaxis: 'x', yaxis: 'y2', showlegend: false
+    });
+    traces.push({
+      x: t, y: Array.from(env.lower), type: 'scatter', mode: 'lines',
+      line: { color: '#d62728', width: 0.8, dash: 'dash' },
+      name: 'Lower env', xaxis: 'x', yaxis: 'y2', showlegend: false
+    });
+    traces.push({
+      x: t, y: Array.from(env.mean), type: 'scatter', mode: 'lines',
+      line: { color: '#888', width: 0.8, dash: 'dot' },
+      name: 'Mean env', xaxis: 'x', yaxis: 'y2', showlegend: false
+    });
+  }
+
+  // --- Extracted IMFs ---
+  var imfColors = ['#9467bd', '#8c564b', '#e377c2', '#7f7f7f', '#bcbd22'];
+  for (var k = 0; k < st.imfs.length; k++) {
+    var yaxisName = 'y' + (k + 3);
+    traces.push({
+      x: t, y: st.imfs[k], type: 'scatter', mode: 'lines',
+      line: { color: imfColors[k % imfColors.length], width: 1 },
+      name: 'IMF ' + (k + 1), xaxis: 'x', yaxis: yaxisName
+    });
+  }
+
+  // --- Residual (only when done) ---
+  if (st.phase === 'done') {
+    var yaxisName = 'y' + (st.imfs.length + 3);
+    traces.push({
+      x: t, y: st.residual, type: 'scatter', mode: 'lines',
+      line: { color: '#17becf', width: 1 },
+      name: 'Residual', xaxis: 'x', yaxis: yaxisName
+    });
+  }
+
+  // Build layout with subplots
+  var totalRows = st.phase === 'done'
+    ? 1 + st.imfs.length + 1   // original + IMFs + residual
+    : 2 + st.imfs.length;      // original + sifting + IMFs
+  var gap = 0.03;
+  var rowH = (1 - gap * (totalRows - 1)) / totalRows;
+
+  var layout = {
+    margin: { t: 25, b: 35, l: 50, r: 25 },
+    paper_bgcolor: d ? '#1e293b' : '#fff',
+    plot_bgcolor: d ? '#0f172a' : '#f8fafc',
+    font: { color: d ? '#e2e8f0' : '#1e293b', family: 'system-ui', size: 10 },
+    showlegend: true,
+    legend: { x: 1.02, y: 1, font: { size: 9 } },
+    height: Math.max(400, totalRows * 90 + 60),
+    xaxis: { title: 'Time (s)', anchor: 'y' + totalRows, color: d ? '#94a3b8' : '#475569' }
+  };
+
+  // Create yaxis domains from top to bottom
+  var axisNames = [];
+  for (var r = 0; r < totalRows; r++) {
+    var top = 1 - r * (rowH + gap);
+    var bottom = top - rowH;
+    var yName = r === 0 ? 'yaxis' : 'yaxis' + (r + 1);
+    axisNames.push(yName);
+    layout[yName] = {
+      domain: [Math.max(0, bottom), top],
+      color: d ? '#94a3b8' : '#475569',
+      gridcolor: d ? '#1e293b' : '#e2e8f0',
+      showticklabels: true,
+      tickfont: { size: 9 }
+    };
+  }
+
+  // Add title annotations for each row
+  var rowLabels = ['Original'];
+  if (st.phase !== 'done') {
+    rowLabels.push('Sifting h(t)');
+  }
+  for (var k = 0; k < st.imfs.length; k++) {
+    rowLabels.push('IMF ' + (k + 1));
+  }
+  if (st.phase === 'done') {
+    rowLabels.push('Residual');
+  }
+
+  layout.annotations = [];
+  for (var r = 0; r < totalRows; r++) {
+    var dom = layout[axisNames[r]].domain;
+    layout.annotations.push({
+      x: 0, y: dom[1], xref: 'paper', yref: 'paper',
+      xanchor: 'left', yanchor: 'bottom',
+      text: '<b>' + rowLabels[r] + '</b>',
+      showarrow: false, font: { size: 10, color: d ? '#94a3b8' : '#475569' }
+    });
+  }
+
+  Plotly.react('plotP56emd', traces, layout, pc);
+}
+
+
+/* =============================================================
+   DEMO 3 -- Chirp-Z Frequency Zoom  (sec-p3-5)
+   ============================================================= */
+
+/**
+ * Chirp-Z Transform (Bluestein / CZT).
+ * Evaluate Z-transform of x[n] at M points along a spiral:
+ *   z_k = A * W^{-k},  k = 0..M-1
+ * where A = exp(j*2*pi*f1/fs), W = exp(-j*2*pi*(f2-f1)/(M*fs)).
+ *
+ * For frequency zoom: f1 = start freq, f2 = end freq, M = # output bins.
+ * Returns { re: [], im: [] } of length M.
+ */
+function _czt(x, fs, f1, f2, M) {
+  var N = x.length;
+  var theta1 = 2 * Math.PI * f1 / fs;
+  var dtheta = 2 * Math.PI * (f2 - f1) / (M * fs);
+
+  // Direct DFT approach along the contour (efficient enough for our demo sizes)
+  var L = N + M - 1;
+  var Lp = np2(L);
+
+  // We use the Bluestein identity:
+  // X(z_k) = W^{k^2/2} * sum_n [ x[n]*A^{-n}*W^{n^2/2} ] * W^{(k-n)^2/2}
+  // which is a convolution computable via FFT.
+
+  // Precompute chirp: W^{n^2/2}
+  var chirpRe = new Array(Lp).fill(0);
+  var chirpIm = new Array(Lp).fill(0);
+  // Input sequence: y[n] = x[n] * A^{-n} * W^{n^2/2}
+  var yRe = new Array(Lp).fill(0);
+  var yIm = new Array(Lp).fill(0);
+
+  for (var n = 0; n < N; n++) {
+    var aPhase = -theta1 * n;
+    var wPhase = dtheta * n * n / 2;
+    var phase = aPhase + wPhase;
+    yRe[n] = x[n] * Math.cos(phase);
+    yIm[n] = x[n] * Math.sin(phase);
+  }
+
+  // Chirp filter h[k] = W^{-k^2/2}, for k = -(N-1)..0..M-1
+  // Store with circular shift: h[k] for k=0..M-1, then h[k] for k=-(N-1)..-1 at end
+  var hRe = new Array(Lp).fill(0);
+  var hIm = new Array(Lp).fill(0);
+  for (var k = 0; k < M; k++) {
+    var phase = -dtheta * k * k / 2;
+    hRe[k] = Math.cos(phase);
+    hIm[k] = Math.sin(phase);
+  }
+  for (var k = 1; k < N; k++) {
+    var phase = -dtheta * k * k / 2;
+    hRe[Lp - k] = Math.cos(phase);
+    hIm[Lp - k] = Math.sin(phase);
+  }
+
+  // FFT of y and h
+  var Fy = fft(yRe, yIm);
+  var Fh = fft(hRe, hIm);
+
+  // Multiply in frequency domain
+  var Gre = new Array(Lp);
+  var Gim = new Array(Lp);
+  for (var i = 0; i < Lp; i++) {
+    Gre[i] = Fy.re[i] * Fh.re[i] - Fy.im[i] * Fh.im[i];
+    Gim[i] = Fy.re[i] * Fh.im[i] + Fy.im[i] * Fh.re[i];
+  }
+
+  // IFFT: use forward FFT with conjugate trick
+  // IFFT(X) = conj(FFT(conj(X))) / N
+  for (var i = 0; i < Lp; i++) Gim[i] = -Gim[i];
+  var Fg = fft(Gre, Gim);
+  for (var i = 0; i < Lp; i++) {
+    Fg.re[i] /= Lp;
+    Fg.im[i] = -Fg.im[i] / Lp;
+  }
+
+  // Post-multiply by W^{k^2/2}
+  var outRe = new Array(M);
+  var outIm = new Array(M);
+  for (var k = 0; k < M; k++) {
+    var phase = dtheta * k * k / 2;
+    var cr = Math.cos(phase), ci = Math.sin(phase);
+    outRe[k] = Fg.re[k] * cr - Fg.im[k] * ci;
+    outIm[k] = Fg.re[k] * ci + Fg.im[k] * cr;
+  }
+
+  return { re: outRe, im: outIm };
+}
+
+function updateP35() {
+  var fs = 256;         // sample rate
+  var dur = 1.0;        // 1 second => N=256 => delta_f = 1 Hz with zero-padding
+  var N = Math.round(fs * dur);
+  var dt = 1 / fs;
+
+  // Two close sinusoids: 99.5 Hz + 100.5 Hz (1 Hz apart)
+  var f1 = 99.5, f2 = 100.5;
+  var x = new Array(N);
+  for (var i = 0; i < N; i++) {
+    var t = i * dt;
+    x[i] = Math.sin(2 * Math.PI * f1 * t) + Math.sin(2 * Math.PI * f2 * t);
+    x[i] += 0.05 * randn();
+  }
+
+  // --- FFT (zero-pad to show resolution limit) ---
+  var Nfft = np2(N);
+  var reFFT = zp(x, Nfft);
+  var imFFT = new Array(Nfft).fill(0);
+  var F = fft(reFFT, imFFT);
+  var halfBins = Math.floor(Nfft / 2) + 1;
+
+  var fftFreq = [], fftMag = [];
+  for (var k = 0; k < halfBins; k++) {
+    var freq = k * fs / Nfft;
+    if (freq < 80 || freq > 120) continue;
+    fftFreq.push(freq);
+    fftMag.push(2 * Math.sqrt(F.re[k] * F.re[k] + F.im[k] * F.im[k]) / N);
+  }
+
+  // --- CZT zoom ---
+  var center = +document.getElementById('p35center').value;
+  var width = +document.getElementById('p35width').value;
+  var czStart = center - width / 2;
+  var czEnd = center + width / 2;
+  var M = 512;  // high resolution output
+
+  var cztResult = _czt(x, fs, czStart, czEnd, M);
+  var cztFreq = [], cztMag = [];
+  for (var k = 0; k < M; k++) {
+    var freq = czStart + k * (czEnd - czStart) / M;
+    cztFreq.push(freq);
+    cztMag.push(2 * Math.sqrt(cztResult.re[k] * cztResult.re[k] + cztResult.im[k] * cztResult.im[k]) / N);
+  }
+
+  // --- Plot FFT ---
+  var d = dk();
+  Plotly.react('plotP35fft', [{
+    x: fftFreq, y: fftMag, type: 'scatter', mode: 'lines',
+    line: { color: '#1f77b4', width: 1.2 },
+    name: 'FFT'
+  }], pl('FFT (N=' + Nfft + ', \u0394f=' + (fs / Nfft).toFixed(2) + ' Hz)', 'Frequency (Hz)', '|X(f)|', {
+    shapes: [{
+      type: 'rect', x0: czStart, x1: czEnd, y0: 0, y1: 1,
+      yref: 'paper', fillcolor: 'rgba(255,165,0,0.12)',
+      line: { color: 'rgba(255,165,0,0.5)', width: 1, dash: 'dash' }
+    }],
+    annotations: [
+      { x: f1, y: 0, yref: 'paper', yanchor: 'bottom', text: f1 + 'Hz', showarrow: true, arrowhead: 2, ax: -20, ay: -30, font: { size: 10 } },
+      { x: f2, y: 0, yref: 'paper', yanchor: 'bottom', text: f2 + 'Hz', showarrow: true, arrowhead: 2, ax: 20, ay: -30, font: { size: 10 } }
+    ],
+    height: 240
+  }), pc);
+
+  // --- Plot CZT ---
+  var cztDf = (czEnd - czStart) / M;
+  Plotly.react('plotP35czt', [{
+    x: cztFreq, y: cztMag, type: 'scatter', mode: 'lines',
+    line: { color: '#ff7f0e', width: 1.2 },
+    name: 'CZT'
+  }], pl('CZT Zoom (' + czStart.toFixed(1) + '~' + czEnd.toFixed(1) + ' Hz, \u0394f=' + cztDf.toFixed(3) + ' Hz)',
+    'Frequency (Hz)', '|X(f)|', {
+    annotations: [
+      { x: f1, y: 0, yref: 'paper', yanchor: 'bottom', text: f1 + 'Hz', showarrow: true, arrowhead: 2, ax: -20, ay: -30, font: { size: 10, color: '#d62728' } },
+      { x: f2, y: 0, yref: 'paper', yanchor: 'bottom', text: f2 + 'Hz', showarrow: true, arrowhead: 2, ax: 20, ay: -30, font: { size: 10, color: '#d62728' } }
+    ],
+    height: 240
+  }), pc);
+}
+
+
+/* =============================================================
+   DEMO 4 -- Transform Relationship Diagram  (sec-p2-7)
+   ============================================================= */
+
+function updateP27() {
+  var d = dk();
+
+  // Node definitions: id, label, x, y, description
+  var nodes = [
+    { id: 'FS',   label: 'Fourier Series\n(FS)',           x: 0,   y: 1,   desc: 'Fourier Series: decomposes periodic continuous signals into discrete harmonic coefficients c_n. Applicable to continuous-time periodic signals.' },
+    { id: 'FT',   label: 'Fourier Transform\n(FT)',        x: 1,   y: 1,   desc: 'Fourier Transform: extends FS to aperiodic continuous signals. The spectrum becomes continuous. F(\u03c9) = \u222b x(t) e^{-j\u03c9t} dt.' },
+    { id: 'DTFT', label: 'DTFT',                           x: 2,   y: 1,   desc: 'Discrete-Time Fourier Transform: FT of sampled sequences. Spectrum is continuous and periodic with period 2\u03c0. Connects continuous frequency analysis to discrete samples.' },
+    { id: 'DFS',  label: 'DFS',                            x: 0,   y: 0,   desc: 'Discrete Fourier Series: FS for discrete periodic sequences. Both time and frequency are discrete and periodic with period N.' },
+    { id: 'DFT',  label: 'DFT / FFT',                     x: 1,   y: 0,   desc: 'Discrete Fourier Transform: samples the DTFT at N equally spaced frequencies. Computable via FFT in O(N log N). The cornerstone of digital signal processing.' },
+    { id: 'ZT',   label: 'Z-Transform',                    x: 2,   y: 0,   desc: 'Z-Transform: generalization of DTFT to complex z-plane. X(z) = \u03a3 x[n] z^{-n}. DTFT is Z-transform evaluated on the unit circle (z = e^{j\u03c9}).' },
+    { id: 'LT',   label: 'Laplace\nTransform',             x: 3,   y: 1,   desc: 'Laplace Transform: generalization of FT to complex s-plane. X(s) = \u222b x(t) e^{-st} dt. FT is Laplace evaluated on the imaginary axis (s = j\u03c9).' },
+    { id: 'CZT',  label: 'Chirp-Z\nTransform',            x: 3,   y: 0,   desc: 'Chirp-Z Transform: evaluates Z-transform on a spiral contour in the z-plane. Generalizes DFT and enables frequency zooming. Computable via FFT convolution.' }
+  ];
+
+  // Edge definitions: from, to, label
+  var edges = [
+    { from: 'FS',   to: 'FT',   label: 'T\u2192\u221e' },
+    { from: 'FS',   to: 'DFS',  label: 'sampling' },
+    { from: 'FT',   to: 'DTFT', label: 'sampling' },
+    { from: 'FT',   to: 'LT',   label: 's=j\u03c9' },
+    { from: 'DFS',  to: 'DFT',  label: 'one period' },
+    { from: 'DTFT', to: 'DFT',  label: 'sample \u03c9' },
+    { from: 'DTFT', to: 'ZT',   label: 'z=e^{j\u03c9}' },
+    { from: 'ZT',   to: 'CZT',  label: 'spiral path' },
+    { from: 'DFT',  to: 'CZT',  label: 'generalize' }
+  ];
+
+  // Position scaling
+  var xScale = 1.2, yScale = 1.0;
+
+  // Build node trace
+  var nodeX = [], nodeY = [], nodeText = [], nodeHover = [];
+  var nodeMap = {};
+  for (var i = 0; i < nodes.length; i++) {
+    var n = nodes[i];
+    nodeMap[n.id] = i;
+    nodeX.push(n.x * xScale);
+    nodeY.push(n.y * yScale);
+    nodeText.push(n.label.replace('\n', '<br>'));
+    nodeHover.push(n.desc);
+  }
+
+  // Build edge traces (lines + annotations for labels)
+  var edgeTraces = [];
+  var annotations = [];
+  for (var i = 0; i < edges.length; i++) {
+    var e = edges[i];
+    var fi = nodeMap[e.from], ti = nodeMap[e.to];
+    edgeTraces.push({
+      x: [nodeX[fi], nodeX[ti], null],
+      y: [nodeY[fi], nodeY[ti], null],
+      mode: 'lines',
+      line: { color: d ? '#475569' : '#94a3b8', width: 2 },
+      hoverinfo: 'none',
+      showlegend: false
+    });
+    // Edge label at midpoint
+    annotations.push({
+      x: (nodeX[fi] + nodeX[ti]) / 2,
+      y: (nodeY[fi] + nodeY[ti]) / 2,
+      text: e.label,
+      showarrow: false,
+      font: { size: 10, color: d ? '#94a3b8' : '#64748b' },
+      bgcolor: d ? 'rgba(30,41,59,0.8)' : 'rgba(255,255,255,0.8)',
+      borderpad: 2
+    });
+  }
+
+  // Node trace
+  var nodeTrace = {
+    x: nodeX, y: nodeY,
+    mode: 'markers+text',
+    type: 'scatter',
+    text: nodeText,
+    textposition: 'middle center',
+    textfont: { size: 11, color: d ? '#e2e8f0' : '#1e293b', family: 'system-ui' },
+    marker: {
+      size: 55,
+      color: ['#06b6d4', '#3b82f6', '#8b5cf6', '#14b8a6', '#f59e0b', '#ef4444', '#6366f1', '#f97316'],
+      opacity: 0.85,
+      line: { width: 2, color: d ? '#e2e8f0' : '#1e293b' }
+    },
+    hovertext: nodeHover,
+    hoverinfo: 'text',
+    showlegend: false
+  };
+
+  var allTraces = edgeTraces.concat([nodeTrace]);
+
+  var layout = {
+    title: { text: 'Transform Family Relationships', font: { size: 13 } },
+    margin: { t: 40, b: 20, l: 20, r: 20 },
+    paper_bgcolor: d ? '#1e293b' : '#fff',
+    plot_bgcolor: d ? '#0f172a' : '#f8fafc',
+    font: { color: d ? '#e2e8f0' : '#1e293b', family: 'system-ui' },
+    xaxis: { visible: false, range: [-0.5, 3 * xScale + 0.5] },
+    yaxis: { visible: false, range: [-0.5, 1 * yScale + 0.5], scaleanchor: 'x' },
+    annotations: annotations,
+    hovermode: 'closest',
+    height: 400
+  };
+
+  Plotly.react('plotP27map', allTraces, layout, pc);
+
+  // Set up click/hover event for node descriptions
+  var plotDiv = document.getElementById('plotP27map');
+  plotDiv.removeAllListeners && plotDiv.removeAllListeners('plotly_hover');
+  plotDiv.removeAllListeners && plotDiv.removeAllListeners('plotly_click');
+
+  plotDiv.on('plotly_hover', function (data) {
+    if (data.points && data.points.length > 0) {
+      var pt = data.points[0];
+      if (pt.hovertext) {
+        document.getElementById('p27desc').innerHTML = '<b>' + (pt.text || '').replace(/<br>/g, ' ') + '</b>: ' + pt.hovertext;
+      }
+    }
+  });
+
+  plotDiv.on('plotly_click', function (data) {
+    if (data.points && data.points.length > 0) {
+      var pt = data.points[0];
+      if (pt.hovertext) {
+        document.getElementById('p27desc').innerHTML = '<b>' + (pt.text || '').replace(/<br>/g, ' ') + '</b>: ' + pt.hovertext;
+      }
+    }
+  });
+}
+
+
+/* =============================================================
+   Initialise demos when DOM is ready
+   ============================================================= */
+document.addEventListener('DOMContentLoaded', function () {
+  if (document.getElementById('p52sig'))     updateP52();
+  if (document.getElementById('p35center'))  updateP35();
+  if (document.getElementById('plotP27map')) updateP27();
+  // EMD: no auto-init, user must press "start" button
+});
+
+// === parts/demos_tier3.js ===
+/* =============================================================
+   demos_tier3.js
+   Four interactive demos:
+     1. OFDM full TX-RX chain        (sec-p6-6)
+     2. Radar target placement        (sec-p6-7)
+     3. Goertzel vs FFT efficiency    (sec-p6-1)
+     4. EEG sleep staging game        (sec-p6-9)
+   Depends on helpers: fft(), np2(), zp(), ls(), randn(),
+                       wHann(), dk(), pl(), pc
+   ============================================================= */
+
+/* =============================================================
+   DEMO 1 — OFDM Full TX-RX Chain  (sec-p6-6)
+   onclick="updateP66full()"
+   ============================================================= */
+
+/**
+ * IFFT via conjugate-FFT trick: IFFT(X) = conj(FFT(conj(X))) / N
+ */
+function _ifft(re, im) {
+  var N = re.length;
+  var conjIm = im.map(function(v) { return -v; });
+  var F = fft(re, conjIm);
+  var outRe = [], outIm = [];
+  for (var i = 0; i < N; i++) {
+    outRe.push(F.re[i] / N);
+    outIm.push(-F.im[i] / N);
+  }
+  return { re: outRe, im: outIm };
+}
+
+/**
+ * Generate random QPSK symbols: each is (+/-1 +/- j)/sqrt(2)
+ */
+function _qpskGen(n) {
+  var re = [], im = [];
+  for (var i = 0; i < n; i++) {
+    re.push((Math.random() < 0.5 ? 1 : -1) / Math.sqrt(2));
+    im.push((Math.random() < 0.5 ? 1 : -1) / Math.sqrt(2));
+  }
+  return { re: re, im: im };
+}
+
+/**
+ * Generate random 16-QAM symbols: values from {-3,-1,1,3}/sqrt(10)
+ */
+function _qam16Gen(n) {
+  var vals = [-3, -1, 1, 3];
+  var norm = Math.sqrt(10);
+  var re = [], im = [];
+  for (var i = 0; i < n; i++) {
+    re.push(vals[Math.floor(Math.random() * 4)] / norm);
+    im.push(vals[Math.floor(Math.random() * 4)] / norm);
+  }
+  return { re: re, im: im };
+}
+
+function updateP66full() {
+  var Nfft = +document.getElementById('p66fft').value;
+  var modType = document.getElementById('p66mod').value;
+  var delay = +document.getElementById('p66delay').value;
+  var alpha = +document.getElementById('p66alpha').value;
+  var snrdB = +document.getElementById('p66snr').value;
+  var cpLen = +document.getElementById('p66cp').value;
+
+  // Number of data subcarriers (leaving some guard bands)
+  var guardLow = Math.round(Nfft * 0.1);   // 10% lower guard
+  var guardHigh = Math.round(Nfft * 0.1);   // 10% upper guard
+  var Ndata = Nfft - guardLow - guardHigh;
+
+  // --- TX: Generate random symbols ---
+  var sym;
+  if (modType === '16QAM') {
+    sym = _qam16Gen(Ndata);
+  } else {
+    sym = _qpskGen(Ndata);
+  }
+
+  // Map data symbols into full FFT-size vector (with guard zeros)
+  var txFreqRe = new Array(Nfft).fill(0);
+  var txFreqIm = new Array(Nfft).fill(0);
+  for (var i = 0; i < Ndata; i++) {
+    txFreqRe[guardLow + i] = sym.re[i];
+    txFreqIm[guardLow + i] = sym.im[i];
+  }
+
+  // --- IFFT to get time-domain OFDM symbol ---
+  var td = _ifft(txFreqRe, txFreqIm);
+
+  // --- Add Cyclic Prefix ---
+  var txWithCP_re = [], txWithCP_im = [];
+  // CP is last cpLen samples prepended
+  for (var i = Nfft - cpLen; i < Nfft; i++) {
+    txWithCP_re.push(td.re[i]);
+    txWithCP_im.push(td.im[i]);
+  }
+  for (var i = 0; i < Nfft; i++) {
+    txWithCP_re.push(td.re[i]);
+    txWithCP_im.push(td.im[i]);
+  }
+
+  // --- Multipath channel: h[0]=1, h[delay]=alpha ---
+  var totalLen = txWithCP_re.length;
+  var rxRe = new Array(totalLen + delay).fill(0);
+  var rxIm = new Array(totalLen + delay).fill(0);
+  for (var i = 0; i < totalLen; i++) {
+    rxRe[i] += txWithCP_re[i];
+    rxIm[i] += txWithCP_im[i];
+    if (i + delay < rxRe.length) {
+      rxRe[i + delay] += alpha * txWithCP_re[i];
+      rxIm[i + delay] += alpha * txWithCP_im[i];
+    }
+  }
+  // Trim to original length
+  rxRe = rxRe.slice(0, totalLen);
+  rxIm = rxIm.slice(0, totalLen);
+
+  // --- Add AWGN noise ---
+  // Signal power estimation
+  var sigPow = 0;
+  for (var i = 0; i < totalLen; i++) {
+    sigPow += rxRe[i] * rxRe[i] + rxIm[i] * rxIm[i];
+  }
+  sigPow /= totalLen;
+  var noisePow = sigPow * Math.pow(10, -snrdB / 10);
+  var noiseStd = Math.sqrt(noisePow / 2);
+  for (var i = 0; i < totalLen; i++) {
+    rxRe[i] += noiseStd * randn();
+    rxIm[i] += noiseStd * randn();
+  }
+
+  // --- RX: Remove CP ---
+  var rxDataRe = rxRe.slice(cpLen, cpLen + Nfft);
+  var rxDataIm = rxIm.slice(cpLen, cpLen + Nfft);
+
+  // --- FFT to go back to frequency domain ---
+  var rxFreq = fft(rxDataRe, rxDataIm);
+
+  // --- Channel estimation (LS: H_est = Y/X on data subcarriers) ---
+  // True channel in frequency domain for reference
+  var hRe = new Array(Nfft).fill(0);
+  var hIm = new Array(Nfft).fill(0);
+  // h[n] = delta[n] + alpha*delta[n-delay]
+  // H[k] = 1 + alpha * exp(-j*2*pi*k*delay/Nfft)
+  for (var k = 0; k < Nfft; k++) {
+    var angle = -2 * Math.PI * k * delay / Nfft;
+    hRe[k] = 1 + alpha * Math.cos(angle);
+    hIm[k] = alpha * Math.sin(angle);
+  }
+
+  // LS estimate: H_est[k] = Y[k] / X[k] (only on data subcarriers)
+  var hEstRe = new Array(Nfft).fill(0);
+  var hEstIm = new Array(Nfft).fill(0);
+  for (var i = 0; i < Ndata; i++) {
+    var k = guardLow + i;
+    var xr = txFreqRe[k], xi = txFreqIm[k];
+    var yr = rxFreq.re[k], yi = rxFreq.im[k];
+    var xPow = xr * xr + xi * xi;
+    if (xPow > 1e-12) {
+      // (Y/X) = (Yr+jYi)(Xr-jXi) / |X|^2
+      hEstRe[k] = (yr * xr + yi * xi) / xPow;
+      hEstIm[k] = (yi * xr - yr * xi) / xPow;
+    }
+  }
+
+  // --- Equalization: X_eq[k] = Y[k] / H_est[k] ---
+  var eqRe = [], eqIm = [];
+  for (var i = 0; i < Ndata; i++) {
+    var k = guardLow + i;
+    var hr = hEstRe[k], hi = hEstIm[k];
+    var hPow = hr * hr + hi * hi;
+    if (hPow > 1e-12) {
+      eqRe.push((rxFreq.re[k] * hr + rxFreq.im[k] * hi) / hPow);
+      eqIm.push((rxFreq.im[k] * hr - rxFreq.re[k] * hi) / hPow);
+    } else {
+      eqRe.push(0);
+      eqIm.push(0);
+    }
+  }
+
+  // --- BER calculation ---
+  var bitErrors = 0;
+  var totalBits = 0;
+  if (modType === 'QPSK') {
+    for (var i = 0; i < Ndata; i++) {
+      // QPSK: decide sign of Re and Im
+      var txBitI = sym.re[i] > 0 ? 1 : 0;
+      var txBitQ = sym.im[i] > 0 ? 1 : 0;
+      var rxBitI = eqRe[i] > 0 ? 1 : 0;
+      var rxBitQ = eqIm[i] > 0 ? 1 : 0;
+      if (txBitI !== rxBitI) bitErrors++;
+      if (txBitQ !== rxBitQ) bitErrors++;
+      totalBits += 2;
+    }
+  } else {
+    // 16-QAM: 4 bits per symbol (2 per I, 2 per Q)
+    var levels = [-3, -1, 1, 3];
+    var norm16 = Math.sqrt(10);
+    for (var i = 0; i < Ndata; i++) {
+      // Find nearest constellation point for TX and RX
+      var txI = Math.round(sym.re[i] * norm16);
+      var txQ = Math.round(sym.im[i] * norm16);
+      var rxI = _nearest16(eqRe[i] * norm16);
+      var rxQ = _nearest16(eqIm[i] * norm16);
+      // Gray-code bit mapping for {-3,-1,1,3} -> {00,01,11,10}
+      var txBitsI = _gray16(txI);
+      var txBitsQ = _gray16(txQ);
+      var rxBitsI = _gray16(rxI);
+      var rxBitsQ = _gray16(rxQ);
+      for (var b = 0; b < 2; b++) {
+        if (txBitsI[b] !== rxBitsI[b]) bitErrors++;
+        if (txBitsQ[b] !== rxBitsQ[b]) bitErrors++;
+      }
+      totalBits += 4;
+    }
+  }
+  var ber = totalBits > 0 ? bitErrors / totalBits : 0;
+
+  // --- Plotting ---
+  // Plot 1: TX constellation (top-left)
+  Plotly.react('plotP66tx', [{
+    x: sym.re, y: sym.im,
+    mode: 'markers',
+    marker: { color: '#06b6d4', size: 6, opacity: 0.7 },
+    name: 'TX'
+  }], pl('TX 星座圖 (' + modType + ')', 'I', 'Q', {
+    xaxis: { range: [-2, 2], dtick: 1 },
+    yaxis: { range: [-2, 2], dtick: 1, scaleanchor: 'x' },
+    shapes: [
+      { type: 'line', x0: -2, x1: 2, y0: 0, y1: 0, line: { color: dk() ? '#475569' : '#cbd5e1', width: 1 } },
+      { type: 'line', x0: 0, x1: 0, y0: -2, y1: 2, line: { color: dk() ? '#475569' : '#cbd5e1', width: 1 } }
+    ]
+  }), pc);
+
+  // Plot 2: RX equalized constellation (top-right)
+  Plotly.react('plotP66rx', [{
+    x: eqRe, y: eqIm,
+    mode: 'markers',
+    marker: { color: '#f59e0b', size: 6, opacity: 0.7 },
+    name: 'RX (eq)'
+  }], pl('RX 等化後星座圖', 'I', 'Q', {
+    xaxis: { range: [-2, 2], dtick: 1 },
+    yaxis: { range: [-2, 2], dtick: 1, scaleanchor: 'x' },
+    shapes: [
+      { type: 'line', x0: -2, x1: 2, y0: 0, y1: 0, line: { color: dk() ? '#475569' : '#cbd5e1', width: 1 } },
+      { type: 'line', x0: 0, x1: 0, y0: -2, y1: 2, line: { color: dk() ? '#475569' : '#cbd5e1', width: 1 } }
+    ]
+  }), pc);
+
+  // Plot 3: Time-domain OFDM symbol (bottom-left)
+  var nAxis = [];
+  for (var n = 0; n < txWithCP_re.length; n++) nAxis.push(n);
+  Plotly.react('plotP66td', [
+    { x: nAxis, y: txWithCP_re, name: 'Re (TX+CP)', line: { color: '#06b6d4', width: 1 } },
+    { x: nAxis, y: rxRe, name: 'Re (RX)', line: { color: '#ef4444', width: 1, dash: 'dot' } }
+  ], pl('時域信號（含 CP）', '取樣點', '振幅', {
+    legend: { orientation: 'h', y: 1.12, x: 0.5, xanchor: 'center' },
+    shapes: [{
+      type: 'rect', x0: 0, x1: cpLen, y0: 0, y1: 1, yref: 'paper',
+      fillcolor: 'rgba(6,182,212,0.1)', line: { width: 0 }
+    }],
+    annotations: cpLen > 0 ? [{
+      x: cpLen / 2, y: 1, yref: 'paper', text: 'CP',
+      showarrow: false, font: { size: 10, color: '#06b6d4' }
+    }] : []
+  }), pc);
+
+  // Plot 4: Channel frequency response (bottom-right)
+  var chFreq = [];
+  var chMagTrue = [], chMagEst = [];
+  for (var k = 0; k < Nfft; k++) {
+    chFreq.push(k);
+    chMagTrue.push(Math.sqrt(hRe[k] * hRe[k] + hIm[k] * hIm[k]));
+    chMagEst.push(Math.sqrt(hEstRe[k] * hEstRe[k] + hEstIm[k] * hEstIm[k]));
+  }
+  Plotly.react('plotP66ch', [
+    { x: chFreq, y: chMagTrue, name: '真實 |H(k)|', line: { color: '#10b981', width: 2 } },
+    { x: chFreq, y: chMagEst, name: 'LS 估計 |H(k)|', mode: 'markers', marker: { color: '#f59e0b', size: 4 } }
+  ], pl('通道頻率響應', '子載波 k', '|H(k)|', {
+    legend: { orientation: 'h', y: 1.12, x: 0.5, xanchor: 'center' }
+  }), pc);
+
+  // BER display
+  var berEl = document.getElementById('p66ber');
+  var berText = 'BER = ' + ber.toFixed(6) + '  (' + bitErrors + ' / ' + totalBits + ' bits)';
+  if (ber === 0) {
+    berEl.style.background = 'rgba(16,185,129,0.15)';
+    berEl.style.borderColor = 'rgba(16,185,129,0.4)';
+    berText += '  -- 零錯誤！';
+  } else if (ber < 0.01) {
+    berEl.style.background = 'rgba(245,158,11,0.15)';
+    berEl.style.borderColor = 'rgba(245,158,11,0.4)';
+  } else {
+    berEl.style.background = 'rgba(239,68,68,0.15)';
+    berEl.style.borderColor = 'rgba(239,68,68,0.4)';
+  }
+  if (cpLen < delay) {
+    berText += '  ⚠ CP < 通道延遲，ISI 產生！';
+  }
+  berEl.textContent = berText;
+}
+
+/** Find nearest 16-QAM level */
+function _nearest16(v) {
+  var levels = [-3, -1, 1, 3];
+  var best = levels[0], bestD = Math.abs(v - levels[0]);
+  for (var i = 1; i < levels.length; i++) {
+    var d = Math.abs(v - levels[i]);
+    if (d < bestD) { bestD = d; best = levels[i]; }
+  }
+  return best;
+}
+
+/** Gray code mapping for 16-QAM level: -3->00, -1->01, 1->11, 3->10 */
+function _gray16(level) {
+  switch (level) {
+    case -3: return [0, 0];
+    case -1: return [0, 1];
+    case  1: return [1, 1];
+    case  3: return [1, 0];
+    default: return [0, 0];
+  }
+}
+
+
+/* =============================================================
+   DEMO 2 — Radar Target Placement + Range-Doppler  (sec-p6-7)
+   onclick="updateP67full()"
+   ============================================================= */
+
+function updateP67full() {
+  // Read target parameters
+  var r1 = +document.getElementById('p67r1').value;
+  var v1 = +document.getElementById('p67v1').value;
+  var a1 = +document.getElementById('p67a1').value;
+  var r2 = +document.getElementById('p67r2').value;
+  var v2 = +document.getElementById('p67v2').value;
+  var a2 = +document.getElementById('p67a2').value;
+  var r3 = +document.getElementById('p67r3').value;
+  var v3 = +document.getElementById('p67v3').value;
+  var a3 = +document.getElementById('p67a3').value;
+
+  var B  = +document.getElementById('p67bw').value * 1e6;   // bandwidth in Hz
+  var Nc = +document.getElementById('p67nc').value;          // number of chirps
+
+  var c  = 3e8;            // speed of light
+  var fc = 77e9;           // carrier frequency (77 GHz automotive radar)
+  var lambda = c / fc;
+  var Nr = 256;            // range FFT size (fast-time samples)
+  var Tc = 50e-6;          // chirp duration
+  var PRI = 60e-6;         // pulse repetition interval
+  var fs = Nr / Tc;        // ADC sampling rate
+
+  // Derived parameters
+  var rangeRes  = c / (2 * B);
+  var maxRange  = rangeRes * Nr / 2;
+  var velRes    = lambda / (2 * Nc * PRI);
+  var maxVel    = lambda / (4 * PRI);
+
+  var targets = [
+    { range: r1, vel: v1, amp: a1 },
+    { range: r2, vel: v2, amp: a2 },
+    { range: r3, vel: v3, amp: a3 }
+  ];
+
+  // Build raw data cube: Nc chirps x Nr fast-time samples
+  var dataRe = [];
+  var dataIm = [];
+  for (var p = 0; p < Nc; p++) {
+    var rowRe = new Array(Nr).fill(0);
+    var rowIm = new Array(Nr).fill(0);
+    dataRe.push(rowRe);
+    dataIm.push(rowIm);
+  }
+
+  for (var ti = 0; ti < targets.length; ti++) {
+    var tgt = targets[ti];
+    var tau = 2 * tgt.range / c;                    // round-trip delay
+    var fBeat = 2 * B * tgt.range / (c * Tc);       // beat frequency
+    var fDoppler = 2 * tgt.vel / lambda;             // Doppler shift
+
+    for (var p = 0; p < Nc; p++) {
+      var phDoppler = 2 * Math.PI * fDoppler * p * PRI;
+      for (var n = 0; n < Nr; n++) {
+        var t = n / fs;
+        var phase = 2 * Math.PI * fBeat * t + phDoppler;
+        dataRe[p][n] += tgt.amp * Math.cos(phase);
+        dataIm[p][n] += tgt.amp * Math.sin(phase);
+      }
+    }
+  }
+
+  // Add noise
+  for (var p = 0; p < Nc; p++) {
+    for (var n = 0; n < Nr; n++) {
+      dataRe[p][n] += 0.05 * randn();
+      dataIm[p][n] += 0.05 * randn();
+    }
+  }
+
+  // --- Range FFT (along fast-time for each chirp) ---
+  // Apply Hann window on fast-time
+  var wR = wHann(Nr);
+  for (var p = 0; p < Nc; p++) {
+    for (var n = 0; n < Nr; n++) {
+      dataRe[p][n] *= wR[n];
+      dataIm[p][n] *= wR[n];
+    }
+    var R = fft(dataRe[p], dataIm[p]);
+    dataRe[p] = R.re;
+    dataIm[p] = R.im;
+  }
+
+  // --- Doppler FFT (along slow-time for each range bin) ---
+  // Pad Nc to power of 2 for Doppler FFT
+  var NcPad = np2(Nc);
+  var wD = wHann(Nc);
+  var rdMap = [];  // Nr x NcPad magnitude in dB
+
+  for (var r = 0; r < Nr; r++) {
+    var colRe = new Array(NcPad).fill(0);
+    var colIm = new Array(NcPad).fill(0);
+    for (var p = 0; p < Nc; p++) {
+      colRe[p] = dataRe[p][r] * wD[p];
+      colIm[p] = dataIm[p][r] * wD[p];
+    }
+    var D = fft(colRe, colIm);
+    var row = [];
+    for (var d = 0; d < NcPad; d++) {
+      // fftshift: remap index
+      var di = (d + Math.floor(NcPad / 2)) % NcPad;
+      var mag = Math.sqrt(D.re[di] * D.re[di] + D.im[di] * D.im[di]);
+      row.push(20 * Math.log10(mag + 1e-12));
+    }
+    rdMap.push(row);
+  }
+
+  // Transpose for Plotly heatmap: z[doppler][range]
+  var z = [];
+  for (var d = 0; d < NcPad; d++) {
+    var row = [];
+    for (var r = 0; r < Nr; r++) {
+      row.push(rdMap[r][d]);
+    }
+    z.push(row);
+  }
+
+  // Axis labels
+  var rangeAxis = [];
+  for (var r = 0; r < Nr; r++) {
+    rangeAxis.push((r * rangeRes).toFixed(1));
+  }
+  var velAxis = [];
+  for (var d = 0; d < NcPad; d++) {
+    var dIdx = d - Math.floor(NcPad / 2);
+    velAxis.push((dIdx * velRes).toFixed(1));
+  }
+
+  Plotly.react('plotP67rd', [{
+    z: z,
+    x: rangeAxis,
+    y: velAxis,
+    type: 'heatmap',
+    colorscale: 'Viridis',
+    colorbar: { title: 'dB' },
+    zmin: -20,
+    zmax: undefined
+  }], pl('Range-Doppler Map', '距離 (m)', '速度 (m/s)', {
+    xaxis: { title: '距離 (m)' },
+    yaxis: { title: '速度 (m/s)' },
+    height: 400
+  }), pc);
+
+  // Resolution info
+  var resDiv = document.getElementById('p67res');
+  resDiv.innerHTML =
+    '<b>距離解析度</b> &Delta;R = c/(2B) = ' + rangeRes.toFixed(3) + ' m | ' +
+    '<b>最大距離</b> R<sub>max</sub> = ' + maxRange.toFixed(1) + ' m<br>' +
+    '<b>速度解析度</b> &Delta;v = &lambda;/(2&middot;N<sub>c</sub>&middot;PRI) = ' + velRes.toFixed(3) + ' m/s | ' +
+    '<b>最大速度</b> v<sub>max</sub> = &plusmn;' + maxVel.toFixed(1) + ' m/s<br>' +
+    '<span style="color:#06b6d4;">目標 1: R=' + r1 + 'm, v=' + v1 + 'm/s</span> | ' +
+    '<span style="color:#f59e0b;">目標 2: R=' + r2 + 'm, v=' + v2 + 'm/s</span> | ' +
+    '<span style="color:#10b981;">目標 3: R=' + r3 + 'm, v=' + v3 + 'm/s</span>';
+}
+
+
+/* =============================================================
+   DEMO 3 — Goertzel vs FFT Efficiency Comparison  (sec-p6-1)
+   oninput calls updateP61()
+   ============================================================= */
+
+function updateP61() {
+  var K = +document.getElementById('p61k').value;
+  var N = +document.getElementById('p61n').value;
+
+  var log2N = Math.log2(N);
+
+  // Operation counts
+  // Goertzel: each frequency bin costs ~2N real multiplications + 2N additions
+  //   => total for K bins: K * (2*N) mults + K * (2*N) adds ~ 5*K*N real operations
+  //   Simplified: ~ K * 2N complex multiplies (real ops per bin ~ 2N)
+  // FFT (radix-2): N/2 * log2(N) complex butterflies => ~ 5 * N * log2(N) / 2 real operations
+  // We compare: Goertzel ops = K * 2N,  FFT ops = (N/2) * log2(N) * 2
+  // Simpler model: Goertzel real mults ~ K * 2N, FFT real mults ~ N * log2(N)
+
+  var goertzelOps = K * 2 * N;
+  var fftOps = N * log2N;
+
+  // Build curves: sweep K from 1 to max
+  var maxK = Math.min(N, 100);
+  var kVals = [];
+  var goertzelCurve = [];
+  var fftLine = [];
+  for (var kk = 1; kk <= maxK; kk++) {
+    kVals.push(kk);
+    goertzelCurve.push(kk * 2 * N);
+    fftLine.push(N * log2N);
+  }
+
+  // Crossover point: K_cross = log2(N)/2
+  var kCross = log2N / 2;
+
+  var traces = [
+    {
+      x: kVals, y: goertzelCurve,
+      name: 'Goertzel (2KN)',
+      line: { color: '#f59e0b', width: 2 }
+    },
+    {
+      x: kVals, y: fftLine,
+      name: 'FFT (N log\u2082N)',
+      line: { color: '#06b6d4', width: 2, dash: 'dash' }
+    }
+  ];
+
+  // Mark the current K value
+  traces.push({
+    x: [K],
+    y: [K * 2 * N],
+    mode: 'markers',
+    marker: { color: '#ef4444', size: 12, symbol: 'star' },
+    name: 'K=' + K + ' (Goertzel)',
+    showlegend: true
+  });
+  traces.push({
+    x: [K],
+    y: [N * log2N],
+    mode: 'markers',
+    marker: { color: '#10b981', size: 12, symbol: 'diamond' },
+    name: 'K=' + K + ' (FFT)',
+    showlegend: true
+  });
+
+  var annotations = [{
+    x: kCross,
+    y: N * log2N,
+    text: 'K\u2248' + kCross.toFixed(1) + '<br>交叉點',
+    showarrow: true,
+    arrowhead: 2,
+    ax: 40,
+    ay: -35,
+    font: { size: 11, color: '#8b5cf6' }
+  }];
+
+  // Also add a vertical line at crossover
+  var shapes = [{
+    type: 'line',
+    x0: kCross, x1: kCross,
+    y0: 0, y1: 1, yref: 'paper',
+    line: { color: '#8b5cf6', width: 1.5, dash: 'dot' }
+  }];
+
+  Plotly.react('plotP61eff', traces, pl(
+    'Goertzel vs FFT 運算量 (N=' + N + ')',
+    '需計算的頻率數量 K',
+    '實數乘法次數',
+    {
+      shapes: shapes,
+      annotations: annotations,
+      legend: { orientation: 'h', y: 1.15, x: 0.5, xanchor: 'center' },
+      height: 340
+    }
+  ), pc);
+
+  // Info text
+  var infoDiv = document.getElementById('p61info');
+  var goertzelNow = K * 2 * N;
+  var fftNow = N * log2N;
+  var ratio = (goertzelNow / fftNow).toFixed(2);
+
+  if (goertzelNow < fftNow) {
+    infoDiv.innerHTML =
+      '<b style="color:#10b981;">Goertzel 較省！</b> ' +
+      'Goertzel: ' + goertzelNow.toLocaleString() + ' ops vs FFT: ' + Math.round(fftNow).toLocaleString() + ' ops ' +
+      '(比值 = ' + ratio + '). ' +
+      'K=' + K + ' < log\u2082N/2 = ' + kCross.toFixed(1) + '，適合只需少數頻率的場景（如 DTMF 解碼）。';
+  } else if (goertzelNow > fftNow) {
+    infoDiv.innerHTML =
+      '<b style="color:#f59e0b;">FFT 較省！</b> ' +
+      'Goertzel: ' + goertzelNow.toLocaleString() + ' ops vs FFT: ' + Math.round(fftNow).toLocaleString() + ' ops ' +
+      '(比值 = ' + ratio + '). ' +
+      'K=' + K + ' > log\u2082N/2 = ' + kCross.toFixed(1) + '，需要多個頻率時 FFT 更有效率。';
+  } else {
+    infoDiv.innerHTML =
+      '<b style="color:#8b5cf6;">兩者相當！</b> ' +
+      'K=' + K + ' &approx; log\u2082N/2 = ' + kCross.toFixed(1) + '，兩種方法運算量相近。';
+  }
+}
+
+
+/* =============================================================
+   DEMO 4 — EEG Sleep Staging Game  (sec-p6-9)
+   onclick="generateEEGCase()" and onclick="submitEEGDiag()"
+   ============================================================= */
+
+var _eegCorrectAnswer = null;
+
+var _eegStageDescriptions = {
+  awake:  '清醒期的特徵是強 alpha (8-13Hz) 和 beta (13-30Hz) 活動，delta 和 theta 相對較弱。閉眼放鬆時 alpha 尤其明顯。',
+  n1:     'N1 淺睡的特徵是 alpha 波逐漸消失，theta (4-8Hz) 活動增加。這是從清醒到睡眠的過渡階段。',
+  n2:     'N2 睡眠的特徵是出現睡眠紡錘波 (sleep spindle, 12-14Hz 短暫爆發) 和 K-complex。背景以 theta 為主。',
+  n3:     'N3 深睡（慢波睡眠）的特徵是大量 delta (0.5-4Hz) 慢波佔主導（>75%），高振幅低頻率。alpha 和 beta 幾乎消失。',
+  rem:    'REM 睡眠的特徵是低振幅混合頻率，與清醒狀態相似但 theta 活動更多。伴隨快速眼動，是做夢的主要階段。'
+};
+
+/**
+ * Generate a synthetic EEG power spectrum for a given sleep stage.
+ * Returns { freq: [], power: [], stage: string }
+ */
+function _generateEEGSpectrum(stage) {
+  var fs = 256;
+  var dur = 30;       // 30 seconds epoch (standard for sleep staging)
+  var N = fs * dur;
+  var dt = 1 / fs;
+
+  // Generate time-domain signal as sum of band-limited components
+  var sig = new Float64Array(N);
+
+  // Band power profiles for each stage (relative amplitudes)
+  // Bands: delta(0.5-4), theta(4-8), alpha(8-13), spindle(12-14), beta(13-30)
+  var profiles = {
+    awake:  { delta: 0.3, theta: 0.5, alpha: 3.0, spindle: 0.0, beta: 2.0 },
+    n1:     { delta: 0.6, theta: 2.5, alpha: 0.8, spindle: 0.0, beta: 0.5 },
+    n2:     { delta: 1.0, theta: 2.0, alpha: 0.4, spindle: 2.5, beta: 0.3 },
+    n3:     { delta: 5.0, theta: 0.8, alpha: 0.15, spindle: 0.1, beta: 0.1 },
+    rem:    { delta: 0.5, theta: 2.0, alpha: 0.6, spindle: 0.0, beta: 1.2 }
+  };
+
+  var prof = profiles[stage];
+
+  // Generate each band as sum of sinusoids with random phases + some noise
+  for (var i = 0; i < N; i++) {
+    var t = i * dt;
+    // Delta band (0.5-4 Hz): a few low-frequency sinusoids
+    sig[i] += prof.delta * (
+      0.7 * Math.sin(2 * Math.PI * 1.0 * t + Math.random() * 0.01) +
+      0.5 * Math.sin(2 * Math.PI * 2.0 * t + 1.3) +
+      0.4 * Math.sin(2 * Math.PI * 3.0 * t + 2.7)
+    );
+    // Theta band (4-8 Hz)
+    sig[i] += prof.theta * (
+      0.6 * Math.sin(2 * Math.PI * 5.0 * t + 0.8) +
+      0.5 * Math.sin(2 * Math.PI * 6.5 * t + 1.9) +
+      0.3 * Math.sin(2 * Math.PI * 7.0 * t + 3.1)
+    );
+    // Alpha band (8-13 Hz)
+    sig[i] += prof.alpha * (
+      0.8 * Math.sin(2 * Math.PI * 10.0 * t + 0.5) +
+      0.5 * Math.sin(2 * Math.PI * 11.0 * t + 2.2) +
+      0.3 * Math.sin(2 * Math.PI * 9.0 * t + 1.1)
+    );
+    // Sleep spindle (12-14 Hz) -- bursty for N2
+    if (prof.spindle > 0) {
+      // Simulate spindle bursts (intermittent)
+      var spindleEnv = 0.5 + 0.5 * Math.sin(2 * Math.PI * 0.3 * t); // slow modulation
+      spindleEnv = Math.max(0, spindleEnv);
+      sig[i] += prof.spindle * spindleEnv * (
+        0.7 * Math.sin(2 * Math.PI * 12.5 * t + 0.9) +
+        0.5 * Math.sin(2 * Math.PI * 13.5 * t + 2.4)
+      );
+    }
+    // Beta band (13-30 Hz)
+    sig[i] += prof.beta * (
+      0.4 * Math.sin(2 * Math.PI * 16.0 * t + 1.7) +
+      0.3 * Math.sin(2 * Math.PI * 20.0 * t + 0.3) +
+      0.2 * Math.sin(2 * Math.PI * 25.0 * t + 2.8)
+    );
+  }
+
+  // Add 1/f pink noise
+  for (var i = 0; i < N; i++) {
+    sig[i] += 0.3 * randn();
+    if (i > 0) sig[i] += sig[i - 1] * 0.15; // slight autocorrelation for 1/f shape
+  }
+
+  // Add some randomness to amplitudes (variation between trials)
+  var jitter = 0.8 + 0.4 * Math.random();
+  for (var i = 0; i < N; i++) sig[i] *= jitter;
+
+  // Compute power spectrum
+  var win = wHann(N);
+  var ws = 0;
+  var xw = [];
+  for (var i = 0; i < N; i++) {
+    var w = win[i];
+    xw.push(sig[i] * w);
+    ws += w;
+  }
+  var Nf = np2(N);
+  var re = zp(xw, Nf);
+  var im = new Array(Nf).fill(0);
+  var R = fft(re, im);
+
+  var freq = [], power = [];
+  var half = Math.floor(Nf / 2);
+  for (var k = 0; k < half; k++) {
+    var f = k * fs / Nf;
+    if (f > 50) break;  // only show up to 50 Hz
+    freq.push(f);
+    var mag = Math.sqrt(R.re[k] * R.re[k] + R.im[k] * R.im[k]) * 2 / ws;
+    power.push(20 * Math.log10(mag + 1e-12));
+  }
+
+  return { freq: freq, power: power, stage: stage };
+}
+
+function generateEEGCase() {
+  var stages = ['awake', 'n1', 'n2', 'n3', 'rem'];
+  var pick = stages[Math.floor(Math.random() * stages.length)];
+  _eegCorrectAnswer = pick;
+
+  var result = _generateEEGSpectrum(pick);
+
+  // Band shading
+  var bands = [
+    { n: '\u03b4', l: 0.5, h: 4,  c: 'rgba(139,92,246,0.15)' },
+    { n: '\u03b8', l: 4,   h: 8,  c: 'rgba(6,182,212,0.15)' },
+    { n: '\u03b1', l: 8,   h: 13, c: 'rgba(16,185,129,0.15)' },
+    { n: '\u03b2', l: 13,  h: 30, c: 'rgba(245,158,11,0.15)' },
+    { n: '\u03b3', l: 30,  h: 50, c: 'rgba(239,68,68,0.15)' }
+  ];
+
+  var shapes = bands.map(function(b) {
+    return {
+      type: 'rect', x0: b.l, x1: b.h, y0: 0, y1: 1, yref: 'paper',
+      fillcolor: b.c, line: { width: 0 }
+    };
+  });
+
+  var annotations = bands.map(function(b) {
+    return {
+      x: (b.l + b.h) / 2, y: 1, yref: 'paper', yanchor: 'bottom',
+      text: b.n, showarrow: false, font: { size: 12, color: '#475569' }
+    };
+  });
+
+  Plotly.react('plotP69eeg', [{
+    x: result.freq,
+    y: result.power,
+    type: 'scatter',
+    mode: 'lines',
+    line: { color: '#06b6d4', width: 1.5 },
+    fill: 'tozeroy',
+    fillcolor: 'rgba(6,182,212,0.1)'
+  }], pl('EEG 功率譜 — 請判斷睡眠階段', '頻率 (Hz)', 'dB', {
+    xaxis: { range: [0, 50], dtick: 5 },
+    shapes: shapes,
+    annotations: annotations,
+    height: 360
+  }), pc);
+
+  // Reset answer selection
+  var radios = document.querySelectorAll('input[name="p69answer"]');
+  radios.forEach(function(r) { r.checked = false; });
+  var resultDiv = document.getElementById('p69result');
+  resultDiv.style.display = 'none';
+  resultDiv.innerHTML = '';
+}
+
+function submitEEGDiag() {
+  if (!_eegCorrectAnswer) {
+    alert('\u8acb\u5148\u6309\u300c\u7522\u751f\u65b0\u6848\u4f8b\u300d\uff01');  // 請先按「產生新案例」！
+    return;
+  }
+
+  var selected = null;
+  var radios = document.querySelectorAll('input[name="p69answer"]');
+  radios.forEach(function(r) { if (r.checked) selected = r.value; });
+
+  if (!selected) {
+    alert('\u8acb\u9078\u64c7\u4e00\u500b\u7761\u7720\u968e\u6bb5\uff01');  // 請選擇一個睡眠階段！
+    return;
+  }
+
+  var resultDiv = document.getElementById('p69result');
+  resultDiv.style.display = 'block';
+
+  var labels = {
+    awake: '\u6e05\u9192 (Awake)',
+    n1:    'N1 \u6dfa\u7761',
+    n2:    'N2',
+    n3:    'N3 \u6df1\u7761',
+    rem:   'REM'
+  };
+
+  var correct = selected === _eegCorrectAnswer;
+
+  if (correct) {
+    resultDiv.style.background = '#d4edda';
+    resultDiv.style.border = '1px solid #28a745';
+    resultDiv.style.color = '#155724';
+    resultDiv.innerHTML = '<b>\u6b63\u78ba\uff01</b><br>' + _eegStageDescriptions[_eegCorrectAnswer];
+  } else {
+    resultDiv.style.background = '#f8d7da';
+    resultDiv.style.border = '1px solid #dc3545';
+    resultDiv.style.color = '#721c24';
+    resultDiv.innerHTML = '<b>\u4e0d\u6b63\u78ba\u3002</b> \u6b63\u78ba\u7b54\u6848\u662f\uff1a<b>' +
+      labels[_eegCorrectAnswer] + '</b><br>' +
+      _eegStageDescriptions[_eegCorrectAnswer];
+  }
+}
+
+
+/* =============================================================
+   Initialise tier-3 demos when DOM is ready
+   ============================================================= */
+document.addEventListener('DOMContentLoaded', function() {
+  if (document.getElementById('p66fft'))    updateP66full();
+  if (document.getElementById('p61k'))      updateP61();
+  if (document.getElementById('plotP69eeg')) generateEEGCase();
+  // Radar demo requires user click (no auto-init needed, but we can do one)
+  if (document.getElementById('plotP67rd')) updateP67full();
+});
+
+// === parts/demos_radar.js ===
+/* =============================================================
+   demos_radar.js
+   Two interactive radar demos:
+     1. Matched Filter & Pulse Compression
+     2. Ambiguity Function Visualization
+   Depends on helpers: fft(), np2(), zp(), ls(), randn(),
+                       wHann(), dk(), pl(), pc
+   ============================================================= */
+
+/* =============================================================
+   DEMO 1 - Matched Filter & Pulse Compression
+   HTML IDs:
+     Inputs:  radarB, radarBv, radarT, radarTv,
+              radarTargets, radarSep, radarSepv
+     Plots:   plotRadarChirp, plotRadarMF
+     Info:    radarMFinfo
+   Handler:   updateRadarMF()
+   ============================================================= */
+
+function updateRadarMF() {
+  /* --- Read UI parameters --- */
+  var B_MHz = +document.getElementById('radarB').value;      // chirp bandwidth in MHz
+  var T_us  = +document.getElementById('radarT').value;      // pulse length in us
+  var nTgt  = +document.getElementById('radarTargets').value; // number of targets
+  var sep_m = +document.getElementById('radarSep').value;     // target separation in metres
+
+  var B = B_MHz * 1e6;   // Hz
+  var T = T_us  * 1e-6;  // seconds
+  var c = 3e8;            // speed of light
+
+  /* --- Derived quantities --- */
+  var BT       = B * T;                   // time-bandwidth product (compression ratio)
+  var dR       = c / (2 * B);             // range resolution in metres
+  var dR_uncomp = c * T / 2;             // uncompressed pulse range extent
+
+  /* --- Sampling parameters ---
+     We sample at a rate that covers the chirp bandwidth comfortably.
+     Use fs = 2*B (Nyquist on bandwidth), at least 512 samples. */
+  var fs  = Math.max(2 * B, 512 / T);
+  var Ns  = Math.round(fs * T);
+  if (Ns < 64) Ns = 64;
+  if (Ns > 4096) { fs = 4096 / T; Ns = 4096; }
+  var dt  = 1 / fs;
+
+  /* --- Generate LFM chirp pulse --- */
+  var chirpRe = new Array(Ns);
+  var chirpIm = new Array(Ns);
+  var tChirp  = new Array(Ns);
+  var mu = B / T;  // chirp rate
+
+  for (var i = 0; i < Ns; i++) {
+    var t = i * dt;
+    tChirp[i] = t * 1e6; // in microseconds for display
+    var phase = 2 * Math.PI * (-B / 2 * t + 0.5 * mu * t * t);
+    chirpRe[i] = Math.cos(phase);
+    chirpIm[i] = Math.sin(phase);
+  }
+
+  /* --- Plot 1: chirp waveform (real part + instantaneous freq) --- */
+  var instFreq = new Array(Ns);
+  for (var i = 0; i < Ns; i++) {
+    var t = i * dt;
+    instFreq[i] = (-B / 2 + mu * t) / 1e6; // in MHz for display
+  }
+
+  Plotly.react('plotRadarChirp', [
+    { x: tChirp, y: chirpRe, name: 'Re{chirp}',
+      type: 'scatter', mode: 'lines',
+      line: { width: 1, color: '#1f77b4' }, yaxis: 'y' },
+    { x: tChirp, y: instFreq, name: '瞬時頻率 (MHz)',
+      type: 'scatter', mode: 'lines',
+      line: { width: 2, color: '#ff7f0e', dash: 'dot' }, yaxis: 'y2' }
+  ], pl('發射 LFM Chirp 脈衝', '時間 (μs)', 'Re{s(t)}', {
+    height: 220,
+    yaxis2: {
+      title: '頻率 (MHz)', overlaying: 'y', side: 'right',
+      color: '#ff7f0e',
+      gridcolor: dk() ? '#1e293b' : '#e2e8f0'
+    },
+    legend: { x: 0.01, y: 1.0, bgcolor: 'rgba(0,0,0,0)' }
+  }), pc);
+
+  /* --- Build received signal with multiple targets --- */
+  // Targets positioned around a nominal range; we model delays as sample offsets.
+  // Delay between targets: sep_m => dt_target = 2*sep_m/c seconds => sample offset
+  var maxDelay_s  = (nTgt - 1) * 2 * sep_m / c;
+  var guardSamples = Math.ceil(maxDelay_s * fs) + Ns;
+
+  // Total signal length (enough room for pulse + all echoes + margin)
+  var Ntotal = Ns + guardSamples + Ns; // chirp + max delay + tail for correlation
+  var Nfft   = np2(2 * Ntotal);        // zero-padded FFT length for linear convolution
+
+  var rxRe = new Array(Nfft).fill(0);
+  var rxIm = new Array(Nfft).fill(0);
+
+  // Place targets: first target starts at sample index Ns (one pulse width offset)
+  var targetAmps = [1.0, 0.7, 0.5]; // relative amplitudes
+  for (var tg = 0; tg < nTgt; tg++) {
+    var delay_s = tg * 2 * sep_m / c;
+    var delaySamples = Math.round(delay_s * fs);
+    var startIdx = Ns + delaySamples;
+    var amp = targetAmps[tg] || 0.4;
+    for (var i = 0; i < Ns; i++) {
+      if (startIdx + i < Nfft) {
+        rxRe[startIdx + i] += amp * chirpRe[i];
+        rxIm[startIdx + i] += amp * chirpIm[i];
+      }
+    }
+  }
+
+  // Add some noise
+  for (var i = 0; i < Nfft; i++) {
+    rxRe[i] += 0.05 * randn();
+    rxIm[i] += 0.05 * randn();
+  }
+
+  /* --- Matched filter: conj(chirp) reversed, implemented via freq domain ---
+     MF output = IFFT( FFT(rx) * conj(FFT(chirp)) )
+     The matched filter impulse response is time-reversed conjugate of the chirp. */
+
+  // Zero-pad chirp to Nfft
+  var mfRe = new Array(Nfft).fill(0);
+  var mfIm = new Array(Nfft).fill(0);
+  for (var i = 0; i < Ns; i++) {
+    mfRe[i] = chirpRe[i];
+    mfIm[i] = chirpIm[i];
+  }
+
+  // FFT of received signal
+  var RX = fft(rxRe, rxIm);
+  // FFT of chirp (reference)
+  var MF = fft(mfRe, mfIm);
+
+  // Multiply RX * conj(MF) in frequency domain
+  var prodRe = new Array(Nfft);
+  var prodIm = new Array(Nfft);
+  for (var i = 0; i < Nfft; i++) {
+    // conj(MF) = (MF.re, -MF.im)
+    // RX * conj(MF) = (Rx*Mr + Ri*Mi, Ri*Mr - Rx*Mi)
+    prodRe[i] = RX.re[i] * MF.re[i] + RX.im[i] * MF.im[i];
+    prodIm[i] = RX.im[i] * MF.re[i] - RX.re[i] * MF.im[i];
+  }
+
+  // IFFT via: ifft(X) = conj(fft(conj(X))) / N
+  var conjProdRe = new Array(Nfft);
+  var conjProdIm = new Array(Nfft);
+  for (var i = 0; i < Nfft; i++) {
+    conjProdRe[i] = prodRe[i];
+    conjProdIm[i] = -prodIm[i];
+  }
+  var ifftResult = fft(conjProdRe, conjProdIm);
+  var mfOutMag = new Array(Nfft);
+  for (var i = 0; i < Nfft; i++) {
+    var re = ifftResult.re[i] / Nfft;
+    var im = ifftResult.im[i] / Nfft;
+    mfOutMag[i] = Math.sqrt(re * re + im * im);
+  }
+
+  // Normalise
+  var peakVal = 0;
+  for (var i = 0; i < Nfft; i++) {
+    if (mfOutMag[i] > peakVal) peakVal = mfOutMag[i];
+  }
+  if (peakVal > 0) {
+    for (var i = 0; i < Nfft; i++) mfOutMag[i] /= peakVal;
+  }
+
+  /* --- Convert sample axis to range (metres) ---
+     Each sample offset from the first target peak corresponds to
+     delta_range = (sample_offset / fs) * c / 2 */
+  // Find the peak corresponding to first target
+  var peakIdx = 0;
+  for (var i = 0; i < Nfft; i++) {
+    if (mfOutMag[i] > mfOutMag[peakIdx]) peakIdx = i;
+  }
+
+  // Show a window around the targets
+  var windowSamples = Math.max(Math.round(4 * (nTgt - 1) * 2 * sep_m / c * fs), Ns) + Ns;
+  var halfWin = Math.round(windowSamples / 2);
+  var startShow = Math.max(0, peakIdx - halfWin);
+  var endShow   = Math.min(Nfft, peakIdx + halfWin);
+
+  var rangePlot = [];
+  var mfPlot    = [];
+  var mfPlotdB  = [];
+  for (var i = startShow; i < endShow; i++) {
+    var range_m = (i - peakIdx) / fs * c / 2;
+    rangePlot.push(range_m);
+    mfPlot.push(mfOutMag[i]);
+    mfPlotdB.push(20 * Math.log10(Math.max(mfOutMag[i], 1e-10)));
+  }
+
+  // Also build uncompressed pulse envelope for comparison
+  var rxMag = [];
+  for (var i = startShow; i < endShow; i++) {
+    var mag = Math.sqrt(rxRe[i] * rxRe[i] + rxIm[i] * rxIm[i]);
+    rxMag.push(mag);
+  }
+  // Normalise rx envelope
+  var rxPeak = 0;
+  for (var i = 0; i < rxMag.length; i++) {
+    if (rxMag[i] > rxPeak) rxPeak = rxMag[i];
+  }
+  if (rxPeak > 0) {
+    for (var i = 0; i < rxMag.length; i++) rxMag[i] /= rxPeak;
+  }
+
+  /* --- Annotations for target positions --- */
+  var annots = [];
+  var shapes = [];
+  for (var tg = 0; tg < nTgt; tg++) {
+    var r = tg * sep_m;
+    annots.push({
+      x: r, y: 1.05, yref: 'paper',
+      text: '目標' + (tg + 1),
+      showarrow: true, arrowhead: 2, ax: 0, ay: -25,
+      font: { size: 10, color: '#d62728' }
+    });
+  }
+
+  // Range resolution line
+  shapes.push({
+    type: 'line', x0: dR, x1: dR, y0: 0, y1: 1,
+    line: { color: 'rgba(16,185,129,0.6)', width: 2, dash: 'dash' }
+  });
+  annots.push({
+    x: dR, y: 0.5,
+    text: 'ΔR=' + dR.toFixed(2) + 'm',
+    showarrow: true, arrowhead: 0, ax: 40, ay: -15,
+    font: { size: 10, color: '#10b981' }
+  });
+
+  Plotly.react('plotRadarMF', [
+    { x: rangePlot, y: rxMag, name: '未壓縮回波 |rx(t)|',
+      type: 'scatter', mode: 'lines',
+      line: { width: 1.5, color: '#94a3b8', dash: 'dot' } },
+    { x: rangePlot, y: mfPlot, name: '匹配濾波輸出 (壓縮後)',
+      type: 'scatter', mode: 'lines',
+      line: { width: 2, color: '#06b6d4' },
+      fill: 'tozeroy', fillcolor: 'rgba(6,182,212,0.12)' }
+  ], pl('匹配濾波 / 脈衝壓縮結果', '相對距離 (m)', '歸一化幅度', {
+    height: 280,
+    annotations: annots,
+    shapes: shapes,
+    legend: { x: 0.5, y: 1.0, bgcolor: 'rgba(0,0,0,0)' }
+  }), pc);
+
+  /* --- Info box --- */
+  var canResolve = sep_m >= dR;
+  var infoHTML =
+    '<b>BT 乘積 (壓縮比)：</b> ' + BT.toFixed(1) +
+    '&nbsp;&nbsp;|&nbsp;&nbsp;<b>距離解析度 ΔR：</b> ' + dR.toFixed(2) + ' m' +
+    '&nbsp;&nbsp;|&nbsp;&nbsp;<b>未壓縮距離範圍：</b> ' + dR_uncomp.toFixed(1) + ' m' +
+    '<br><b>目標間距：</b> ' + sep_m.toFixed(1) + ' m &nbsp;' +
+    (canResolve
+      ? '<span style="color:#10b981;font-weight:bold">✓ 可分辨 (間距 ≥ ΔR)</span>'
+      : '<span style="color:#ef4444;font-weight:bold">✗ 無法分辨 (間距 < ΔR，需增大頻寬 B)</span>');
+
+  document.getElementById('radarMFinfo').innerHTML = infoHTML;
+}
+
+
+/* =============================================================
+   DEMO 2 - Ambiguity Function Visualization
+   HTML IDs:
+     Inputs:  radarAFwave, radarAFbtWrap, radarAFbt, radarAFbtv
+     Plot:    plotRadarAF
+     Info:    radarAFdesc
+   Handler:   updateRadarAF()
+   ============================================================= */
+
+function updateRadarAF() {
+  var waveType = document.getElementById('radarAFwave').value;
+  var BT       = +document.getElementById('radarAFbt').value;
+
+  // Show/hide BT slider depending on waveform
+  var btWrap = document.getElementById('radarAFbtWrap');
+  if (waveType === 'barker') {
+    btWrap.style.display = 'none';
+  } else {
+    btWrap.style.display = '';
+  }
+
+  /* --- Generate baseband waveform ---
+     We work with normalised time (T=1) and normalised frequency.
+     For the ambiguity function we compute:
+       |chi(tau, fd)| = |integral s(t) * conj(s(t+tau)) * exp(j*2*pi*fd*t) dt|
+     Discretised as a 2D grid. */
+
+  var Ns = 256;  // waveform samples
+  var dt = 1.0 / Ns;  // normalised T=1
+  var sRe = new Array(Ns).fill(0);
+  var sIm = new Array(Ns).fill(0);
+
+  if (waveType === 'pulse') {
+    // Simple rectangular pulse
+    for (var i = 0; i < Ns; i++) {
+      sRe[i] = 1.0;
+      sIm[i] = 0.0;
+    }
+  } else if (waveType === 'lfm') {
+    // LFM chirp: s(t) = exp(j*pi*B*t^2/T), B*T = BT product
+    // With normalised T=1, B = BT
+    var B = BT;
+    for (var i = 0; i < Ns; i++) {
+      var t = (i / Ns) - 0.5;  // centre at 0
+      var phase = Math.PI * B * t * t;
+      sRe[i] = Math.cos(phase);
+      sIm[i] = Math.sin(phase);
+    }
+  } else if (waveType === 'barker') {
+    // Barker-13 code: [+1,+1,+1,+1,+1,-1,-1,+1,+1,-1,+1,-1,+1]
+    var code = [1, 1, 1, 1, 1, -1, -1, 1, 1, -1, 1, -1, 1];
+    var chipLen = Math.floor(Ns / code.length);
+    for (var i = 0; i < Ns; i++) {
+      var chipIdx = Math.min(Math.floor(i / chipLen), code.length - 1);
+      sRe[i] = code[chipIdx];
+      sIm[i] = 0;
+    }
+  }
+
+  /* --- Compute ambiguity function on a 2D grid ---
+     tau axis: from -1 to +1 (normalised to T)
+     fd axis:  depends on waveform
+     For efficiency, we compute via the discrete version:
+       chi[m, k] = sum_n s[n] * conj(s[n+m]) * exp(j*2*pi*k*n/Nfd)
+     This is essentially the FFT of s[n]*conj(s[n+m]) over n for each delay m. */
+
+  var Ntau, Nfd, tauMax, fdMax;
+  if (waveType === 'pulse') {
+    Ntau = 101; Nfd = 101;
+    tauMax = 1.0; fdMax = 5.0;
+  } else if (waveType === 'lfm') {
+    Ntau = 101; Nfd = 101;
+    tauMax = 1.0; fdMax = BT * 1.2;
+  } else {
+    Ntau = 101; Nfd = 101;
+    tauMax = 1.0; fdMax = 15.0;
+  }
+
+  var tauAxis = ls(-tauMax, tauMax, Ntau);
+  var fdAxis  = ls(-fdMax, fdMax, Nfd);
+
+  // Ambiguity surface |chi(tau, fd)|^2 (normalised)
+  var ambig = [];
+  for (var mi = 0; mi < Ntau; mi++) {
+    ambig[mi] = new Array(Nfd);
+  }
+
+  for (var mi = 0; mi < Ntau; mi++) {
+    var tau = tauAxis[mi];
+    var shiftSamples = tau * Ns; // fractional shift in samples
+
+    for (var ki = 0; ki < Nfd; ki++) {
+      var fd = fdAxis[ki];
+
+      // Compute chi(tau, fd) = sum_n s(n) * conj(s(n + tau)) * exp(j*2*pi*fd*n*dt)
+      var sumRe = 0, sumIm = 0;
+      for (var n = 0; n < Ns; n++) {
+        var nShifted = n + shiftSamples;
+        var idx = Math.round(nShifted);
+
+        // conj(s(n + tau))
+        var scRe, scIm;
+        if (idx >= 0 && idx < Ns) {
+          scRe = sRe[idx];
+          scIm = -sIm[idx]; // conjugate
+        } else {
+          scRe = 0;
+          scIm = 0;
+        }
+
+        // s(n) * conj(s(n+tau))
+        var pRe = sRe[n] * scRe - sIm[n] * scIm;
+        var pIm = sRe[n] * scIm + sIm[n] * scRe;
+
+        // multiply by exp(j*2*pi*fd*n*dt)
+        var expPhase = 2 * Math.PI * fd * n * dt;
+        var eRe = Math.cos(expPhase);
+        var eIm = Math.sin(expPhase);
+
+        sumRe += pRe * eRe - pIm * eIm;
+        sumIm += pRe * eIm + pIm * eRe;
+      }
+
+      ambig[mi][ki] = sumRe * sumRe + sumIm * sumIm;
+    }
+  }
+
+  // Normalise to [0, 1]
+  var maxVal = 0;
+  for (var mi = 0; mi < Ntau; mi++) {
+    for (var ki = 0; ki < Nfd; ki++) {
+      if (ambig[mi][ki] > maxVal) maxVal = ambig[mi][ki];
+    }
+  }
+  if (maxVal > 0) {
+    for (var mi = 0; mi < Ntau; mi++) {
+      for (var ki = 0; ki < Nfd; ki++) {
+        ambig[mi][ki] /= maxVal;
+      }
+    }
+  }
+
+  // Convert to dB for better visual contrast (clip at -40 dB)
+  var ambigdB = [];
+  for (var mi = 0; mi < Ntau; mi++) {
+    ambigdB[mi] = new Array(Nfd);
+    for (var ki = 0; ki < Nfd; ki++) {
+      var val = 10 * Math.log10(Math.max(ambig[mi][ki], 1e-6));
+      ambigdB[mi][ki] = Math.max(val, -40);
+    }
+  }
+
+  /* --- Also compute zero-delay cut and zero-Doppler cut --- */
+  // Zero-Doppler cut: fd=0 => middle column index
+  var fdZeroIdx = Math.floor(Nfd / 2);
+  var zeroDopplerCut = [];
+  for (var mi = 0; mi < Ntau; mi++) {
+    zeroDopplerCut.push(ambig[mi][fdZeroIdx]);
+  }
+
+  // Zero-delay cut: tau=0 => middle row index
+  var tauZeroIdx = Math.floor(Ntau / 2);
+  var zeroDelayCut = [];
+  for (var ki = 0; ki < Nfd; ki++) {
+    zeroDelayCut.push(ambig[tauZeroIdx][ki]);
+  }
+
+  /* --- 3-panel plot using subplots --- */
+  var isDark = dk();
+
+  Plotly.react('plotRadarAF', [
+    // Heatmap: ambiguity surface
+    {
+      z: ambigdB,
+      x: fdAxis,
+      y: tauAxis,
+      type: 'heatmap',
+      colorscale: 'Jet',
+      zmin: -40, zmax: 0,
+      colorbar: {
+        title: 'dB', len: 0.55, y: 0.75, thickness: 12,
+        tickfont: { size: 9 }
+      },
+      xaxis: 'x', yaxis: 'y',
+      hovertemplate: 'fd: %{x:.1f}<br>tau: %{y:.3f}<br>%{z:.1f} dB<extra></extra>'
+    },
+    // Zero-Doppler cut (bottom-left subplot)
+    {
+      x: tauAxis, y: zeroDopplerCut,
+      type: 'scatter', mode: 'lines',
+      line: { width: 2, color: '#06b6d4' },
+      name: '零都卜勒切面',
+      xaxis: 'x2', yaxis: 'y2'
+    },
+    // Zero-delay cut (bottom-right subplot)
+    {
+      x: fdAxis, y: zeroDelayCut,
+      type: 'scatter', mode: 'lines',
+      line: { width: 2, color: '#f97316' },
+      name: '零延遲切面',
+      xaxis: 'x3', yaxis: 'y3'
+    }
+  ], {
+    title: { text: '模糊函數 |χ(τ, f_d)|²', font: { size: 14 } },
+    grid: { rows: 2, columns: 2, pattern: 'independent', roworder: 'top to bottom' },
+
+    // Main heatmap axes (top, spanning 2 cols)
+    xaxis: {
+      title: '都卜勒頻移 f_d (×1/T)', domain: [0, 1],
+      anchor: 'y',
+      color: isDark ? '#94a3b8' : '#475569',
+      gridcolor: isDark ? '#1e293b' : '#e2e8f0'
+    },
+    yaxis: {
+      title: '延遲 τ (×T)', domain: [0.48, 1],
+      anchor: 'x',
+      color: isDark ? '#94a3b8' : '#475569',
+      gridcolor: isDark ? '#1e293b' : '#e2e8f0'
+    },
+
+    // Bottom-left: zero-Doppler cut
+    xaxis2: {
+      title: 'τ (×T)', domain: [0, 0.45],
+      anchor: 'y2',
+      color: isDark ? '#94a3b8' : '#475569',
+      gridcolor: isDark ? '#1e293b' : '#e2e8f0'
+    },
+    yaxis2: {
+      title: '|χ|²', domain: [0, 0.38],
+      anchor: 'x2',
+      color: isDark ? '#94a3b8' : '#475569',
+      gridcolor: isDark ? '#1e293b' : '#e2e8f0'
+    },
+
+    // Bottom-right: zero-delay cut
+    xaxis3: {
+      title: 'f_d (×1/T)', domain: [0.55, 1],
+      anchor: 'y3',
+      color: isDark ? '#94a3b8' : '#475569',
+      gridcolor: isDark ? '#1e293b' : '#e2e8f0'
+    },
+    yaxis3: {
+      title: '|χ|²', domain: [0, 0.38],
+      anchor: 'x3',
+      color: isDark ? '#94a3b8' : '#475569',
+      gridcolor: isDark ? '#1e293b' : '#e2e8f0'
+    },
+
+    paper_bgcolor: isDark ? '#1e293b' : '#fff',
+    plot_bgcolor:  isDark ? '#0f172a' : '#f8fafc',
+    font: { color: isDark ? '#e2e8f0' : '#1e293b', family: 'system-ui' },
+    margin: { l: 55, r: 25, t: 40, b: 50 },
+    height: 420,
+    showlegend: true,
+    legend: { x: 0.55, y: 0.38, bgcolor: 'rgba(0,0,0,0)', font: { size: 10 } }
+  }, pc);
+
+  /* --- Description box --- */
+  var descs = {
+    pulse:
+      '<b>單脈衝 (Simple Pulse)：</b>' +
+      '模糊函數呈「圖釘 + 山脊」形狀 — 延遲軸上寬度 = T（脈衝長度），都卜勒軸上主瓣寬度 ≈ 1/T。' +
+      '距離解析度差（由 T 決定），都卜勒解析度也有限。' +
+      '<br>這是最基本的雷達波形，BT ≈ 1，無壓縮增益。',
+
+    lfm:
+      '<b>線性調頻 LFM Chirp（BT = ' + BT + '）：</b>' +
+      '模糊函數沿斜線傾斜 — 這就是距離-都卜勒耦合（range-Doppler coupling）。' +
+      '零都卜勒切面的主瓣寬度 ≈ 1/B（壓縮後），比單脈衝窄 BT 倍。' +
+      '<br>距離解析度 ΔR = c/(2B)，壓縮比 = BT = ' + BT + '。' +
+      '斜線斜率 = B/T，可用都卜勒補償消除耦合。',
+
+    barker:
+      '<b>巴克碼 Barker-13（相位編碼）：</b>' +
+      '模糊函數的零都卜勒切面呈「圖釘」狀：主瓣寬度 = 1/13 T，旁瓣 ≤ 1/13（-22.3 dB）。' +
+      '但在都卜勒軸上，旁瓣較高 — 相位碼對都卜勒偏移敏感。' +
+      '<br>Barker 碼是已知最長的完美二進制碼（旁瓣恆為 1/N），壓縮比 = 13。'
+  };
+  document.getElementById('radarAFdesc').innerHTML = descs[waveType] || '';
+}
+
+
+/* =============================================================
+   Initialise demos when DOM is ready
+   ============================================================= */
+document.addEventListener('DOMContentLoaded', function () {
+  if (document.getElementById('radarB'))      updateRadarMF();
+  if (document.getElementById('radarAFwave')) updateRadarAF();
+});
+
 
 // === Init ===
 document.addEventListener('DOMContentLoaded',()=>{
