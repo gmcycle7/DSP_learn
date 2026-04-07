@@ -340,7 +340,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:16px;heigh
 </div>
 <div class="p-3 rounded-lg bg-red-50 dark:bg-red-900/20">
   <h3 class="font-bold text-red-700 dark:text-red-400 text-sm mb-2">📡 Radar/Array Path</h3>
-  <p class="text-xs text-slate-500">Core → 3.4 MUSIC → 6.7 Radar → 6.8 Arrays</p>
+  <p class="text-xs text-slate-500">Core → 5B Polyphase → 3.4 MUSIC → 6.7 Radar → 6.8 Array</p>
 </div>
 </div>
 </div>
@@ -7620,7 +7620,7 @@ n=4: y[4] = 3·(1/3) = 1.0</div>
 <p class="text-slate-500 text-sm mb-2">From time-domain recursion to Z-domain algebra — a unified view of FIR and IIR</p>
 
 <div class="fm" style="border-left:4px solid #06b6d4;">
-<p class="text-base"><strong>One-Sentence Summary:</strong> The Linear Constant-Coefficient Difference Equation (LCCDE) is the time-domain language for describing LTI systems; applying the Z-transform converts it into the algebraic expression $H(z) = B(z)/A(z)$, where system stability and frequency response are entirely encoded in the poles and zeros.</p>
+<p class="text-base"><strong>One-Sentence Summary:</strong> The Linear Constant-Coefficient Difference Equation (LCCDE) is the time-domain language for describing LTI systems; applying the <a onclick="go('m2b-4')" class="text-cyan-600 hover:underline cursor-pointer">M2B.4 Z-Transform</a> converts it into the algebraic expression $H(z) = B(z)/A(z)$, where system stability and frequency response are entirely encoded in the poles and zeros.</p>
 </div>
 
 <div class="lo"><h3>Learning Objectives</h3><ul class="list-disc pl-5 text-sm space-y-1">
@@ -7832,7 +7832,7 @@ At $\omega=0$: $|H|=1/0.2=5$ (high gain at low frequencies); at $\omega=\pi$: $|
 <p class="text-slate-500 text-sm mb-5">From analog prototypes to digital implementation — a complete comparison of four classic IIR designs</p>
 
 <div class="lo"><h3>Learning Objectives</h3><ul class="list-disc pl-5 text-sm space-y-1">
-<li>Understand the advantages and trade-offs of IIR filters relative to FIR</li>
+<li>Understand the advantages and trade-offs of IIR filters relative to <a onclick="go('m4a-1')" class="text-cyan-600 hover:underline cursor-pointer">M4A FIR Design</a></li>
 <li>Compare the frequency-response characteristics of Butterworth / Chebyshev I / Chebyshev II / Elliptic designs</li>
 <li>Master the derivation of the Bilinear Transform and frequency pre-warping</li>
 <li>Complete the full design flow from specifications to $H(z)$</li>
@@ -8004,6 +8004,25 @@ $$\frac{Y(z)}{X(z)} = \frac{T/2 \cdot (1+z^{-1})}{1 - z^{-1}} = \frac{T}{2}\,\fr
 
 <p class="font-bold mt-3 mb-2">Step 5: Cascade to obtain the final filter</p>
 <p>$H(z) = H_1(z) \cdot H_2(z)$, implemented in SOS (Second-Order Sections) form.</p>
+</div>
+
+<div class="code">
+# Python: Design 4th-order Butterworth low-pass filter
+import scipy.signal as sig
+import numpy as np
+
+fs = 8000  # Sample rate 8kHz
+fc = 1000  # Cutoff 1kHz
+order = 4
+
+# Design (auto pre-warping + bilinear transform)
+b, a = sig.butter(order, fc/(fs/2), btype='low')
+
+# Apply to signal
+y = sig.lfilter(b, a, x)
+
+# Frequency response
+w, h = sig.freqz(b, a, fs=fs)
 </div>
 </div>
 
@@ -8299,7 +8318,7 @@ $$\frac{\partial p_i}{\partial a_{1i}} = \frac{-p_i}{p_i - p_i^*} = \frac{-p_i}{
 <p class="text-slate-500 text-sm mb-5">When the optimal filter changes over time — let the filter learn by itself</p>
 
 <div class="lo"><h3>Learning Objectives</h3><ul class="list-disc pl-5 text-sm space-y-1">
-<li>Understand the motivation for adaptive filters and the Wiener optimal solution</li>
+<li>Understand the motivation for adaptive filters and the <a onclick="go('m8b-1')" class="text-cyan-600 hover:underline cursor-pointer">M8B Wiener Filter</a> optimal solution</li>
 <li>Derive the LMS (Least Mean Squares) algorithm and its convergence conditions</li>
 <li>Compare the performance and computational complexity of LMS / NLMS / RLS</li>
 <li>Build intuition through an interactive noise cancellation experiment</li>
@@ -8429,6 +8448,29 @@ $$J_{\text{excess}} \approx \mu \cdot M \cdot \sigma_{e_o}^2 / 2 = \text{misadju
 <p>Misadjustment $\mathcal{M} \approx \mu\,M\,\sigma_x^2 / 2 = \mu\,\text{tr}(\mathbf{R}_{xx})/2$. $\;\blacksquare$</p>
 </div>
 </details>
+
+<div class="code">
+# Python: LMS adaptive noise cancellation
+import numpy as np
+
+def lms(x, d, mu=0.01, M=32):
+    """
+    x: reference signal (correlated noise)
+    d: desired (signal + noise)
+    mu: step size
+    M: filter length
+    Returns: e[n] = clean signal estimate
+    """
+    N = len(x)
+    w = np.zeros(M)
+    e = np.zeros(N)
+    for n in range(M, N):
+        x_vec = x[n-M:n][::-1]
+        y = w @ x_vec
+        e[n] = d[n] - y
+        w += mu * e[n] * x_vec
+    return e, w
+</div>
 </div>
 
 <!-- How to use -->
@@ -8654,6 +8696,20 @@ $$\frac{1}{M}\sum_{k=0}^{M-1} X\!\left(e^{j(\omega - 2\pi k)/M}\right)$$
 <li><strong>Downsample by 441:</strong> Keep every 441st sample → final rate = $3{,}528{,}000/441 = 8{,}000$ Hz</li>
 </ol>
 <div class="tip"><p><strong>Practical Note:</strong> The intermediate rate of 3.528 MHz is excessively high; in practice, Polyphase structures (next section) or multistage cascades are used to avoid this problem.</p></div>
+
+<div class="code">
+# Python: Decimation and interpolation
+import scipy.signal as sig
+
+# Decimate by M=4 (auto anti-aliasing filter)
+y_down = sig.decimate(x, 4, ftype='fir')
+
+# Interpolate by L=3
+y_up = sig.resample_poly(x, up=3, down=1)
+
+# Arbitrary ratio (CD 44100 → phone 8000)
+y_resampled = sig.resample_poly(x, up=80, down=441)
+</div>
 </div>
 
 <!-- Interactive Demo -->
@@ -8702,7 +8758,7 @@ $$\frac{1}{M}\sum_{k=0}^{M-1} X\!\left(e^{j(\omega - 2\pi k)/M}\right)$$
 <li><strong>Forgetting to filter before downsampling:</strong> This is the most common mistake. Once aliasing occurs, it is <strong>irreversible</strong> — the folded high-frequency and low-frequency components are permanently mixed together</li>
 <li><strong>Upsampling does not "add information":</strong> Upsampling 8 kHz speech to 44.1 kHz will not make it sound clearer. You cannot recover frequency components above 4 kHz — that information was lost during the original sampling</li>
 <li><strong>Non-integer ratio precision issues:</strong> The ratio 44100 → 48000 = $160/147$ requires upsampling by 160 then downsampling by 147, with an intermediate rate of 7.056 MHz. Multistage or Polyphase structures are essential in practice</li>
-<li><strong>Group Delay:</strong> The FIR anti-aliasing filter introduces a delay of $(N-1)/2$ samples. In real-time applications, this delay may be unacceptable</li>
+<li><strong>Group Delay:</strong> The FIR <a onclick="go('m4b-1')" class="text-cyan-600 hover:underline cursor-pointer">anti-aliasing filter (M4B Filter Design)</a> introduces a delay of $(N-1)/2$ samples. In real-time applications, this delay may be unacceptable</li>
 </ul>
 </div>
 
@@ -9154,7 +9210,7 @@ This shifts the frequency axis by $\pi$: the passband originally at $\omega = 0$
 <li>Understand how oversampling spreads quantization noise, improving in-band SNR</li>
 <li>Master the feedback principle of noise shaping and the Noise Transfer Function (NTF)</li>
 <li>Compute the SNR improvement for different modulator orders</li>
-<li>Understand the complete Sigma-Delta ADC system: modulator → digital low-pass → decimation</li>
+<li>Understand the complete Sigma-Delta ADC system: modulator → digital low-pass → <a onclick="go('m5a-1')" class="text-cyan-600 hover:underline cursor-pointer">M5A Decimation</a></li>
 </ul></div>
 
 <!-- One-Sentence Summary -->
@@ -9657,7 +9713,7 @@ $$S_{xx}(e^{j\omega}) = \frac{\sigma^2}{|1 - 0.9\, e^{-j\omega}|^2} = \frac{1}{1
 <li>Derive the Wiener-Hopf equation: $\mathbf{R}_{xx}\, \mathbf{h}_{\text{opt}} = \mathbf{r}_{xd}$</li>
 <li>Understand the frequency-domain Wiener filter: $H_{\text{opt}}(e^{j\omega}) = S_{xd}(e^{j\omega}) / S_{xx}(e^{j\omega})$</li>
 <li>Analyze the special case of signal plus uncorrelated noise and its intuitive meaning</li>
-<li>Understand the relationship between Wiener filtering and LMS adaptive filtering</li>
+<li>Understand the relationship between Wiener filtering and <a onclick="go('m4e-1')" class="text-cyan-600 hover:underline cursor-pointer">M4E Adaptive Filtering</a> (LMS)</li>
 </ul></div>
 
 <!-- One-Sentence Summary -->
@@ -9805,6 +9861,23 @@ $$H_{\text{opt}}[k] = \frac{\hat{S}_{dd}[k]}{\hat{S}_{dd}[k] + \hat{S}_{vv}[k]}$
 
 <h3 class="font-bold mt-3 mb-2">Step 5: evaluation</h3>
 <p class="text-sm mb-2">Compare SNR before and after filtering: SNR improves from 0 dB to 10–15 dB (depending on how much the signal and noise spectra overlap).</p>
+
+<div class="code">
+# Python: Frequency-domain Wiener filter (speech denoising)
+import numpy as np
+from scipy.fft import fft, ifft
+
+def wiener_filter(noisy, clean_psd, noise_psd):
+    """
+    noisy: observed signal (with noise)
+    clean_psd: estimated clean signal PSD
+    noise_psd: estimated noise PSD
+    """
+    Y = fft(noisy)
+    H = clean_psd / (clean_psd + noise_psd + 1e-12)
+    X_est = Y * H
+    return np.real(ifft(X_est))
+</div>
 </div>
 
 <!-- Interactive Demo -->
@@ -10198,6 +10271,150 @@ $$H_{\text{opt}}[k] = \frac{\hat{S}_{dd}[k]}{\hat{S}_{dd}[k] + \hat{S}_{vv}[k]}$
       <label><input type="radio" name="q19" value="3"> (D) N must be an integer multiple of M. If not, spectral leakage occurs</label>
       <div class="quiz-exp" style="display:none;">
         <strong>Explanation:</strong> OLA/OLS computes circular convolution using FFT. The linear convolution of two sequences of length L and M has length L+M-1. If the FFT length N < L+M-1, the circular convolution result "wraps around," causing the tail and head to overlap -- this is time-domain aliasing. N &ge; L+M-1 ensures circular convolution equals linear convolution. Additionally, choosing N as a power of 2 is for efficiency (Radix-2 FFT), not a correctness requirement.
+      </div>
+    </div>
+
+    <!-- Q21 -->
+    <div class="quiz-q" data-correct="1">
+      <p><strong>Question 21:</strong> What is the necessary and sufficient condition for BIBO stability of an LTI system?</p>
+      <label><input type="radio" name="q20" value="0"> (A) All poles inside the unit circle</label><br>
+      <label><input type="radio" name="q20" value="1"> (B) Impulse response is absolutely summable ($\sum|h[n]|<\infty$)</label><br>
+      <label><input type="radio" name="q20" value="2"> (C) Input signal is bounded</label><br>
+      <label><input type="radio" name="q20" value="3"> (D) System is causal</label>
+      <div class="quiz-exp" style="display:none;">
+        <strong>Explanation:</strong> BIBO (Bounded-Input Bounded-Output) stability requires absolute summability of impulse response. For IIR systems this equates to all poles inside the unit circle.
+      </div>
+    </div>
+
+    <!-- Q22 -->
+    <div class="quiz-q" data-correct="0">
+      <p><strong>Question 22:</strong> For $y[n] = x[n] + a\cdot y[n-1]$, what is $H(z)$?</p>
+      <label><input type="radio" name="q21" value="0"> (A) $1/(1 - a\cdot z^{-1})$</label><br>
+      <label><input type="radio" name="q21" value="1"> (B) $1/(1 + a\cdot z^{-1})$</label><br>
+      <label><input type="radio" name="q21" value="2"> (C) $(1 - a\cdot z^{-1})$</label><br>
+      <label><input type="radio" name="q21" value="3"> (D) $a/(1 - z^{-1})$</label>
+      <div class="quiz-exp" style="display:none;">
+        <strong>Explanation:</strong> Z-transform both sides: $H(z) = Y(z)/X(z) = 1/(1 - a\cdot z^{-1})$. Pole at $z=a$, stable when $|a|<1$.
+      </div>
+    </div>
+
+    <!-- Q23 -->
+    <div class="quiz-q" data-correct="3">
+      <p><strong>Question 23:</strong> Among classic IIR designs, which has the steepest rolloff for given order?</p>
+      <label><input type="radio" name="q22" value="0"> (A) Butterworth</label><br>
+      <label><input type="radio" name="q22" value="1"> (B) Chebyshev I</label><br>
+      <label><input type="radio" name="q22" value="2"> (C) Chebyshev II</label><br>
+      <label><input type="radio" name="q22" value="3"> (D) Elliptic (Cauer)</label>
+      <div class="quiz-exp" style="display:none;">
+        <strong>Explanation:</strong> Elliptic filters have equiripple in both passband and stopband, achieving steepest rolloff for given order. Trade-off: worst phase response.
+      </div>
+    </div>
+
+    <!-- Q24 -->
+    <div class="quiz-q" data-correct="1">
+      <p><strong>Question 24:</strong> What effect does the bilinear transform $s = (2/T)(z-1)/(z+1)$ introduce?</p>
+      <label><input type="radio" name="q23" value="0"> (A) Aliasing</label><br>
+      <label><input type="radio" name="q23" value="1"> (B) Frequency warping</label><br>
+      <label><input type="radio" name="q23" value="2"> (C) Order change</label><br>
+      <label><input type="radio" name="q23" value="3"> (D) Stability loss</label>
+      <div class="quiz-exp" style="display:none;">
+        <strong>Explanation:</strong> Bilinear transform is a nonlinear mapping $\Omega = (2/T)\tan(\omega/2)$, causing frequency warping. Pre-warping compensates at critical frequencies.
+      </div>
+    </div>
+
+    <!-- Q25 -->
+    <div class="quiz-q" data-correct="1">
+      <p><strong>Question 25:</strong> Why is SOS (Cascade) the standard structure for IIR implementation?</p>
+      <label><input type="radio" name="q24" value="0"> (A) Fewer multiplications</label><br>
+      <label><input type="radio" name="q24" value="1"> (B) Lower coefficient sensitivity to quantization, better stability</label><br>
+      <label><input type="radio" name="q24" value="2"> (C) Shorter code</label><br>
+      <label><input type="radio" name="q24" value="3"> (D) Real-time coefficient updates</label>
+      <div class="quiz-exp" style="display:none;">
+        <strong>Explanation:</strong> High-order Direct Form is extremely sensitive to coefficient quantization and may become unstable. SOS factors filter into biquad sections with small coefficients -- standard for fixed-point implementation.
+      </div>
+    </div>
+
+    <!-- Q26 -->
+    <div class="quiz-q" data-correct="2">
+      <p><strong>Question 26:</strong> What happens when LMS step size $\mu$ is too large?</p>
+      <label><input type="radio" name="q25" value="0"> (A) Slow convergence</label><br>
+      <label><input type="radio" name="q25" value="1"> (B) Fast convergence with bias</label><br>
+      <label><input type="radio" name="q25" value="2"> (C) Algorithm diverges</label><br>
+      <label><input type="radio" name="q25" value="3"> (D) Independent of input</label>
+      <div class="quiz-exp" style="display:none;">
+        <strong>Explanation:</strong> $\mu$ must satisfy $0 < \mu < 2/(M\cdot\sigma_x^2)$ for guaranteed convergence. Beyond this range, filter coefficients diverge.
+      </div>
+    </div>
+
+    <!-- Q27 -->
+    <div class="quiz-q" data-correct="1">
+      <p><strong>Question 27:</strong> What must be done before downsampling a signal by factor M?</p>
+      <label><input type="radio" name="q26" value="0"> (A) Upsample to LM</label><br>
+      <label><input type="radio" name="q26" value="1"> (B) Apply anti-aliasing low-pass filter (cutoff $\pi/M$)</label><br>
+      <label><input type="radio" name="q26" value="2"> (C) Take absolute value</label><br>
+      <label><input type="radio" name="q26" value="3"> (D) Nothing required</label>
+      <div class="quiz-exp" style="display:none;">
+        <strong>Explanation:</strong> Downsampling causes spectral compression and aliasing. Must first apply low-pass filter with cutoff $\pi/M$ to remove high-frequency components.
+      </div>
+    </div>
+
+    <!-- Q28 -->
+    <div class="quiz-q" data-correct="2">
+      <p><strong>Question 28:</strong> How much computation does Polyphase save vs direct decimation by M?</p>
+      <label><input type="radio" name="q27" value="0"> (A) None</label><br>
+      <label><input type="radio" name="q27" value="1"> (B) 2&times;</label><br>
+      <label><input type="radio" name="q27" value="2"> (C) M&times;</label><br>
+      <label><input type="radio" name="q27" value="3"> (D) M&sup2;&times;</label>
+      <div class="quiz-exp" style="display:none;">
+        <strong>Explanation:</strong> Direct method wastes $(M-1)/M$ of computation (samples that get discarded). Polyphase splits filter into M sub-filters operating only on retained samples.
+      </div>
+    </div>
+
+    <!-- Q29 -->
+    <div class="quiz-q" data-correct="0">
+      <p><strong>Question 29:</strong> What is the Perfect Reconstruction (PR) condition for analysis-synthesis filter banks?</p>
+      <label><input type="radio" name="q28" value="0"> (A) $F_0(z)\cdot H_0(z) + F_1(z)\cdot H_1(z) = c\cdot z^{-d}$</label><br>
+      <label><input type="radio" name="q28" value="1"> (B) $F_0(z) = H_0(z)$</label><br>
+      <label><input type="radio" name="q28" value="2"> (C) $H_0$ lowpass, $H_1$ highpass</label><br>
+      <label><input type="radio" name="q28" value="3"> (D) All filters same order</label>
+      <div class="quiz-exp" style="display:none;">
+        <strong>Explanation:</strong> PR condition guarantees synthesis output equals delayed input (no distortion). Aliasing cancellation also required.
+      </div>
+    </div>
+
+    <!-- Q30 -->
+    <div class="quiz-q" data-correct="2">
+      <p><strong>Question 30:</strong> What is the SNR improvement per octave OSR for L-th order Sigma-Delta?</p>
+      <label><input type="radio" name="q29" value="0"> (A) 3 dB</label><br>
+      <label><input type="radio" name="q29" value="1"> (B) 6 dB</label><br>
+      <label><input type="radio" name="q29" value="2"> (C) $(2L+1)\cdot 3$ dB</label><br>
+      <label><input type="radio" name="q29" value="3"> (D) $L^2$ dB</label>
+      <div class="quiz-exp" style="display:none;">
+        <strong>Explanation:</strong> Noise shaping pushes quantization noise to high frequencies, removed by digital LPF. L-th order shaping + R&times; oversampling &rarr; SNR improves $(2L+1)\cdot 3\cdot\log_2(R)$ dB.
+      </div>
+    </div>
+
+    <!-- Q31 -->
+    <div class="quiz-q" data-correct="0">
+      <p><strong>Question 31:</strong> What is the core statement of the Wiener-Khinchin theorem?</p>
+      <label><input type="radio" name="q30" value="0"> (A) PSD = DTFT of autocorrelation function</label><br>
+      <label><input type="radio" name="q30" value="1"> (B) WSS signals are always Gaussian</label><br>
+      <label><input type="radio" name="q30" value="2"> (C) Autocorrelation is always positive</label><br>
+      <label><input type="radio" name="q30" value="3"> (D) Random signals equal white noise</label>
+      <div class="quiz-exp" style="display:none;">
+        <strong>Explanation:</strong> For WSS random signals, $\text{PSD} = \text{DTFT}\{R_{xx}[m]\}$. This connects time-domain statistics (correlation) to frequency-domain (PSD).
+      </div>
+    </div>
+
+    <!-- Q32 -->
+    <div class="quiz-q" data-correct="1">
+      <p><strong>Question 32:</strong> When signal $d[n]$ and noise $v[n]$ are uncorrelated, the Wiener filter is:</p>
+      <label><input type="radio" name="q31" value="0"> (A) $H = 1$</label><br>
+      <label><input type="radio" name="q31" value="1"> (B) $H = S_{dd} / (S_{dd} + S_{vv})$</label><br>
+      <label><input type="radio" name="q31" value="2"> (C) $H = S_{dd}\cdot S_{vv}$</label><br>
+      <label><input type="radio" name="q31" value="3"> (D) $H = 1 - S_{vv}$</label>
+      <div class="quiz-exp" style="display:none;">
+        <strong>Explanation:</strong> At high-SNR frequencies $H\approx 1$ (passes signal), at low-SNR frequencies $H\approx 0$ (suppresses noise). Frequency-dependent optimal linear estimation.
       </div>
     </div>
 
