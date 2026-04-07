@@ -373,6 +373,57 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
   <div class="card text-center"><div class="text-2xl mb-2">🔬</div><h3 class="font-bold text-sm mb-1">進階理論</h3><p class="text-xs text-slate-500">MUSIC · 小波 · Wigner-Ville · EMD</p></div>
   <div class="card text-center"><div class="text-2xl mb-2">⚡</div><h3 class="font-bold text-sm mb-1">四大應用</h3><p class="text-xs text-slate-500">通訊 OFDM · 雷達 · 影像 · 生醫</p></div>
 </div>
+
+<div class="card">
+<h2 class="text-xl font-bold mb-3">📊 真實資料集 (Real-World Datasets)</h2>
+<p class="text-sm text-slate-500 mb-3">不要只用合成 sin 波練習。下面列出公開資料集，可以下載真實訊號做完整的 DSP 流程練習。</p>
+
+<div class="grid md:grid-cols-2 gap-4">
+<div class="p-3 rounded-lg bg-cyan-50 dark:bg-cyan-900/20">
+<h3 class="font-bold text-cyan-700 dark:text-cyan-400 text-sm mb-2">🫀 生醫訊號</h3>
+<ul class="text-xs space-y-1">
+<li><strong>PhysioNet</strong> (physionet.org): ECG, EEG, EMG, PPG 等臨床資料</li>
+<li><strong>MIT-BIH Arrhythmia DB</strong>: 經典 ECG 心律不整資料</li>
+<li><strong>Sleep-EDF</strong>: EEG 睡眠分期</li>
+<li><strong>適合練習</strong>: m6-1 Hilbert (R 波偵測), m7-1 STFT (EEG 頻帶), m9-9 EEG/ECG</li>
+</ul>
+</div>
+
+<div class="p-3 rounded-lg bg-emerald-50 dark:bg-emerald-900/20">
+<h3 class="font-bold text-emerald-700 dark:text-emerald-400 text-sm mb-2">🔊 音訊</h3>
+<ul class="text-xs space-y-1">
+<li><strong>ESC-50</strong>: 50 類環境聲音 (5 sec each)</li>
+<li><strong>UrbanSound8K</strong>: 都市聲音分類</li>
+<li><strong>LibriSpeech</strong>: 1000 小時語音語料</li>
+<li><strong>適合練習</strong>: m3b-1 視窗、m7-1 STFT、m4-* 濾波器設計</li>
+</ul>
+</div>
+
+<div class="p-3 rounded-lg bg-violet-50 dark:bg-violet-900/20">
+<h3 class="font-bold text-violet-700 dark:text-violet-400 text-sm mb-2">⚙ 機械振動</h3>
+<ul class="text-xs space-y-1">
+<li><strong>Case Western Bearing Data</strong>: 經典軸承故障資料</li>
+<li><strong>NASA IMS Bearing Dataset</strong>: 跑到失效的軸承資料</li>
+<li><strong>MFPT Bearing Fault</strong>: 多種轉速條件</li>
+<li><strong>適合練習</strong>: m6-2 包絡譜、m9-10 振動分析、Phase 1 BPFO 計算</li>
+</ul>
+</div>
+
+<div class="p-3 rounded-lg bg-rose-50 dark:bg-rose-900/20">
+<h3 class="font-bold text-rose-700 dark:text-rose-400 text-sm mb-2">📡 通訊/雷達</h3>
+<ul class="text-xs space-y-1">
+<li><strong>RadioML 2018</strong>: 各種調變方式的 IQ 樣本</li>
+<li><strong>FMCW Radar Dataset</strong>: 自動駕駛雷達資料</li>
+<li><strong>GNU Radio Tutorials</strong>: SDR 範例</li>
+<li><strong>適合練習</strong>: m9-6 OFDM, m9-7 雷達, 通訊接收器</li>
+</ul>
+</div>
+</div>
+
+<div class="tip mt-4">
+<p class="text-sm"><strong>💡 入門建議：</strong>從 PhysioNet 的 ECG 開始最容易——資料乾淨、有清楚的特徵（R 波）、可以練習從 m6-1 Hilbert 到 m9-9 整個流程。</p>
+</div>
+</div>
 </section>
 
 <!-- ============ PART I: MATHEMATICAL FOUNDATIONS ============ -->
@@ -1575,6 +1626,27 @@ $$\mathbf{X} = \mathbf{W}_N\mathbf{x}, \quad [\mathbf{W}_N]_{kn} = W_N^{kn}$$
 <p class="text-sm text-center mt-2">$\frac{1}{\sqrt{N}}\mathbf{W}_N$ 為酉矩陣 (Unitary)：$\mathbf{W}_N^H\mathbf{W}_N = N\mathbf{I}$</p>
 </div>
 <p class="mt-3"><strong>逆 DFT：</strong>$x[n] = \frac{1}{N}\sum_{k=0}^{N-1}X[k]\,W_N^{-kn}$，即 $\mathbf{x} = \frac{1}{N}\mathbf{W}_N^H\mathbf{X}$。</p>
+
+<details class="deriv">
+<summary>展開推導：實數訊號的 DFT 共軛對稱性</summary>
+<div>
+<p><strong>定理</strong>：若 $x[n]$ 是實數序列，則其 DFT 滿足 $X[N-k] = X^*[k]$（共軛對稱）。</p>
+<p><strong>推導</strong>：</p>
+$$X[N-k] = \sum_{n=0}^{N-1} x[n]\, e^{-j2\pi(N-k)n/N}$$
+$$= \sum_{n=0}^{N-1} x[n]\, e^{-j2\pi n}\, e^{j2\pi kn/N}$$
+<p>由於 $e^{-j2\pi n} = 1$（任意整數 $n$）：</p>
+$$= \sum_{n=0}^{N-1} x[n]\, e^{j2\pi kn/N}$$
+<p>因為 $x[n]$ 是實數，$x[n] = x^*[n]$：</p>
+$$= \sum_{n=0}^{N-1} x^*[n]\, e^{j2\pi kn/N} = \left(\sum_{n=0}^{N-1} x[n]\, e^{-j2\pi kn/N}\right)^* = X^*[k] \quad\blacksquare$$
+<p class="mt-3"><strong>實務意義</strong>：</p>
+<ul class="list-disc pl-6 text-sm">
+<li>實數訊號的 DFT 完全由前半部 $X[0], X[1], \ldots, X[N/2]$ 決定</li>
+<li>計算與儲存可省一半（real-FFT 演算法）</li>
+<li>$X[0]$ 是實數（DC），$X[N/2]$ 也是實數（Nyquist bin）</li>
+<li>$|X[k]| = |X[N-k]|$（幅度譜對稱），$\angle X[k] = -\angle X[N-k]$（相位譜反對稱）</li>
+</ul>
+</div>
+</details>
 </div>
 
 <div class="card">
@@ -1663,6 +1735,37 @@ $$f_k = \frac{k \cdot f_s}{N}, \quad k = 0, 1, \ldots, N-1$$
 <tr><td class="text-left text-sm">避免圓卷積 aliasing（$N \geq M+L-1$）</td><td class="text-left text-sm">降低雜訊</td></tr>
 </tbody>
 </table>
+
+<h3 class="font-bold mt-4 mb-2">Python 範例：計算 FFT 並繪製頻譜</h3>
+<div class="code"># Python: 計算 FFT 並繪製頻譜
+import numpy as np
+import matplotlib.pyplot as plt
+
+# 產生測試訊號 (50 Hz + 120 Hz)
+fs = 1000           # 取樣率 1 kHz
+T = 1.0             # 持續時間 1 秒
+N = int(fs * T)     # 1000 個取樣點
+t = np.arange(N) / fs
+x = np.sin(2*np.pi*50*t) + 0.5*np.sin(2*np.pi*120*t)
+
+# 計算 FFT
+X = np.fft.fft(x)
+freqs = np.fft.fftfreq(N, d=1/fs)
+
+# 取單邊頻譜（實數訊號）
+half = N // 2
+mag = np.abs(X[:half]) * 2/N    # 乘 2 補回對稱能量
+mag[0] /= 2                       # DC 不需乘 2
+phase = np.angle(X[:half])
+
+# 繪圖
+fig, axes = plt.subplots(3, 1, figsize=(10, 8))
+axes[0].plot(t[:200], x[:200]); axes[0].set_title('時間域')
+axes[1].plot(freqs[:half], mag); axes[1].set_xlim(0, 200)
+axes[1].set_title('幅度譜 |X[k]|'); axes[1].grid()
+axes[2].plot(freqs[:half], phase); axes[2].set_xlim(0, 200)
+axes[2].set_title('相位譜 ∠X[k]')
+plt.tight_layout(); plt.show()</div>
 </div>
 
 <!-- 應用場景 -->
@@ -1828,6 +1931,105 @@ $$\begin{aligned} a' &= a + W_N^k \cdot b \\ b' &= a - W_N^k \cdot b \end{aligne
 <li><strong>Stage k 的蝴蝶</strong>：把上一級兩個值合成兩個新值（公式 $a' = a + W \cdot b$, $b' = a - W \cdot b$）</li>
 <li><strong>最後 X[k] 取絕對值</strong>得到頻譜。例如選 cos(2π·n/8) 應該在 k=1 和 k=7 看到峰值</li>
 </ul>
+</div>
+</div>
+
+<div class="card">
+<h3 class="font-bold text-base mb-3">Decimation-in-Time vs Decimation-in-Frequency</h3>
+<p class="text-sm text-slate-500 mb-3">Cooley-Tukey FFT 有兩種等價但不同的分解方式。本平台示範的是 DIT (Decimation-in-Time)。</p>
+
+<div class="grid md:grid-cols-2 gap-4">
+<div>
+<h4 class="font-bold text-sm mb-2">DIT — Decimation in Time</h4>
+<p class="text-xs mb-2">把<strong>輸入</strong>序列分成偶數和奇數兩半：</p>
+$$X[k] = \sum_{r=0}^{N/2-1}x[2r]W_{N/2}^{rk} + W_N^k\sum_{r=0}^{N/2-1}x[2r+1]W_{N/2}^{rk}$$
+<ul class="text-xs list-disc pl-5 mt-2 space-y-1">
+<li>輸入需要<strong>位元反轉排序</strong></li>
+<li>輸出自然順序</li>
+<li>蝴蝶結構：先乘後加</li>
+</ul>
+</div>
+
+<div>
+<h4 class="font-bold text-sm mb-2">DIF — Decimation in Frequency</h4>
+<p class="text-xs mb-2">把<strong>輸出</strong>分成偶數和奇數兩組：</p>
+$$X[2k] = \sum_{n=0}^{N/2-1}\left[x[n]+x[n+N/2]\right]W_{N/2}^{nk}$$
+$$X[2k+1] = \sum_{n=0}^{N/2-1}\left[x[n]-x[n+N/2]\right]W_N^n W_{N/2}^{nk}$$
+<ul class="text-xs list-disc pl-5 mt-2 space-y-1">
+<li>輸入自然順序</li>
+<li>輸出需要<strong>位元反轉排序</strong></li>
+<li>蝴蝶結構：先加後乘</li>
+</ul>
+</div>
+</div>
+
+<div class="tip mt-3">
+<p class="text-sm"><strong>實務選擇：</strong></p>
+<ul class="text-xs space-y-1 mt-1 list-disc pl-5">
+<li>兩者運算量完全相同：$\frac{N}{2}\log_2 N$ 次複數乘法</li>
+<li>大多數現代 FFT 函式庫（FFTW, MKL）兩者都支援</li>
+<li>選擇通常由「上游/下游處理階段如何排序」決定，避免額外的 bit-reversal</li>
+<li>DIT 更直觀（從蝴蝶圖角度），DIF 是其轉置</li>
+</ul>
+</div>
+</div>
+
+<div class="card">
+<h3 class="font-bold text-base mb-3">⚠ FFT 實作常見陷阱</h3>
+<p class="text-sm text-slate-500 mb-3">這些是工程師實際使用 numpy.fft.fft 或 scipy.fft 時最常踩的雷。</p>
+
+<div class="space-y-3">
+
+<div class="warn">
+<p class="text-sm font-bold">陷阱 1：忘記正規化 (Normalization)</p>
+<p class="text-xs mt-1">numpy 的 <code>fft</code> 預設不做正規化。對 N 點訊號的振幅譜，要乘 2/N（單邊）：</p>
+<div class="code mt-2">
+X = np.fft.fft(x)
+half = N // 2
+mag = np.abs(X[:half]) * 2 / N    # 正確
+mag[0] /= 2                        # DC 不乘 2
+mag[-1] /= 2                       # Nyquist 不乘 2 (如果 N 是偶數)
+</div>
+</div>
+
+<div class="warn">
+<p class="text-sm font-bold">陷阱 2：fftfreq 用法錯誤</p>
+<p class="text-xs mt-1">頻率索引 k 對應的物理頻率是 $f_k = k \cdot f_s / N$，不是 $k$ 本身：</p>
+<div class="code mt-2">
+freqs = np.fft.fftfreq(N, d=1/fs)   # 正確：自動處理負頻率
+# 不要寫 freqs = np.arange(N) * fs / N （這是錯的，正負對稱會壞掉）
+</div>
+</div>
+
+<div class="warn">
+<p class="text-sm font-bold">陷阱 3：頻譜洩漏 (Spectral Leakage)</p>
+<p class="text-xs mt-1">如果訊號頻率不是 $f_s/N$ 的整數倍（即不在 bin 中心），能量會洩漏到鄰近 bin。永遠記得加窗：</p>
+<div class="code mt-2">
+from scipy.signal import windows
+win = windows.hann(N)
+X = np.fft.fft(x * win)             # 加 Hann 窗
+mag = np.abs(X[:N//2]) * 2 / np.sum(win)  # 正規化要用視窗總和
+</div>
+</div>
+
+<div class="warn">
+<p class="text-sm font-bold">陷阱 4：零填充 ≠ 提高解析度</p>
+<p class="text-xs mt-1">零填充只是讓 DFT bin 變密（內插效果），不會增加真正的頻率解析度。真正解析度由觀測時間 $T$ 決定：$\Delta f = 1/T$。</p>
+</div>
+
+<div class="warn">
+<p class="text-sm font-bold">陷阱 5：DC 漂移</p>
+<p class="text-xs mt-1">如果訊號有 DC offset，FFT 在 k=0 處會出現巨大峰值，可能掩蓋你要看的低頻成分。先去除均值：</p>
+<div class="code mt-2">
+x = x - np.mean(x)    # 移除 DC
+</div>
+</div>
+
+<div class="warn">
+<p class="text-sm font-bold">陷阱 6：複數 vs 實數 FFT</p>
+<p class="text-xs mt-1">對實數訊號，用 <code>np.fft.rfft()</code> 比 <code>fft()</code> 快約 2 倍（只算一半），因為共軛對稱。</p>
+</div>
+
 </div>
 </div>
 <div class="ch-nav"><a onclick="go('m3a-1')">← 2.3 DTFT</a><a onclick="go('m2b-4')">2.5 Z 轉換 →</a></div>
@@ -2447,6 +2649,41 @@ $$\text{Var}[\hat{S}(\omega)] \approx S^2(\omega) \quad (\text{不隨 } N \text{
 </ul>
 </div>
 <div class="tip mt-3"><p><strong>Kaiser $\beta$ 經驗值：</strong>$\beta = 0$ → 矩形窗；$\beta \approx 5$ → 近似 Hamming；$\beta \approx 6$ → 近似 Hann；$\beta \approx 8.5$ → 近似 Blackman；$\beta > 10$ → 超越 Blackman 的動態範圍。</p></div>
+
+<h3 class="font-bold mt-4 mb-2">Python 範例：比較五種視窗函數</h3>
+<div class="code"># Python: 比較 5 種視窗函數
+import numpy as np
+import matplotlib.pyplot as plt
+from scipy.signal import windows
+
+N = 64
+windows_dict = {
+    'Rectangular': np.ones(N),
+    'Hann': windows.hann(N),
+    'Hamming': windows.hamming(N),
+    'Blackman': windows.blackman(N),
+    'Kaiser β=8': windows.kaiser(N, 8)
+}
+
+fig, axes = plt.subplots(2, 1, figsize=(10, 8))
+
+# 時域
+for name, w in windows_dict.items():
+    axes[0].plot(w, label=name, linewidth=1.5)
+axes[0].legend(); axes[0].set_title('時域：視窗形狀')
+axes[0].set_xlabel('n'); axes[0].grid()
+
+# 頻域（補零到 8N 提高頻譜密度）
+Nfft = 8 * N
+freqs = np.linspace(-0.5, 0.5, Nfft)
+for name, w in windows_dict.items():
+    W = np.fft.fftshift(np.fft.fft(w, Nfft))
+    W_db = 20 * np.log10(np.abs(W) / np.max(np.abs(W)) + 1e-12)
+    axes[1].plot(freqs, W_db, label=name, linewidth=1)
+axes[1].set_ylim(-100, 5); axes[1].legend()
+axes[1].set_title('頻域：振幅響應 (dB)')
+axes[1].set_xlabel('正規化頻率'); axes[1].grid()
+plt.tight_layout(); plt.show()</div>
 </div>
 
 <!-- 應用場景 -->
@@ -2811,6 +3048,36 @@ $$a_i^{(m)} = a_i^{(m-1)} + k_m\,a_{m-i}^{(m-1)}, \quad i = 1, \ldots, m-1$$
 $$\sigma_m^2 = (1 - |k_m|^2)\,\sigma_{m-1}^2$$
 <p class="mt-2"><strong>穩定性保證：</strong>若 $|k_m| < 1$ 對所有 $m$ 成立（自相關法保證），則 AR 模型穩定（所有極點在單位圓內）。</p>
 <p class="mt-2"><strong>每一步的 $\sigma_m^2$ 是 AR($m$) 的預測誤差功率</strong>——隨 $m$ 增大而遞減。當增加一階後 $\sigma_m^2$ 幾乎不再下降，就是最佳階數的指標。$\;\blacksquare$</p>
+</div>
+</details>
+</div>
+
+<div class="card">
+<h2 class="text-lg font-bold mb-3">階數選擇：AIC 與 BIC 的資訊論基礎</h2>
+<details class="deriv">
+<summary>展開推導：AIC 和 BIC 的資訊論基礎</summary>
+<div>
+<p>AIC 和 BIC 不是任意公式——它們來自統計學中的「平衡擬合度與模型複雜度」原則。</p>
+<p><strong>AIC (Akaike Information Criterion, 1974)</strong>：</p>
+$$\text{AIC}(p) = -2\ln L(\hat{\theta}_p) + 2p$$
+<p>其中 $L$ 是 likelihood，$p$ 是參數個數。</p>
+<p><strong>由來</strong>：Akaike 證明這個公式是 KL 散度（Kullback-Leibler divergence）的不偏估計：</p>
+$$\text{AIC} \approx 2N \cdot D_{KL}(\text{真實分布} \| \text{模型})$$
+<p>第一項 $-2\ln L$ 衡量「模型擬合資料的好壞」（越小越好）。</p>
+<p>第二項 $2p$ 是「複雜度懲罰」——每多一個參數要付出 2 點代價，防止過擬合。</p>
+<p>對 AR(p) 模型且 Gaussian 殘差，可化簡為 $\text{AIC}(p) = N\ln\hat{\sigma}_p^2 + 2p$。</p>
+
+<p class="mt-3"><strong>BIC (Bayesian Information Criterion, 1978)</strong>：</p>
+$$\text{BIC}(p) = -2\ln L(\hat{\theta}_p) + p\ln N$$
+<p>第二項是 $p\ln N$ 而非 $2p$。</p>
+<p><strong>由來</strong>：BIC 來自貝氏定理 — 它是後驗機率 $P(\text{model}|\text{data})$ 的負對數的近似。</p>
+<p>當 $N \to \infty$，$\ln N$ 比 $2$ 大，所以 BIC 給出更強的複雜度懲罰，更傾向選擇簡單模型。</p>
+
+<p class="mt-3"><strong>選哪個？</strong></p>
+<table class="dt mt-2"><thead><tr><th>準則</th><th>特性</th><th>適用</th></tr></thead><tbody>
+<tr><td>AIC</td><td>偏向選複雜模型</td><td>預測為主時（需要捕捉細節）</td></tr>
+<tr><td>BIC</td><td>偏向選簡單模型，漸進一致</td><td>解釋為主時（找真實模型階數）</td></tr>
+</tbody></table>
 </div>
 </details>
 </div>
@@ -3410,6 +3677,42 @@ function envelope(x) {
 <li>這就是 AM 包絡偵測的原理！</li>
 </ul>
 </div>
+
+<h3 class="font-bold mt-4 mb-2">Python 範例：使用 scipy.signal.hilbert 提取訊號包絡</h3>
+<div class="code"># Python: 使用 scipy.signal.hilbert 提取訊號包絡
+import numpy as np
+import scipy.signal as sig
+import matplotlib.pyplot as plt
+
+# 產生 AM 訊號：載波 1 kHz, 包絡 50 Hz
+fs = 10000
+t = np.arange(0, 0.2, 1/fs)
+carrier = np.cos(2*np.pi*1000*t)
+envelope_true = 1 + 0.5*np.sin(2*np.pi*50*t)
+am_signal = envelope_true * carrier
+
+# Hilbert 變換 → 解析訊號 z[n] = x[n] + j*x_hat[n]
+analytic = sig.hilbert(am_signal)
+
+# 提取包絡和瞬時相位/頻率
+envelope = np.abs(analytic)
+inst_phase = np.unwrap(np.angle(analytic))
+inst_freq = np.diff(inst_phase) / (2*np.pi) * fs
+
+# 繪圖
+fig, axes = plt.subplots(3, 1, figsize=(10, 9))
+axes[0].plot(t, am_signal, 'b', linewidth=0.5, label='AM 訊號')
+axes[0].plot(t, envelope, 'r', linewidth=2, label='Hilbert 包絡')
+axes[0].plot(t, envelope_true, 'g--', linewidth=1.5, label='真實包絡')
+axes[0].legend(); axes[0].set_title('AM 訊號 + 包絡偵測')
+
+axes[1].plot(t, envelope, 'r')
+axes[1].set_title('提取的包絡（應該看到 50 Hz 餘弦）')
+
+axes[2].plot(t[1:], inst_freq, 'k')
+axes[2].set_title(f'瞬時頻率（應該接近載波 1000 Hz）')
+axes[2].set_xlabel('時間 (s)'); axes[2].set_ylabel('Hz')
+plt.tight_layout(); plt.show()</div>
 </div>
 
 <!-- 應用場景 -->
@@ -3980,6 +4283,45 @@ $$\Delta t \cdot \Delta f \geq \frac{1}{4\pi}$$
 </tbody>
 </table>
 </div>
+
+<h3 class="font-bold mt-4 mb-2">Python 範例：使用 scipy.signal.stft 計算 spectrogram</h3>
+<div class="code"># Python: 用 scipy.signal.stft 計算 spectrogram
+import numpy as np
+import scipy.signal as sig
+import matplotlib.pyplot as plt
+
+# 產生 chirp 訊號：頻率從 100 Hz 線性變到 1500 Hz
+fs = 4000
+t = np.arange(0, 2, 1/fs)
+x = sig.chirp(t, f0=100, f1=1500, t1=2, method='linear')
+
+# 計算 STFT
+# nperseg = 視窗長度，noverlap = 重疊樣本數
+f, t_stft, Zxx = sig.stft(x, fs=fs, nperseg=256, noverlap=192)
+
+# 計算頻率解析度和時間解析度
+df = fs / 256
+dt = (256 - 192) / fs  # hop size in seconds
+print(f"頻率解析度 Δf = {df:.1f} Hz")
+print(f"時間解析度 Δt = {dt*1000:.1f} ms")
+
+# 繪製 spectrogram
+fig, axes = plt.subplots(2, 1, figsize=(10, 8))
+axes[0].plot(t, x, linewidth=0.5)
+axes[0].set_title('時間域 chirp 訊號')
+axes[0].set_xlabel('時間 (s)')
+
+axes[1].pcolormesh(t_stft, f, 20*np.log10(np.abs(Zxx) + 1e-12),
+                   cmap='viridis', shading='auto')
+axes[1].set_ylim(0, 2000)
+axes[1].set_ylabel('頻率 (Hz)'); axes[1].set_xlabel('時間 (s)')
+axes[1].set_title('Spectrogram (dB)')
+plt.colorbar(axes[1].collections[0], ax=axes[1])
+plt.tight_layout(); plt.show()
+
+# 反向變換驗證
+_, x_recon = sig.istft(Zxx, fs=fs, nperseg=256, noverlap=192)
+print(f"重建誤差: {np.max(np.abs(x - x_recon[:len(x)])):.2e}")</div>
 </div>
 
 <!-- 互動 -->
@@ -5904,6 +6246,45 @@ for n in range(-36, 37):  // -M/2 到 M/2
     </tbody>
   </table>
 
+  <h4>Python 範例：用 scipy.signal.firwin 設計 FIR 低通</h4>
+  <div class="code"># Python: 用 scipy.signal.firwin 設計 FIR 低通
+import numpy as np
+import scipy.signal as sig
+import matplotlib.pyplot as plt
+
+# 規格
+fs = 8000           # 取樣率
+fc = 1000           # 截止頻率
+Astop = 60          # 阻帶衰減 (dB)
+trans_width = 200   # 過渡帶寬
+
+# Kaiser 窗自動選擇 β 和 N
+N, beta = sig.kaiserord(Astop, trans_width / (fs/2))
+print(f"濾波器階數 N = {N}, Kaiser β = {beta:.2f}")
+
+# 設計濾波器
+h = sig.firwin(N, fc, window=('kaiser', beta), fs=fs)
+
+# 頻率響應
+w, H = sig.freqz(h, fs=fs)
+H_db = 20 * np.log10(np.abs(H) + 1e-12)
+
+# 繪圖
+fig, axes = plt.subplots(2, 1, figsize=(10, 7))
+axes[0].stem(h, basefmt=' '); axes[0].set_title(f'脈衝響應 h[n] (N={N})')
+axes[0].set_xlabel('n')
+axes[1].plot(w, H_db); axes[1].axhline(-Astop, color='r', linestyle='--', label=f'-{Astop} dB')
+axes[1].axvline(fc, color='g', linestyle='--', label=f'fc = {fc} Hz')
+axes[1].set_xlabel('Hz'); axes[1].set_ylabel('dB')
+axes[1].set_title('頻率響應'); axes[1].legend(); axes[1].grid()
+axes[1].set_ylim(-100, 5)
+plt.tight_layout(); plt.show()
+
+# 套用到訊號
+x = np.random.randn(10000)  # 白雜訊
+y = sig.lfilter(h, 1, x)
+print(f"輸入功率: {np.var(x):.3f}, 輸出功率: {np.var(y):.3f}")</div>
+
   <!-- 互動元素 -->
   <div class="flex flex-col gap-3 mb-4">
     <div class="flex items-center gap-3">
@@ -5996,6 +6377,109 @@ for n in range(-36, 37):  // -M/2 到 M/2
   </div>
 </div>
 </div>
+<div class="card">
+<h3 class="font-bold text-base mb-3">線性相位 FIR 的四種對稱類型</h3>
+<p class="text-sm text-slate-500 mb-3">線性相位 FIR 必須滿足對稱或反對稱條件 $h[n] = \pm h[N-1-n]$。根據對稱方式和階數奇偶，恰好分為四類，每一類有不同的限制。</p>
+
+<table class="dt">
+<thead><tr><th>類型</th><th>對稱性</th><th>長度 N</th><th>特性</th><th>不能實現</th></tr></thead>
+<tbody>
+<tr>
+<td><strong>Type I</strong></td>
+<td>對稱 $h[n]=h[N-1-n]$</td>
+<td>奇 (N odd)</td>
+<td>無限制；最通用</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>Type II</strong></td>
+<td>對稱</td>
+<td>偶 (N even)</td>
+<td>$H(e^{j\pi})=0$</td>
+<td>高通、帶阻</td>
+</tr>
+<tr>
+<td><strong>Type III</strong></td>
+<td>反對稱 $h[n]=-h[N-1-n]$</td>
+<td>奇</td>
+<td>$H(e^{j0})=0$ 且 $H(e^{j\pi})=0$</td>
+<td>低通、高通</td>
+</tr>
+<tr>
+<td><strong>Type IV</strong></td>
+<td>反對稱</td>
+<td>偶</td>
+<td>$H(e^{j0})=0$</td>
+<td>低通、帶阻</td>
+</tr>
+</tbody>
+</table>
+
+<details class="deriv my-3">
+<summary>展開：為什麼有這些限制？</summary>
+<div>
+<p><strong>Type II 為什麼 $H(\pi)=0$？</strong></p>
+<p>對 Type II，$N$ 偶，$h[n]=h[N-1-n]$。代入 DTFT：</p>
+$$H(e^{j\pi}) = \sum_{n=0}^{N-1}h[n](-1)^n$$
+<p>把對稱項配對：$h[k]\cdot(-1)^k + h[N-1-k]\cdot(-1)^{N-1-k} = h[k]\cdot[(-1)^k + (-1)^{N-1-k}]$</p>
+<p>當 $N$ 偶，$N-1$ 奇，$(-1)^{N-1-k} = -(-1)^k$，所以每對配對和為 0。$\blacksquare$</p>
+
+<p class="mt-3"><strong>Type III/IV 為什麼 $H(0)=0$？</strong></p>
+<p>反對稱 $h[n]=-h[N-1-n]$ 意味著係數和 $\sum h[n] = 0$（配對相消）。</p>
+<p>而 $H(e^{j0}) = \sum h[n]$，所以必為 0。$\blacksquare$</p>
+</div>
+</details>
+
+<div class="tip mt-3">
+<p class="text-sm"><strong>實務選擇：</strong></p>
+<ul class="text-xs space-y-1 mt-1 list-disc pl-5">
+<li><strong>低通/帶通</strong> → 用 Type I</li>
+<li><strong>需要奇對稱（如 Hilbert 變換器、微分器）</strong> → 用 Type III 或 IV</li>
+<li><strong>避免</strong>：用 Type II 設計高通會在 Nyquist 強制為 0，造成不可能達到規格</li>
+<li>大多數設計工具（scipy.signal.firwin）會自動選擇正確類型</li>
+</ul>
+</div>
+</div>
+
+<div class="card">
+<h3 class="font-bold text-base mb-3">群延遲 (Group Delay) 分析</h3>
+<p class="text-sm text-slate-500 mb-3">線性相位的真正意義不是「相位 = 0」，而是「不同頻率成分通過濾波器時都延遲相同的時間」——這由群延遲量化。</p>
+
+<h4 class="font-bold text-sm mt-3 mb-2">定義</h4>
+<div class="fm">
+$$\tau_g(\omega) = -\frac{d\angle H(e^{j\omega})}{d\omega}$$
+<p class="text-sm mt-2">群延遲是相位響應對 $\omega$ 的負導數，單位是<strong>樣本</strong>。它告訴你頻率 $\omega$ 附近的訊號封套被延遲了多少。</p>
+</div>
+
+<h4 class="font-bold text-sm mt-4 mb-2">為什麼重要？</h4>
+<ul class="text-sm list-disc pl-6 space-y-1">
+<li><strong>線性相位</strong>：$\tau_g$ 是常數 → 所有頻率延遲相同 → 訊號形狀不變</li>
+<li><strong>非線性相位</strong>：$\tau_g$ 隨頻率變化 → 不同頻率延遲不同 → 波形失真（即使振幅響應理想）</li>
+<li>音訊和測量應用對相位失真特別敏感——例如 ECG 需要保持 QRS 波形</li>
+</ul>
+
+<h4 class="font-bold text-sm mt-4 mb-2">FIR vs IIR 比較</h4>
+<table class="dt">
+<thead><tr><th>類型</th><th>群延遲</th><th>波形保真</th></tr></thead>
+<tbody>
+<tr><td>線性相位 FIR</td><td>常數 $(N-1)/2$</td><td>完美（純延遲）</td></tr>
+<tr><td>Butterworth IIR</td><td>非常數，過渡帶最大</td><td>失真</td></tr>
+<tr><td>Chebyshev I IIR</td><td>過渡帶劇烈變化</td><td>嚴重失真</td></tr>
+<tr><td>Bessel IIR</td><td>通帶內接近常數</td><td>較好（為相位優化）</td></tr>
+</tbody></table>
+
+<div class="tip mt-3">
+<p class="text-sm"><strong>實務應用：</strong></p>
+<ul class="text-xs space-y-1 mt-1 list-disc pl-5">
+<li><strong>音訊處理</strong>：選 FIR 或 Bessel，避免 Chebyshev/Elliptic 的相位失真</li>
+<li><strong>ECG/EEG</strong>：必須線性相位 FIR（保持 QRS/spike 波形）</li>
+<li><strong>通訊接收器</strong>：可用非線性相位 IIR（後面有等化器補償）</li>
+<li><strong>即時 forward-only</strong>：必須因果 → IIR 不能做完美線性相位</li>
+<li><strong>離線處理</strong>：可用 filtfilt（雙向濾波）達到零相位</li>
+</ul>
+</div>
+</div>
+
 <div class="ch-nav"><a onclick="go('m9a-1')">← 6.3 OLA/OLS</a><a onclick="go('m9b-1')">6.5 2D FFT →</a></div>
 </section>
 
@@ -8361,6 +8845,54 @@ w, h = sig.freqz(b, a, fs=fs)
 
 <div class="plot" id="plotM4b1" style="width:100%; height:400px;"></div>
 <p class="text-xs text-slate-500 mt-1">觀察：Butterworth 平滑但滾降慢，Elliptic 最陡但有波紋。調整階數觀察收斂速度差異。</p>
+</div>
+
+<div class="card">
+<h3 class="font-bold text-base mb-3">全通濾波器與最小相位分解</h3>
+<p class="text-sm text-slate-500 mb-3">任何穩定因果系統都可分解為「最小相位 × 全通」——這是 IIR 設計與相位等化的關鍵理論。</p>
+
+<h4 class="font-bold text-sm mt-3 mb-2">全通濾波器 (All-Pass Filter)</h4>
+<p class="text-sm mb-2"><strong>定義</strong>：$|H_{ap}(e^{j\omega})| = 1$ for all $\omega$（所有頻率振幅相同）</p>
+<p class="text-sm mb-2"><strong>典型形式</strong>：</p>
+<div class="fm">
+$$H_{ap}(z) = \frac{z^{-1} - a^*}{1 - az^{-1}}, \quad |a| < 1$$
+</div>
+<p class="text-sm mt-2">每對極點 $a$ 對應一個鏡像零點 $1/a^*$（單位圓外）。極點 + 鏡像零點的組合恰好讓振幅響應永遠等於 1，但相位響應不為零——這就是全通濾波器只調整<strong>相位</strong>不改變<strong>振幅</strong>的原因。</p>
+
+<h4 class="font-bold text-sm mt-4 mb-2">最小相位系統 (Minimum-Phase System)</h4>
+<p class="text-sm mb-2"><strong>定義</strong>：所有零點和極點都在單位圓內 ($|z|<1$)</p>
+<p class="text-sm mb-2"><strong>關鍵性質</strong>：</p>
+<ul class="text-sm list-disc pl-6 space-y-1">
+<li>給定振幅響應 $|H(e^{j\omega})|$，最小相位是<strong>群延遲最小</strong>的因果實現</li>
+<li>有<strong>因果可逆</strong>（$1/H_{min}(z)$ 也是穩定因果）</li>
+<li>能量集中在訊號開頭（峰值時間最早）</li>
+</ul>
+
+<h4 class="font-bold text-sm mt-4 mb-2">最小相位 + 全通分解定理</h4>
+<div class="fm">
+<p class="text-sm font-bold">任何穩定因果系統 $H(z)$ 都可分解為：</p>
+$$H(z) = H_{min}(z) \cdot H_{ap}(z)$$
+<p class="text-sm mt-2">其中 $H_{min}$ 為最小相位、$H_{ap}$ 為全通。</p>
+</div>
+
+<details class="deriv my-3">
+<summary>展開：為什麼可以這樣分解？</summary>
+<div>
+<p>對 $H(z)$ 中每一個位於單位圓外的零點 $z_0$（$|z_0|>1$），把它「鏡像」到單位圓內的 $1/z_0^*$，並補一個全通因子來抵消差異：</p>
+$$\frac{1 - z_0 z^{-1}}{1} = \underbrace{\frac{1 - z_0^{-1*}z^{-1}}{1}}_{\text{minimum phase}} \cdot \underbrace{\frac{z^{-1} - z_0^{*}}{1 - z_0^{-1*}z^{-1}}}_{\text{all-pass}}$$
+<p>展開驗證：右邊兩項相乘等於左邊。所以原本「外面的零點」變成「裡面的零點 + 全通旋轉」。$\blacksquare$</p>
+</div>
+</details>
+
+<div class="tip mt-3">
+<p class="text-sm"><strong>應用：</strong></p>
+<ul class="text-xs space-y-1 mt-1 list-disc pl-5">
+<li><strong>濾波器逆運算</strong>：要做 $H^{-1}(z)$ 必須先把非最小相位部分分離</li>
+<li><strong>相位等化</strong>：在原濾波器後串接全通濾波器，可改變相位響應而不影響振幅</li>
+<li><strong>頻譜整形</strong>：所有等振幅但不同相位的系統都共用同一個 $|H|$，差別在 all-pass 部分</li>
+<li><strong>系統識別</strong>：給定 $|H|$，最小相位是「最簡」的因果實現</li>
+</ul>
+</div>
 </div>
 
 <!-- References -->
@@ -10831,6 +11363,29 @@ def wiener_filter(noisy, clean_psd, noise_psd):
       <li>3GPP TS 38.211, "NR; Physical channels and modulation," Release 17.</li>
     </ol>
   </div>
+
+<div class="card">
+<h3 class="font-bold text-base mb-3">📓 Python 範例與練習</h3>
+<p class="text-sm">本平台所有 Python 程式碼可以複製到你的 Jupyter Notebook 直接執行。建議的環境配置：</p>
+<div class="code">
+# 安裝必要套件
+pip install numpy scipy matplotlib jupyter
+
+# 進階套件（可選）
+pip install librosa        # 音訊處理
+pip install wfdb           # PhysioNet 資料讀取
+pip install soundfile      # 音檔 I/O
+pip install pyfftw         # 更快的 FFT
+</div>
+<p class="text-sm mt-3">推薦的學習方式：</p>
+<ol class="list-decimal pl-6 text-sm space-y-1">
+<li>讀完每個章節的理論與範例</li>
+<li>複製 Python 程式碼到 Jupyter，執行並觀察輸出</li>
+<li>修改參數觀察行為變化（嘗試極端值！）</li>
+<li>從<a onclick="go('home')" class="text-cyan-600 hover:underline cursor-pointer">首頁的真實資料集</a>下載資料替換合成訊號</li>
+<li>記錄你的觀察和疑問</li>
+</ol>
+</div>
 </section>
 
 </div>

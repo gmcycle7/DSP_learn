@@ -373,6 +373,57 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
   <div class="card text-center"><div class="text-2xl mb-2">🔬</div><h3 class="font-bold text-sm mb-1">Advanced Theory</h3><p class="text-xs text-slate-500">MUSIC · Wavelets · Wigner-Ville · EMD</p></div>
   <div class="card text-center"><div class="text-2xl mb-2">⚡</div><h3 class="font-bold text-sm mb-1">Four Major Applications</h3><p class="text-xs text-slate-500">Communications OFDM · Radar · Imaging · Biomedical</p></div>
 </div>
+
+<div class="card">
+<h2 class="text-xl font-bold mb-3">📊 Real-World Datasets</h2>
+<p class="text-sm text-slate-500 mb-3">Don't limit yourself to synthetic sine-wave practice. Below are public datasets you can download to run a complete DSP pipeline on real signals.</p>
+
+<div class="grid md:grid-cols-2 gap-4">
+<div class="p-3 rounded-lg bg-cyan-50 dark:bg-cyan-900/20">
+<h3 class="font-bold text-cyan-700 dark:text-cyan-400 text-sm mb-2">🫀 Biomedical Signals</h3>
+<ul class="text-xs space-y-1">
+<li><strong>PhysioNet</strong> (physionet.org): clinical ECG, EEG, EMG, PPG data</li>
+<li><strong>MIT-BIH Arrhythmia DB</strong>: classic ECG arrhythmia dataset</li>
+<li><strong>Sleep-EDF</strong>: EEG sleep staging</li>
+<li><strong>Suitable for</strong>: m6-1 Hilbert (R-peak detection), m7-1 STFT (EEG bands), m9-9 EEG/ECG</li>
+</ul>
+</div>
+
+<div class="p-3 rounded-lg bg-emerald-50 dark:bg-emerald-900/20">
+<h3 class="font-bold text-emerald-700 dark:text-emerald-400 text-sm mb-2">🔊 Audio</h3>
+<ul class="text-xs space-y-1">
+<li><strong>ESC-50</strong>: 50 classes of environmental sounds (5 sec each)</li>
+<li><strong>UrbanSound8K</strong>: urban sound classification</li>
+<li><strong>LibriSpeech</strong>: 1000 hours of speech corpus</li>
+<li><strong>Suitable for</strong>: m3b-1 windowing, m7-1 STFT, m4-* filter design</li>
+</ul>
+</div>
+
+<div class="p-3 rounded-lg bg-violet-50 dark:bg-violet-900/20">
+<h3 class="font-bold text-violet-700 dark:text-violet-400 text-sm mb-2">⚙ Mechanical Vibration</h3>
+<ul class="text-xs space-y-1">
+<li><strong>Case Western Bearing Data</strong>: classic bearing fault dataset</li>
+<li><strong>NASA IMS Bearing Dataset</strong>: run-to-failure bearing data</li>
+<li><strong>MFPT Bearing Fault</strong>: multiple rotation-speed conditions</li>
+<li><strong>Suitable for</strong>: m6-2 envelope spectrum, m9-10 vibration analysis, Phase 1 BPFO computation</li>
+</ul>
+</div>
+
+<div class="p-3 rounded-lg bg-rose-50 dark:bg-rose-900/20">
+<h3 class="font-bold text-rose-700 dark:text-rose-400 text-sm mb-2">📡 Communications / Radar</h3>
+<ul class="text-xs space-y-1">
+<li><strong>RadioML 2018</strong>: IQ samples across many modulation schemes</li>
+<li><strong>FMCW Radar Dataset</strong>: autonomous-driving radar data</li>
+<li><strong>GNU Radio Tutorials</strong>: SDR examples</li>
+<li><strong>Suitable for</strong>: m9-6 OFDM, m9-7 radar, communications receivers</li>
+</ul>
+</div>
+</div>
+
+<div class="tip mt-4">
+<p class="text-sm"><strong>💡 Getting started:</strong> The easiest entry point is PhysioNet ECG — the data is clean, has clear features (R-peaks), and lets you practice the full pipeline from m6-1 Hilbert all the way to m9-9.</p>
+</div>
+</div>
 </section>
 
 <!-- ============ PART I: MATHEMATICAL FOUNDATIONS ============ -->
@@ -1570,6 +1621,27 @@ $$\mathbf{X} = \mathbf{W}_N\mathbf{x}, \quad [\mathbf{W}_N]_{kn} = W_N^{kn}$$
 <p class="text-sm text-center mt-2">$\frac{1}{\sqrt{N}}\mathbf{W}_N$ is a unitary matrix: $\mathbf{W}_N^H\mathbf{W}_N = N\mathbf{I}$</p>
 </div>
 <p class="mt-3"><strong>Inverse DFT:</strong> $x[n] = \frac{1}{N}\sum_{k=0}^{N-1}X[k]\,W_N^{-kn}$, i.e., $\mathbf{x} = \frac{1}{N}\mathbf{W}_N^H\mathbf{X}$.</p>
+
+<details class="deriv">
+<summary>Expand derivation: Conjugate symmetry of the DFT for real signals</summary>
+<div>
+<p><strong>Theorem:</strong> If $x[n]$ is a real-valued sequence, its DFT satisfies $X[N-k] = X^*[k]$ (conjugate symmetry).</p>
+<p><strong>Derivation:</strong></p>
+$$X[N-k] = \sum_{n=0}^{N-1} x[n]\, e^{-j2\pi(N-k)n/N}$$
+$$= \sum_{n=0}^{N-1} x[n]\, e^{-j2\pi n}\, e^{j2\pi kn/N}$$
+<p>Since $e^{-j2\pi n} = 1$ (for any integer $n$):</p>
+$$= \sum_{n=0}^{N-1} x[n]\, e^{j2\pi kn/N}$$
+<p>Because $x[n]$ is real, $x[n] = x^*[n]$:</p>
+$$= \sum_{n=0}^{N-1} x^*[n]\, e^{j2\pi kn/N} = \left(\sum_{n=0}^{N-1} x[n]\, e^{-j2\pi kn/N}\right)^* = X^*[k] \quad\blacksquare$$
+<p class="mt-3"><strong>Practical implications:</strong></p>
+<ul class="list-disc pl-6 text-sm">
+<li>The DFT of a real signal is fully determined by the first half $X[0], X[1], \ldots, X[N/2]$</li>
+<li>Computation and storage can be cut in half (real-FFT algorithms)</li>
+<li>$X[0]$ is real (DC), and $X[N/2]$ is also real (Nyquist bin)</li>
+<li>$|X[k]| = |X[N-k]|$ (magnitude spectrum is symmetric); $\angle X[k] = -\angle X[N-k]$ (phase spectrum is antisymmetric)</li>
+</ul>
+</div>
+</details>
 </div>
 
 <div class="card">
@@ -1658,6 +1730,37 @@ $$f_k = \frac{k \cdot f_s}{N}, \quad k = 0, 1, \ldots, N-1$$
 <tr><td class="text-left text-sm">Prevents circular convolution aliasing ($N \geq M+L-1$)</td><td class="text-left text-sm">Reduce noise</td></tr>
 </tbody>
 </table>
+
+<h3 class="font-bold mt-4 mb-2">Python Example: Compute FFT and Plot Spectrum</h3>
+<div class="code"># Python: compute FFT and plot spectrum
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Generate test signal (50 Hz + 120 Hz)
+fs = 1000           # sampling rate 1 kHz
+T = 1.0             # duration 1 second
+N = int(fs * T)     # 1000 samples
+t = np.arange(N) / fs
+x = np.sin(2*np.pi*50*t) + 0.5*np.sin(2*np.pi*120*t)
+
+# Compute FFT
+X = np.fft.fft(x)
+freqs = np.fft.fftfreq(N, d=1/fs)
+
+# Take single-sided spectrum (for real signals)
+half = N // 2
+mag = np.abs(X[:half]) * 2/N    # multiply by 2 to compensate for symmetric energy
+mag[0] /= 2                       # DC does not need the factor of 2
+phase = np.angle(X[:half])
+
+# Plot
+fig, axes = plt.subplots(3, 1, figsize=(10, 8))
+axes[0].plot(t[:200], x[:200]); axes[0].set_title('Time domain')
+axes[1].plot(freqs[:half], mag); axes[1].set_xlim(0, 200)
+axes[1].set_title('Magnitude spectrum |X[k]|'); axes[1].grid()
+axes[2].plot(freqs[:half], phase); axes[2].set_xlim(0, 200)
+axes[2].set_title('Phase spectrum angle(X[k])')
+plt.tight_layout(); plt.show()</div>
 </div>
 
 <!-- Applications -->
@@ -1716,6 +1819,105 @@ $$f_k = \frac{k \cdot f_s}{N}, \quad k = 0, 1, \ldots, N-1$$
   <div><label class="text-xs">Zero-padding factor:</label><select id="p24zp" class="border rounded px-2 py-1 text-xs dark:bg-slate-700 dark:border-slate-600" onchange="updateP24()"><option value="1">1x (no padding)</option><option value="2">2x</option><option value="4" selected>4x</option><option value="8">8x</option><option value="16">16x</option></select></div>
 </div>
 <div id="plotP24" class="plot" style="text-align:center;color:#94a3b8;font-size:.875rem;padding:2rem 0;">Chart will display automatically after adjusting parameters above</div>
+</div>
+
+<div class="card">
+<h3 class="font-bold text-base mb-3">Decimation-in-Time vs Decimation-in-Frequency</h3>
+<p class="text-sm text-slate-500 mb-3">The Cooley-Tukey FFT has two equivalent but distinct decompositions. This platform demonstrates DIT (Decimation-in-Time).</p>
+
+<div class="grid md:grid-cols-2 gap-4">
+<div>
+<h4 class="font-bold text-sm mb-2">DIT — Decimation in Time</h4>
+<p class="text-xs mb-2">Split the <strong>input</strong> sequence into even and odd halves:</p>
+$$X[k] = \sum_{r=0}^{N/2-1}x[2r]W_{N/2}^{rk} + W_N^k\sum_{r=0}^{N/2-1}x[2r+1]W_{N/2}^{rk}$$
+<ul class="text-xs list-disc pl-5 mt-2 space-y-1">
+<li>Input requires <strong>bit-reversal ordering</strong></li>
+<li>Output is in natural order</li>
+<li>Butterfly structure: multiply then add</li>
+</ul>
+</div>
+
+<div>
+<h4 class="font-bold text-sm mb-2">DIF — Decimation in Frequency</h4>
+<p class="text-xs mb-2">Split the <strong>output</strong> into even and odd groups:</p>
+$$X[2k] = \sum_{n=0}^{N/2-1}\left[x[n]+x[n+N/2]\right]W_{N/2}^{nk}$$
+$$X[2k+1] = \sum_{n=0}^{N/2-1}\left[x[n]-x[n+N/2]\right]W_N^n W_{N/2}^{nk}$$
+<ul class="text-xs list-disc pl-5 mt-2 space-y-1">
+<li>Input is in natural order</li>
+<li>Output requires <strong>bit-reversal ordering</strong></li>
+<li>Butterfly structure: add then multiply</li>
+</ul>
+</div>
+</div>
+
+<div class="tip mt-3">
+<p class="text-sm"><strong>Practical choice:</strong></p>
+<ul class="text-xs space-y-1 mt-1 list-disc pl-5">
+<li>Both have exactly the same operation count: $\frac{N}{2}\log_2 N$ complex multiplications</li>
+<li>Most modern FFT libraries (FFTW, MKL) support both</li>
+<li>The choice is usually dictated by "how upstream/downstream stages order their data," to avoid extra bit-reversal</li>
+<li>DIT is more intuitive (from the butterfly-diagram perspective); DIF is its transpose</li>
+</ul>
+</div>
+</div>
+
+<div class="card">
+<h3 class="font-bold text-base mb-3">⚠ Common FFT Implementation Pitfalls</h3>
+<p class="text-sm text-slate-500 mb-3">These are the traps engineers most frequently fall into when actually using numpy.fft.fft or scipy.fft.</p>
+
+<div class="space-y-3">
+
+<div class="warn">
+<p class="text-sm font-bold">Pitfall 1: Forgetting Normalization</p>
+<p class="text-xs mt-1">numpy's <code>fft</code> performs no normalization by default. For an N-point amplitude spectrum, multiply by 2/N (single-sided):</p>
+<div class="code mt-2">
+X = np.fft.fft(x)
+half = N // 2
+mag = np.abs(X[:half]) * 2 / N    # correct
+mag[0] /= 2                        # DC should not be doubled
+mag[-1] /= 2                       # Nyquist should not be doubled (if N is even)
+</div>
+</div>
+
+<div class="warn">
+<p class="text-sm font-bold">Pitfall 2: Misusing fftfreq</p>
+<p class="text-xs mt-1">The physical frequency corresponding to index k is $f_k = k \cdot f_s / N$, not $k$ itself:</p>
+<div class="code mt-2">
+freqs = np.fft.fftfreq(N, d=1/fs)   # correct: handles negative frequencies automatically
+# Do NOT write freqs = np.arange(N) * fs / N  (wrong — the positive/negative symmetry breaks)
+</div>
+</div>
+
+<div class="warn">
+<p class="text-sm font-bold">Pitfall 3: Spectral Leakage</p>
+<p class="text-xs mt-1">If the signal frequency is not an integer multiple of $f_s/N$ (i.e., not centered in a bin), energy leaks into neighboring bins. Always apply a window:</p>
+<div class="code mt-2">
+from scipy.signal import windows
+win = windows.hann(N)
+X = np.fft.fft(x * win)             # apply Hann window
+mag = np.abs(X[:N//2]) * 2 / np.sum(win)  # normalize by the window sum
+</div>
+</div>
+
+<div class="warn">
+<p class="text-sm font-bold">Pitfall 4: Zero-Padding ≠ Higher Resolution</p>
+<p class="text-xs mt-1">Zero-padding only makes DFT bins denser (an interpolation effect) — it does not increase the true frequency resolution. True resolution is determined by the observation time $T$: $\Delta f = 1/T$.</p>
+</div>
+
+<div class="warn">
+<p class="text-sm font-bold">Pitfall 5: DC Drift</p>
+<p class="text-xs mt-1">If the signal has a DC offset, the FFT will show a huge peak at k=0 that may mask low-frequency components you care about. Remove the mean first:</p>
+<div class="code mt-2">
+x = x - np.mean(x)    # remove DC
+</div>
+</div>
+
+<div class="warn">
+<p class="text-sm font-bold">Pitfall 6: Complex vs Real FFT</p>
+<p class="text-xs mt-1">For real-valued signals, use <code>np.fft.rfft()</code> — it's roughly 2x faster than <code>fft()</code> (only computes half) thanks to conjugate symmetry.</p>
+</div>
+
+</div>
 </div>
 <div class="ch-nav"><a onclick="go('m3a-1')">← 2.3 DTFT</a><a onclick="go('m2b-4')">2.5 Z-Transform →</a></div>
 </section>
@@ -2301,6 +2503,41 @@ $$\text{Var}[\hat{S}(\omega)] \approx S^2(\omega) \quad (\text{does not decrease
 </ul>
 </div>
 <div class="tip mt-3"><p><strong>Kaiser $\beta$ rules of thumb:</strong> $\beta = 0$ → rectangular window; $\beta \approx 5$ → approximately Hamming; $\beta \approx 6$ → approximately Hann; $\beta \approx 8.5$ → approximately Blackman; $\beta > 10$ → exceeds Blackman's dynamic range.</p></div>
+
+<h3 class="font-bold mt-4 mb-2">Python Example: Comparing Five Window Functions</h3>
+<div class="code"># Python: compare 5 window functions
+import numpy as np
+import matplotlib.pyplot as plt
+from scipy.signal import windows
+
+N = 64
+windows_dict = {
+    'Rectangular': np.ones(N),
+    'Hann': windows.hann(N),
+    'Hamming': windows.hamming(N),
+    'Blackman': windows.blackman(N),
+    'Kaiser beta=8': windows.kaiser(N, 8)
+}
+
+fig, axes = plt.subplots(2, 1, figsize=(10, 8))
+
+# Time domain
+for name, w in windows_dict.items():
+    axes[0].plot(w, label=name, linewidth=1.5)
+axes[0].legend(); axes[0].set_title('Time domain: window shapes')
+axes[0].set_xlabel('n'); axes[0].grid()
+
+# Frequency domain (zero-pad to 8N for denser spectrum)
+Nfft = 8 * N
+freqs = np.linspace(-0.5, 0.5, Nfft)
+for name, w in windows_dict.items():
+    W = np.fft.fftshift(np.fft.fft(w, Nfft))
+    W_db = 20 * np.log10(np.abs(W) / np.max(np.abs(W)) + 1e-12)
+    axes[1].plot(freqs, W_db, label=name, linewidth=1)
+axes[1].set_ylim(-100, 5); axes[1].legend()
+axes[1].set_title('Frequency domain: magnitude response (dB)')
+axes[1].set_xlabel('Normalized frequency'); axes[1].grid()
+plt.tight_layout(); plt.show()</div>
 </div>
 
 <!-- Application scenarios -->
@@ -2665,6 +2902,36 @@ $$a_i^{(m)} = a_i^{(m-1)} + k_m\,a_{m-i}^{(m-1)}, \quad i = 1, \ldots, m-1$$
 $$\sigma_m^2 = (1 - |k_m|^2)\,\sigma_{m-1}^2$$
 <p class="mt-2"><strong>Stability guarantee:</strong> If $|k_m| < 1$ holds for all $m$ (guaranteed by the autocorrelation method), then the AR model is stable (all poles inside the unit circle).</p>
 <p class="mt-2"><strong>At each step, $\sigma_m^2$ is the prediction error power of AR($m$)</strong> — decreasing as $m$ increases. When adding one more order causes $\sigma_m^2$ to barely decrease, that is an indicator of the optimal order. $\;\blacksquare$</p>
+</div>
+</details>
+</div>
+
+<div class="card">
+<h2 class="text-lg font-bold mb-3">Order Selection: Information-Theoretic Foundation of AIC and BIC</h2>
+<details class="deriv">
+<summary>Expand derivation: Information-theoretic foundation of AIC and BIC</summary>
+<div>
+<p>AIC and BIC are not arbitrary formulas — they come from the statistical principle of "balancing goodness of fit against model complexity."</p>
+<p><strong>AIC (Akaike Information Criterion, 1974):</strong></p>
+$$\text{AIC}(p) = -2\ln L(\hat{\theta}_p) + 2p$$
+<p>where $L$ is the likelihood and $p$ is the number of parameters.</p>
+<p><strong>Origin:</strong> Akaike proved that this formula is an unbiased estimator of the KL divergence (Kullback-Leibler divergence):</p>
+$$\text{AIC} \approx 2N \cdot D_{KL}(\text{true distribution} \| \text{model})$$
+<p>The first term $-2\ln L$ measures "how well the model fits the data" (smaller is better).</p>
+<p>The second term $2p$ is the "complexity penalty" — each additional parameter costs 2 points, preventing overfitting.</p>
+<p>For an AR(p) model with Gaussian residuals, it simplifies to $\text{AIC}(p) = N\ln\hat{\sigma}_p^2 + 2p$.</p>
+
+<p class="mt-3"><strong>BIC (Bayesian Information Criterion, 1978):</strong></p>
+$$\text{BIC}(p) = -2\ln L(\hat{\theta}_p) + p\ln N$$
+<p>The second term is $p\ln N$ rather than $2p$.</p>
+<p><strong>Origin:</strong> BIC comes from Bayes' theorem — it is an approximation of the negative log of the posterior probability $P(\text{model}|\text{data})$.</p>
+<p>As $N \to \infty$, $\ln N$ grows larger than $2$, so BIC imposes a stronger complexity penalty and tends to choose simpler models.</p>
+
+<p class="mt-3"><strong>Which one to choose?</strong></p>
+<table class="dt mt-2"><thead><tr><th>Criterion</th><th>Characteristics</th><th>Suitable for</th></tr></thead><tbody>
+<tr><td>AIC</td><td>Tends to pick more complex models</td><td>Prediction-focused tasks (capture detail)</td></tr>
+<tr><td>BIC</td><td>Tends to pick simpler models; asymptotically consistent</td><td>Explanation-focused tasks (find the true model order)</td></tr>
+</tbody></table>
 </div>
 </details>
 </div>
@@ -3264,6 +3531,42 @@ function envelope(x) {
 <li>This is the principle of AM envelope detection!</li>
 </ul>
 </div>
+
+<h3 class="font-bold mt-4 mb-2">Python Example: Extracting the Envelope with scipy.signal.hilbert</h3>
+<div class="code"># Python: use scipy.signal.hilbert to extract signal envelope
+import numpy as np
+import scipy.signal as sig
+import matplotlib.pyplot as plt
+
+# Generate AM signal: 1 kHz carrier, 50 Hz envelope
+fs = 10000
+t = np.arange(0, 0.2, 1/fs)
+carrier = np.cos(2*np.pi*1000*t)
+envelope_true = 1 + 0.5*np.sin(2*np.pi*50*t)
+am_signal = envelope_true * carrier
+
+# Hilbert transform -> analytic signal z[n] = x[n] + j*x_hat[n]
+analytic = sig.hilbert(am_signal)
+
+# Extract envelope and instantaneous phase/frequency
+envelope = np.abs(analytic)
+inst_phase = np.unwrap(np.angle(analytic))
+inst_freq = np.diff(inst_phase) / (2*np.pi) * fs
+
+# Plot
+fig, axes = plt.subplots(3, 1, figsize=(10, 9))
+axes[0].plot(t, am_signal, 'b', linewidth=0.5, label='AM signal')
+axes[0].plot(t, envelope, 'r', linewidth=2, label='Hilbert envelope')
+axes[0].plot(t, envelope_true, 'g--', linewidth=1.5, label='True envelope')
+axes[0].legend(); axes[0].set_title('AM signal + envelope detection')
+
+axes[1].plot(t, envelope, 'r')
+axes[1].set_title('Extracted envelope (should show 50 Hz sinusoid)')
+
+axes[2].plot(t[1:], inst_freq, 'k')
+axes[2].set_title(f'Instantaneous frequency (should be near carrier 1000 Hz)')
+axes[2].set_xlabel('Time (s)'); axes[2].set_ylabel('Hz')
+plt.tight_layout(); plt.show()</div>
 </div>
 
 <!-- Application scenarios -->
@@ -3834,6 +4137,45 @@ $$\Delta t \cdot \Delta f \geq \frac{1}{4\pi}$$
 </tbody>
 </table>
 </div>
+
+<h3 class="font-bold mt-4 mb-2">Python Example: Computing a Spectrogram with scipy.signal.stft</h3>
+<div class="code"># Python: use scipy.signal.stft to compute a spectrogram
+import numpy as np
+import scipy.signal as sig
+import matplotlib.pyplot as plt
+
+# Generate chirp signal: frequency sweeps linearly from 100 Hz to 1500 Hz
+fs = 4000
+t = np.arange(0, 2, 1/fs)
+x = sig.chirp(t, f0=100, f1=1500, t1=2, method='linear')
+
+# Compute STFT
+# nperseg = window length, noverlap = number of overlapping samples
+f, t_stft, Zxx = sig.stft(x, fs=fs, nperseg=256, noverlap=192)
+
+# Compute frequency and time resolution
+df = fs / 256
+dt = (256 - 192) / fs  # hop size in seconds
+print(f"Frequency resolution df = {df:.1f} Hz")
+print(f"Time resolution dt = {dt*1000:.1f} ms")
+
+# Plot spectrogram
+fig, axes = plt.subplots(2, 1, figsize=(10, 8))
+axes[0].plot(t, x, linewidth=0.5)
+axes[0].set_title('Time domain chirp signal')
+axes[0].set_xlabel('Time (s)')
+
+axes[1].pcolormesh(t_stft, f, 20*np.log10(np.abs(Zxx) + 1e-12),
+                   cmap='viridis', shading='auto')
+axes[1].set_ylim(0, 2000)
+axes[1].set_ylabel('Frequency (Hz)'); axes[1].set_xlabel('Time (s)')
+axes[1].set_title('Spectrogram (dB)')
+plt.colorbar(axes[1].collections[0], ax=axes[1])
+plt.tight_layout(); plt.show()
+
+# Inverse transform to verify reconstruction
+_, x_recon = sig.istft(Zxx, fs=fs, nperseg=256, noverlap=192)
+print(f"Reconstruction error: {np.max(np.abs(x - x_recon[:len(x)])):.2e}")</div>
 </div>
 
 <!-- Interactive -->
@@ -5749,6 +6091,45 @@ for n in range(-36, 37):  // -M/2 to M/2
     </tbody>
   </table>
 
+  <h4>Python Example: Designing an FIR Low-Pass Filter with scipy.signal.firwin</h4>
+  <div class="code"># Python: design an FIR low-pass filter with scipy.signal.firwin
+import numpy as np
+import scipy.signal as sig
+import matplotlib.pyplot as plt
+
+# Specifications
+fs = 8000           # sampling rate
+fc = 1000           # cutoff frequency
+Astop = 60          # stopband attenuation (dB)
+trans_width = 200   # transition width
+
+# Kaiser window automatically selects beta and N
+N, beta = sig.kaiserord(Astop, trans_width / (fs/2))
+print(f"Filter order N = {N}, Kaiser beta = {beta:.2f}")
+
+# Design filter
+h = sig.firwin(N, fc, window=('kaiser', beta), fs=fs)
+
+# Frequency response
+w, H = sig.freqz(h, fs=fs)
+H_db = 20 * np.log10(np.abs(H) + 1e-12)
+
+# Plot
+fig, axes = plt.subplots(2, 1, figsize=(10, 7))
+axes[0].stem(h, basefmt=' '); axes[0].set_title(f'Impulse response h[n] (N={N})')
+axes[0].set_xlabel('n')
+axes[1].plot(w, H_db); axes[1].axhline(-Astop, color='r', linestyle='--', label=f'-{Astop} dB')
+axes[1].axvline(fc, color='g', linestyle='--', label=f'fc = {fc} Hz')
+axes[1].set_xlabel('Hz'); axes[1].set_ylabel('dB')
+axes[1].set_title('Frequency response'); axes[1].legend(); axes[1].grid()
+axes[1].set_ylim(-100, 5)
+plt.tight_layout(); plt.show()
+
+# Apply to a signal
+x = np.random.randn(10000)  # white noise
+y = sig.lfilter(h, 1, x)
+print(f"Input power: {np.var(x):.3f}, Output power: {np.var(y):.3f}")</div>
+
   <!-- Interactive element -->
   <div class="flex flex-col gap-3 mb-4">
     <div class="flex items-center gap-3">
@@ -5841,6 +6222,109 @@ for n in range(-36, 37):  // -M/2 to M/2
   </div>
 </div>
 </div>
+<div class="card">
+<h3 class="font-bold text-base mb-3">The Four Types of Linear-Phase FIR Filters</h3>
+<p class="text-sm text-slate-500 mb-3">A linear-phase FIR must satisfy a symmetry or antisymmetry condition $h[n] = \pm h[N-1-n]$. Depending on the symmetry type and the parity of the length, they fall into exactly four classes, each with distinct restrictions.</p>
+
+<table class="dt">
+<thead><tr><th>Type</th><th>Symmetry</th><th>Length N</th><th>Properties</th><th>Cannot Realize</th></tr></thead>
+<tbody>
+<tr>
+<td><strong>Type I</strong></td>
+<td>Symmetric $h[n]=h[N-1-n]$</td>
+<td>Odd (N odd)</td>
+<td>No restriction; most general</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>Type II</strong></td>
+<td>Symmetric</td>
+<td>Even (N even)</td>
+<td>$H(e^{j\pi})=0$</td>
+<td>High-pass, band-stop</td>
+</tr>
+<tr>
+<td><strong>Type III</strong></td>
+<td>Antisymmetric $h[n]=-h[N-1-n]$</td>
+<td>Odd</td>
+<td>$H(e^{j0})=0$ and $H(e^{j\pi})=0$</td>
+<td>Low-pass, high-pass</td>
+</tr>
+<tr>
+<td><strong>Type IV</strong></td>
+<td>Antisymmetric</td>
+<td>Even</td>
+<td>$H(e^{j0})=0$</td>
+<td>Low-pass, band-stop</td>
+</tr>
+</tbody>
+</table>
+
+<details class="deriv my-3">
+<summary>Derivation: Why do these restrictions exist?</summary>
+<div>
+<p><strong>Why does $H(\pi)=0$ for Type II?</strong></p>
+<p>For Type II, $N$ is even and $h[n]=h[N-1-n]$. Substituting into the DTFT:</p>
+$$H(e^{j\pi}) = \sum_{n=0}^{N-1}h[n](-1)^n$$
+<p>Pair the symmetric terms: $h[k]\cdot(-1)^k + h[N-1-k]\cdot(-1)^{N-1-k} = h[k]\cdot[(-1)^k + (-1)^{N-1-k}]$</p>
+<p>When $N$ is even, $N-1$ is odd, so $(-1)^{N-1-k} = -(-1)^k$, and each pair sums to zero. $\blacksquare$</p>
+
+<p class="mt-3"><strong>Why does $H(0)=0$ for Type III/IV?</strong></p>
+<p>Antisymmetry $h[n]=-h[N-1-n]$ implies that the coefficient sum $\sum h[n] = 0$ (pairs cancel).</p>
+<p>Since $H(e^{j0}) = \sum h[n]$, it must equal zero. $\blacksquare$</p>
+</div>
+</details>
+
+<div class="tip mt-3">
+<p class="text-sm"><strong>Practical choices:</strong></p>
+<ul class="text-xs space-y-1 mt-1 list-disc pl-5">
+<li><strong>Low-pass / band-pass</strong> → use Type I</li>
+<li><strong>When odd symmetry is required (e.g., Hilbert transformers, differentiators)</strong> → use Type III or IV</li>
+<li><strong>Avoid</strong>: designing a high-pass with Type II forces a zero at Nyquist, making the specification impossible to meet</li>
+<li>Most design tools (scipy.signal.firwin) automatically select the correct type</li>
+</ul>
+</div>
+</div>
+
+<div class="card">
+<h3 class="font-bold text-base mb-3">Group Delay Analysis</h3>
+<p class="text-sm text-slate-500 mb-3">The real meaning of linear phase is not "phase = 0" but "all frequency components are delayed by the same amount of time when passing through the filter" — this is quantified by the group delay.</p>
+
+<h4 class="font-bold text-sm mt-3 mb-2">Definition</h4>
+<div class="fm">
+$$\tau_g(\omega) = -\frac{d\angle H(e^{j\omega})}{d\omega}$$
+<p class="text-sm mt-2">Group delay is the negative derivative of the phase response with respect to $\omega$, measured in <strong>samples</strong>. It tells you how much the envelope of a signal near frequency $\omega$ is delayed.</p>
+</div>
+
+<h4 class="font-bold text-sm mt-4 mb-2">Why does it matter?</h4>
+<ul class="text-sm list-disc pl-6 space-y-1">
+<li><strong>Linear phase</strong>: $\tau_g$ is constant → all frequencies delayed equally → signal shape preserved</li>
+<li><strong>Nonlinear phase</strong>: $\tau_g$ varies with frequency → different frequencies delayed differently → waveform distortion (even with ideal magnitude response)</li>
+<li>Audio and measurement applications are particularly sensitive to phase distortion — for example, ECG needs to preserve QRS waveforms</li>
+</ul>
+
+<h4 class="font-bold text-sm mt-4 mb-2">FIR vs IIR Comparison</h4>
+<table class="dt">
+<thead><tr><th>Type</th><th>Group Delay</th><th>Waveform Fidelity</th></tr></thead>
+<tbody>
+<tr><td>Linear-phase FIR</td><td>Constant $(N-1)/2$</td><td>Perfect (pure delay)</td></tr>
+<tr><td>Butterworth IIR</td><td>Non-constant, peaks at transition band</td><td>Distorted</td></tr>
+<tr><td>Chebyshev I IIR</td><td>Severely varying in transition band</td><td>Severely distorted</td></tr>
+<tr><td>Bessel IIR</td><td>Nearly constant within passband</td><td>Good (optimized for phase)</td></tr>
+</tbody></table>
+
+<div class="tip mt-3">
+<p class="text-sm"><strong>Practical applications:</strong></p>
+<ul class="text-xs space-y-1 mt-1 list-disc pl-5">
+<li><strong>Audio processing</strong>: choose FIR or Bessel; avoid the phase distortion of Chebyshev/Elliptic</li>
+<li><strong>ECG/EEG</strong>: must use linear-phase FIR (to preserve QRS/spike waveforms)</li>
+<li><strong>Communications receivers</strong>: can use nonlinear-phase IIR (compensated later by an equalizer)</li>
+<li><strong>Real-time forward-only</strong>: must be causal → IIR cannot achieve perfect linear phase</li>
+<li><strong>Offline processing</strong>: can use filtfilt (forward-backward filtering) to achieve zero phase</li>
+</ul>
+</div>
+</div>
+
 <div class="ch-nav"><a onclick="go('m9a-1')">← 6.3 OLA/OLS</a><a onclick="go('m9b-1')">6.5 2D FFT →</a></div>
 
 </section>
@@ -8193,6 +8677,54 @@ w, h = sig.freqz(b, a, fs=fs)
 
 <div class="plot" id="plotM4b1" style="width:100%; height:400px;"></div>
 <p class="text-xs text-slate-500 mt-1">Observe: Butterworth is smooth but rolls off slowly; Elliptic is the steepest but has ripple. Adjust the order to see convergence speed differences.</p>
+</div>
+
+<div class="card">
+<h3 class="font-bold text-base mb-3">All-Pass Filters and Minimum-Phase Decomposition</h3>
+<p class="text-sm text-slate-500 mb-3">Any stable causal system can be decomposed as "minimum-phase $\times$ all-pass" — this is a key theoretical result for IIR design and phase equalization.</p>
+
+<h4 class="font-bold text-sm mt-3 mb-2">All-Pass Filter</h4>
+<p class="text-sm mb-2"><strong>Definition</strong>: $|H_{ap}(e^{j\omega})| = 1$ for all $\omega$ (the magnitude is the same at every frequency)</p>
+<p class="text-sm mb-2"><strong>Typical form</strong>:</p>
+<div class="fm">
+$$H_{ap}(z) = \frac{z^{-1} - a^*}{1 - az^{-1}}, \quad |a| < 1$$
+</div>
+<p class="text-sm mt-2">Each pole $a$ is paired with a mirror zero $1/a^*$ (outside the unit circle). The combination of pole plus mirror zero makes the magnitude response identically equal to 1, while the phase response is non-zero — this is why all-pass filters adjust <strong>phase</strong> without changing <strong>magnitude</strong>.</p>
+
+<h4 class="font-bold text-sm mt-4 mb-2">Minimum-Phase System</h4>
+<p class="text-sm mb-2"><strong>Definition</strong>: all zeros and poles lie inside the unit circle ($|z|<1$)</p>
+<p class="text-sm mb-2"><strong>Key properties</strong>:</p>
+<ul class="text-sm list-disc pl-6 space-y-1">
+<li>Given a magnitude response $|H(e^{j\omega})|$, the minimum-phase realization has the <strong>smallest group delay</strong> among all causal realizations</li>
+<li>It is <strong>causally invertible</strong> ($1/H_{min}(z)$ is also stable and causal)</li>
+<li>Energy is concentrated near the beginning of the signal (peak arrives earliest)</li>
+</ul>
+
+<h4 class="font-bold text-sm mt-4 mb-2">Minimum-Phase + All-Pass Decomposition Theorem</h4>
+<div class="fm">
+<p class="text-sm font-bold">Any stable causal system $H(z)$ can be decomposed as:</p>
+$$H(z) = H_{min}(z) \cdot H_{ap}(z)$$
+<p class="text-sm mt-2">where $H_{min}$ is minimum-phase and $H_{ap}$ is all-pass.</p>
+</div>
+
+<details class="deriv my-3">
+<summary>Derivation: Why does this decomposition work?</summary>
+<div>
+<p>For every zero $z_0$ of $H(z)$ that lies outside the unit circle ($|z_0|>1$), "reflect" it to $1/z_0^*$ inside the unit circle, and add an all-pass factor to compensate for the difference:</p>
+$$\frac{1 - z_0 z^{-1}}{1} = \underbrace{\frac{1 - z_0^{-1*}z^{-1}}{1}}_{\text{minimum phase}} \cdot \underbrace{\frac{z^{-1} - z_0^{*}}{1 - z_0^{-1*}z^{-1}}}_{\text{all-pass}}$$
+<p>Expanding verifies: the product of the two factors on the right equals the original left-hand side. Thus the original "outside zero" becomes "an inside zero plus an all-pass rotation." $\blacksquare$</p>
+</div>
+</details>
+
+<div class="tip mt-3">
+<p class="text-sm"><strong>Applications:</strong></p>
+<ul class="text-xs space-y-1 mt-1 list-disc pl-5">
+<li><strong>Filter inversion</strong>: to compute $H^{-1}(z)$, one must first separate the non-minimum-phase part</li>
+<li><strong>Phase equalization</strong>: cascading an all-pass filter after the original filter changes the phase response without affecting the magnitude</li>
+<li><strong>Spectral shaping</strong>: all systems with the same magnitude but different phases share the same $|H|$; they differ only in the all-pass component</li>
+<li><strong>System identification</strong>: given $|H|$, the minimum-phase realization is the "simplest" causal implementation</li>
+</ul>
+</div>
 </div>
 
 <!-- References -->
@@ -10661,6 +11193,29 @@ def wiener_filter(noisy, clean_psd, noise_psd):
       <li>3GPP TS 38.211, "NR; Physical channels and modulation," Release 17.</li>
     </ol>
   </div>
+
+<div class="card">
+<h3 class="font-bold text-base mb-3">📓 Python Examples & Exercises</h3>
+<p class="text-sm">All Python code on this platform can be copied directly into your Jupyter Notebook and run. Recommended environment setup:</p>
+<div class="code">
+# Install required packages
+pip install numpy scipy matplotlib jupyter
+
+# Advanced packages (optional)
+pip install librosa        # audio processing
+pip install wfdb           # PhysioNet data loading
+pip install soundfile      # audio file I/O
+pip install pyfftw         # faster FFT
+</div>
+<p class="text-sm mt-3">Recommended study workflow:</p>
+<ol class="list-decimal pl-6 text-sm space-y-1">
+<li>Read through each chapter's theory and examples</li>
+<li>Copy the Python code into Jupyter, run it, and observe the output</li>
+<li>Modify parameters and watch how the behavior changes (try extreme values!)</li>
+<li>Download data from the <a onclick="go('home')" class="text-cyan-600 hover:underline cursor-pointer">Real-World Datasets on the home page</a> to replace the synthetic signals</li>
+<li>Record your observations and open questions</li>
+</ol>
+</div>
 </section>
 
 </div>
