@@ -383,6 +383,17 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 <section id="sec-m1-1" class="sec hidden">
 <h1 class="text-2xl font-bold mb-1">1.1 Hilbert 空間 (Hilbert Space) 與 $L^2$ 理論</h1>
 <p class="text-slate-500 text-sm mb-2">傅立葉分析的數學框架 — 為什麼正弦波能構成「基底」？</p>
+<div class="warn">
+<p><strong>⚠ 數學先修建議</strong></p>
+<p class="text-sm mt-2">本模組（M1 數學基礎）需要以下背景知識：</p>
+<ul class="text-sm list-disc pl-6 mt-1 space-y-1">
+<li><strong>線性代數</strong>：內積、正交、特徵值、向量空間</li>
+<li><strong>實分析基礎</strong>：極限、連續、Cauchy 序列、級數收斂</li>
+<li><strong>複數運算</strong>：尤拉公式、複指數、複共軛</li>
+<li><strong>基礎拓樸</strong>（1.1, 1.3）：完備性、稠密、收斂模式</li>
+</ul>
+<p class="text-sm mt-2"><strong>如果你不熟悉這些</strong>：可以跳過 M1，直接從 <a onclick="go('m2a-1')" class="text-cyan-600 hover:underline cursor-pointer">M2A.1 傅立葉級數</a> 開始。M1 的內容是「為什麼可以做傅立葉分析」的嚴謹基礎，但即使不懂這些，你仍然可以正確使用所有工具。M1 適合想理解數學本質的進階學生。</p>
+</div>
 <div class="hist"><p><strong>為什麼要學這個？</strong> 因為「FFT 算出來的能量為什麼等於時域能量？」「為什麼正弦波可以當基底？」這些問題的答案都藏在 Hilbert 空間理論裡。它是整個傅立葉分析大廈的地基——你不需要每天想到它，但理解它會讓你對所有後續工具有更深的信心。</p></div>
 
 <div class="fm" style="border-left:4px solid #06b6d4;">
@@ -733,6 +744,15 @@ $$\boxed{\mathcal{F}\{\cos(\omega_0 t)\} = \pi[\delta(\omega - \omega_0) + \delt
     <details><summary class="text-cyan-600 cursor-pointer text-xs">顯示答案</summary><p class="mt-1 text-slate-600 dark:text-slate-400 text-xs">不是。它是一個泛函（分佈），定義為 δ[φ]=φ(0)。沒有任何經典函數能做到這件事。</p></details>
   </div>
 </div>
+</div>
+<div class="card">
+<h3 class="font-bold text-base mb-3">互動：δ 函數的極限直覺</h3>
+<p class="text-sm text-slate-500 mb-3">δ(t) 不是函數，但可以視為「越來越窄、越來越高」的 Gaussian 的極限：$\delta_\sigma(t) = \frac{1}{\sigma\sqrt{2\pi}}e^{-t^2/(2\sigma^2)}$。觀察當 $\sigma \to 0$ 時：高度趨近無窮，但面積永遠等於 1。</p>
+<div class="flex gap-3 mb-3">
+  <div><label class="text-xs font-medium">σ = <span id="m12sv">0.5</span></label><input type="range" id="m12s" min="0.05" max="1" value="0.5" step="0.05" class="w-48" oninput="updateM12()"></div>
+</div>
+<div id="plotM12" class="plot" style="min-height:300px"></div>
+<p id="m12info" class="text-xs text-center mt-2 font-mono"></p>
 </div>
 <div class="ch-nav"><a onclick="go('m1-1')">← 1.1 Hilbert 空間</a><a onclick="go('m1-3')">1.3 收斂理論 →</a></div>
 </section>
@@ -1342,6 +1362,23 @@ $$= \int f(\tau)e^{-j\omega\tau}\left[\int g(u)e^{-j\omega u}du\right]d\tau = F(
   </div>
 </div>
 </div>
+<div class="card">
+<h3 class="font-bold text-base mb-3">互動：常見 CTFT 轉換對</h3>
+<p class="text-sm text-slate-500 mb-3">選擇一個訊號，觀察其時域和頻域。試試不同寬度，理解時頻互逆關係。</p>
+<div class="flex gap-3 mb-3">
+  <div><label class="text-xs font-medium mr-2">訊號：</label>
+    <select id="m2a2sig" class="border rounded px-2 py-1 text-sm dark:bg-slate-700 dark:border-slate-600" onchange="updateM2a2()">
+      <option value="rect">矩形脈衝 rect(t/τ)</option>
+      <option value="gauss" selected>高斯脈衝 e^(-αt²)</option>
+      <option value="exp">單邊指數 e^(-at)u(t)</option>
+      <option value="cos">餘弦 cos(2πf₀t) [分佈]</option>
+    </select>
+  </div>
+  <div><label class="text-xs font-medium">寬度參數 = <span id="m2a2pv">1.0</span></label><input type="range" id="m2a2p" min="0.2" max="3" value="1" step="0.1" class="w-40" oninput="updateM2a2()"></div>
+</div>
+<div id="plotM2a2t" class="plot" style="min-height:280px"></div>
+<div id="plotM2a2f" class="plot" style="min-height:280px"></div>
+</div>
 <div class="ch-nav"><a onclick="go('m2a-1')">← 2.1 FS</a><a onclick="go('m3a-1')">2.3 DTFT →</a></div>
 </section>
 
@@ -1399,6 +1436,15 @@ $$x[n] = \frac{1}{2\pi}\int_{-\pi}^{\pi}X(e^{j\omega})\,e^{j\omega n}\,d\omega$$
 
 <h3 class="font-bold mt-5 mb-2">為什麼是 $2\pi$ 週期？</h3>
 <p class="mb-3">因為 $e^{-j(\omega+2\pi)n} = e^{-j\omega n}\cdot e^{-j2\pi n} = e^{-j\omega n}\cdot 1 = e^{-j\omega n}$。離散取樣天然無法區分頻率 $\omega$ 和 $\omega + 2\pi$——這就是<strong>混疊的數學根源</strong>。</p>
+
+<div class="tip">
+<p class="text-sm"><strong>💡 直覺：為什麼離散頻率必然是週期的？</strong></p>
+<p class="text-sm mt-2">考慮兩個離散複指數 $e^{j\omega n}$ 和 $e^{j(\omega+2\pi)n}$：</p>
+$$e^{j(\omega+2\pi)n} = e^{j\omega n}\cdot e^{j2\pi n} = e^{j\omega n}\cdot 1 = e^{j\omega n}$$
+<p class="text-sm mt-2">因為 $e^{j2\pi n} = 1$ 對所有整數 $n$ 成立。</p>
+<p class="text-sm mt-2"><strong>結論</strong>：頻率 $\omega$ 和 $\omega+2\pi$ 在離散時間中<strong>無法區分</strong>——它們產生完全相同的取樣值。所以 DTFT 的頻率軸自然是 $2\pi$ 週期的。</p>
+<p class="text-sm mt-2">這也解釋了為什麼有 Nyquist 限制：類比訊號的頻率超過 $f_s/2$ 後，因為這個 $2\pi$ 摺疊，會被「混疊」回低頻區域。</p>
+</div>
 
 <h3 class="font-bold mt-5 mb-2">與 CTFT 的關係：取樣 → 週期化</h3>
 <p class="mb-3">若 $x[n] = x_c(nT_s)$（取樣），則：</p>
@@ -4378,6 +4424,19 @@ $$= \frac{1}{2\pi}\int\!\!\int e^{-j\theta t + j\theta u}\, \Phi(\theta, 0)\, |x
 <p class="text-slate-500 text-sm mb-5">多解析度時頻分析 — 低頻看頻率，高頻看時間，自動適應</p>
 <div class="hist"><p><strong>為什麼要學這個？</strong> 因為 STFT 的窗長固定，但你常常同時需要看清低頻和定位高頻暫態。小波的多解析度特性自動解決了這個矛盾——這是它在地震學、金融、神經科學中被大量使用的原因。</p></div>
 <div class="hist"><p class="text-sm"><strong>前情提要：</strong>5.3 的 Cohen's Class 仍然使用固定的分析窗。CWT 用可伸縮的小波——低頻自動用長窗、高頻自動用短窗——突破了固定窗的限制。</p></div>
+
+<div class="tip">
+<p class="text-sm"><strong>🌉 從 STFT 到 CWT：為什麼需要小波？</strong></p>
+<p class="text-sm mt-2">STFT 用<strong>固定大小的窗</strong>分析訊號，這帶來一個根本問題：</p>
+<ul class="text-sm list-disc pl-6 mt-2 space-y-1">
+<li><strong>低頻訊號</strong>變化慢，需要長窗才能解析頻率（但就會失去時間定位）</li>
+<li><strong>高頻訊號</strong>變化快，需要短窗才能定位事件（但會失去頻率精度）</li>
+<li>STFT 只能選一個固定窗長 → 兩端都不滿意</li>
+</ul>
+<p class="text-sm mt-2"><strong>具體例子</strong>：分析音樂訊號時，低音（50-200 Hz, 持續 0.5s）需要 ~200ms 窗，但鈸的瞬間擊打（5kHz, 持續 5ms）需要 ~5ms 窗。STFT 不能同時做到。</p>
+<p class="text-sm mt-2"><strong>CWT 的解法</strong>：用「會伸縮的窗」——分析高頻時自動變短（時間精度好），分析低頻時自動變長（頻率精度好）。這就是<strong>多解析度分析</strong>。</p>
+<p class="text-sm mt-2">下面就來看 CWT 怎麼用一個母小波 $\psi(t)$ 透過<strong>尺度</strong>（窗的寬度）和<strong>位移</strong>（窗的位置）兩個參數，達成這個自適應分析。</p>
+</div>
 
 <div class="lo"><h3>Learning Objectives</h3><ul class="list-disc pl-5 text-sm space-y-1">
 <li>理解 CWT 如何透過尺度伸縮 (Dilation) 實現多解析度分析</li>
@@ -7580,6 +7639,23 @@ $$x_o[n] = \frac{x[n]-x[-n]}{2} \quad(\text{奇部, Odd Part})$$
 
 <div class="ref-box">
 <p><strong>References:</strong> [1] Oppenheim & Schafer, <em>Discrete-Time Signal Processing</em>, 3rd ed., Ch.2. [2] Proakis & Manolakis, <em>Digital Signal Processing</em>, 4th ed., Ch.2. [3] Haykin & Van Veen, <em>Signals and Systems</em>, Ch.6.</p>
+</div>
+<div class="card">
+<h3 class="font-bold text-base mb-3">互動：離散時間訊號 stem 圖</h3>
+<p class="text-sm text-slate-500 mb-3">選擇一種基本離散序列。stem 圖（垂直線+圓點）是離散訊號的標準視覺化方式。</p>
+<div class="flex gap-3 mb-3">
+  <div><label class="text-xs font-medium mr-2">序列：</label>
+    <select id="m2b1sig" class="border rounded px-2 py-1 text-sm dark:bg-slate-700 dark:border-slate-600" onchange="updateM2b1New()">
+      <option value="impulse" selected>單位脈衝 δ[n]</option>
+      <option value="step">單位階梯 u[n]</option>
+      <option value="ramp">斜坡 n·u[n]</option>
+      <option value="exp">指數 (0.85)^n·u[n]</option>
+      <option value="sine">正弦 sin(2πn/16)</option>
+      <option value="damped">阻尼正弦 (0.9)^n·sin(πn/4)</option>
+    </select>
+  </div>
+</div>
+<div id="plotM2b1New" class="plot" style="min-height:300px"></div>
 </div>
 <div class="ch-nav"><a onclick="go('m2a-2')">&larr; 2a.2 CTFT</a><a onclick="go('m2b-2')">2b.2 LTI 系統與卷積 &rarr;</a></div>
 </section>
@@ -10855,9 +10931,9 @@ function addCodeCopyButtons(){
 
 function initPlots(s){
   switch(s){
-    case'm1-1':updateP11();break;case'm1-3':updateP13();break;case'm1-4':updateP14();break;
-    case'm2a-1':updateP21();break;case'm2a-2':updateP22();break;case'm3a-1':updateP23();break;
-    case'm2b-1':updateM2b1();break;case'm2b-2':updateM2b2(0);break;case'm2b-3':updateM2b3();break;case'm2b-4':updateP25();break;case'm2c-1':updateP26();break;
+    case'm1-1':updateP11();break;case'm1-2':updateM12();break;case'm1-3':updateP13();break;case'm1-4':updateP14();break;
+    case'm2a-1':updateP21();break;case'm2a-2':updateP22();updateM2a2();break;case'm3a-1':updateP23();break;
+    case'm2b-1':updateM2b1();updateM2b1New();break;case'm2b-2':updateM2b2(0);break;case'm2b-3':updateM2b3();break;case'm2b-4':updateP25();break;case'm2c-1':updateP26();break;
     case'm3a-2':updateP24();drawButterfly();runFFTexample();break;case'm3b-1':updateP31();updateP31b();break;
     case'm3c-1':updateP32();break;case'm3d-1':updateP33();break;case'm3d-2':updateP34();break;
     case'm5a-1':updateM5a1();break;case'm5b-1':updateM5b1();break;case'm5c-1':updateM5c1();break;case'm5d-1':updateM5d1();break;case'm6-1':updateP41();break;case'm6-2':updateP42();break;case'm6-3':updateP43();break;
@@ -10876,6 +10952,79 @@ function updateP11(){
   const integral=prod.reduce((a,b)=>a+b,0)/N;
   Plotly.react('plotP11',[{x:t,y:prod,fill:'tozeroy',fillcolor:Math.abs(integral)>0.01?'rgba(16,185,129,0.2)':'rgba(239,68,68,0.15)',line:{color:Math.abs(integral)>0.01?'#10b981':'#ef4444',width:1.5}}],pl(`cos(2π·${m}·t) × cos(2π·${n}·t)`,'t','被積函數'),pc);
   document.getElementById('p11result').textContent=`∫₀¹ cos(2π·${m}·t)·cos(2π·${n}·t) dt ≈ ${integral.toFixed(4)} ${m===n?(m===0?'= 1 (DC²)':'= 0.5 (n=m≠0)'):'= 0 (正交！)'}`;
+}
+
+// === 1.2 Delta as Gaussian limit demo ===
+function updateM12(){
+  const sigma=parseFloat(document.getElementById('m12s').value);
+  document.getElementById('m12sv').textContent=sigma.toFixed(2);
+  const t=ls(-3,3,500);
+  const y=t.map(ti=>Math.exp(-ti*ti/(2*sigma*sigma))/(sigma*Math.sqrt(2*Math.PI)));
+  const peak=1/(sigma*Math.sqrt(2*Math.PI));
+  // Numeric integration
+  let area=0;
+  for(let i=1;i<t.length;i++) area+=(y[i]+y[i-1])/2*(t[i]-t[i-1]);
+  Plotly.react('plotM12',[
+    {x:t,y:y,fill:'tozeroy',fillcolor:'rgba(6,182,212,0.2)',line:{color:'#06b6d4',width:2}}
+  ],pl(`σ=${sigma.toFixed(2)}: 高度=${peak.toFixed(2)}, 面積=${area.toFixed(3)}`,'t','δ_σ(t)'),pc);
+  document.getElementById('m12info').innerHTML=`σ→0 時：高度 → ∞, 寬度 → 0, <strong>但面積永遠 = 1</strong>。極限就是 δ(t)。`;
+}
+
+// === 2.2 CTFT common pairs demo ===
+function updateM2a2(){
+  const sig=document.getElementById('m2a2sig').value;
+  const p=parseFloat(document.getElementById('m2a2p').value);
+  document.getElementById('m2a2pv').textContent=p.toFixed(1);
+  const t=ls(-5,5,800),f=ls(-8,8,800);
+  let xt,Xf,name1,name2;
+  if(sig==='rect'){
+    xt=t.map(ti=>Math.abs(ti)<=p/2?1:0);
+    Xf=f.map(fi=>Math.abs(fi)<1e-10?p:p*Math.sin(Math.PI*fi*p)/(Math.PI*fi*p));
+    name1='rect(t/τ)';name2='τ·sinc(fτ)';
+  } else if(sig==='gauss'){
+    xt=t.map(ti=>Math.exp(-p*ti*ti));
+    Xf=f.map(fi=>Math.sqrt(Math.PI/p)*Math.exp(-Math.PI*Math.PI*fi*fi/p));
+    name1=`e^(-${p.toFixed(1)}t²)`;name2='Gaussian (FT 不變形)';
+  } else if(sig==='exp'){
+    xt=t.map(ti=>ti>=0?Math.exp(-p*ti):0);
+    Xf=f.map(fi=>1/Math.sqrt(p*p+(2*Math.PI*fi)*(2*Math.PI*fi)));
+    name1=`e^(-${p.toFixed(1)}t)u(t)`;name2='1/√(a²+(2πf)²)';
+  } else { // cos
+    xt=t.map(ti=>Math.cos(2*Math.PI*p*ti));
+    // Use narrow Gaussians as delta approximations
+    Xf=f.map(fi=>{
+      const d1=Math.exp(-50*(fi-p)*(fi-p));
+      const d2=Math.exp(-50*(fi+p)*(fi+p));
+      return 0.5*(d1+d2);
+    });
+    name1=`cos(2π·${p.toFixed(1)}t)`;name2=`½[δ(f-${p.toFixed(1)})+δ(f+${p.toFixed(1)})]`;
+  }
+  Plotly.react('plotM2a2t',[
+    {x:t,y:xt,fill:'tozeroy',fillcolor:'rgba(6,182,212,0.15)',line:{color:'#06b6d4',width:2}}
+  ],pl(`時域：${name1}`,'t','x(t)'),pc);
+  Plotly.react('plotM2a2f',[
+    {x:f,y:Xf,fill:'tozeroy',fillcolor:'rgba(16,185,129,0.15)',line:{color:'#10b981',width:2}}
+  ],pl(`頻域：${name2}`,'f','|X(f)|'),pc);
+}
+
+// === 2b.1 Discrete signal stem visualizer demo ===
+function updateM2b1New(){
+  const type=document.getElementById('m2b1sig').value;
+  const N=32, n=Array.from({length:N},(_,i)=>i-2);
+  let y=[];
+  if(type==='impulse') y=n.map(ni=>ni===0?1:0);
+  else if(type==='step') y=n.map(ni=>ni>=0?1:0);
+  else if(type==='ramp') y=n.map(ni=>ni>=0?ni:0);
+  else if(type==='exp') y=n.map(ni=>ni>=0?Math.pow(0.85,ni):0);
+  else if(type==='sine') y=n.map(ni=>Math.sin(2*Math.PI*ni/16));
+  else y=n.map(ni=>ni>=0?Math.pow(0.9,ni)*Math.sin(Math.PI*ni/4):0);
+  // Stem plot: vertical lines + markers
+  const stemX=[],stemY=[];
+  for(let i=0;i<N;i++){stemX.push(n[i],n[i],null);stemY.push(0,y[i],null);}
+  Plotly.react('plotM2b1New',[
+    {x:stemX,y:stemY,mode:'lines',line:{color:'#06b6d4',width:2},showlegend:false,hoverinfo:'skip'},
+    {x:n,y:y,mode:'markers',marker:{size:8,color:'#06b6d4',line:{color:'#0e7490',width:1.5}},name:'x[n]'}
+  ],pl('','n','x[n]',{xaxis:{title:'n',dtick:2}}),pc);
 }
 
 // === 1.3 Convergence rate demo ===
