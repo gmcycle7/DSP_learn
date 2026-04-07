@@ -137,7 +137,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:16px;heigh
       M1 — Math Foundations
     </summary>
     <div class="ml-3 mt-0.5 pl-3 border-l-2 border-cyan-200 dark:border-cyan-800 space-y-px">
-      <button onclick="go('m1-1')" class="sb-item block" data-s="m1-1">1.1 Hilbert Space</button>
+      <button onclick="go('m1-1')" class="sb-item block" data-s="m1-1">1.1 Hilbert Space <span class="text-[10px] px-1 bg-rose-100 dark:bg-rose-900 text-rose-700 dark:text-rose-300 rounded">Required</span></button>
       <button onclick="go('m1-2')" class="sb-item block" data-s="m1-2">1.2 Distribution Theory</button>
       <button onclick="go('m1-3')" class="sb-item block" data-s="m1-3">1.3 Convergence</button>
       <button onclick="go('m1-4')" class="sb-item block" data-s="m1-4">1.4 Uncertainty Principle</button>
@@ -150,13 +150,13 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:16px;heigh
       M2 — Signals & Systems
     </summary>
     <div class="ml-3 mt-0.5 pl-3 border-l-2 border-cyan-200 dark:border-cyan-800 space-y-px">
-      <button onclick="go('m2a-1')" class="sb-item block" data-s="m2a-1">2A.1 Fourier Series</button>
-      <button onclick="go('m2a-2')" class="sb-item block" data-s="m2a-2">2A.2 CTFT</button>
+      <button onclick="go('m2a-1')" class="sb-item block" data-s="m2a-1">2A.1 Fourier Series <span class="text-[10px] px-1 bg-rose-100 dark:bg-rose-900 text-rose-700 dark:text-rose-300 rounded">Required</span></button>
+      <button onclick="go('m2a-2')" class="sb-item block" data-s="m2a-2">2A.2 CTFT <span class="text-[10px] px-1 bg-rose-100 dark:bg-rose-900 text-rose-700 dark:text-rose-300 rounded">Required</span></button>
       <button onclick="go('m2b-1')" class="sb-item block" data-s="m2b-1">2B.1 Discrete Signals <span class="text-[10px] px-1 bg-amber-100 dark:bg-amber-900 text-amber-700 dark:text-amber-300 rounded">NEW</span></button>
       <button onclick="go('m2b-2')" class="sb-item block" data-s="m2b-2">2B.2 LTI & Convolution <span class="text-[10px] px-1 bg-amber-100 dark:bg-amber-900 text-amber-700 dark:text-amber-300 rounded">NEW</span></button>
       <button onclick="go('m2b-3')" class="sb-item block" data-s="m2b-3">2B.3 Difference Eq. <span class="text-[10px] px-1 bg-amber-100 dark:bg-amber-900 text-amber-700 dark:text-amber-300 rounded">NEW</span></button>
       <button onclick="go('m2b-4')" class="sb-item block" data-s="m2b-4">2B.4 Z-Transform</button>
-      <button onclick="go('m2c-1')" class="sb-item block" data-s="m2c-1">2C Sampling Theorem</button>
+      <button onclick="go('m2c-1')" class="sb-item block" data-s="m2c-1">2C Sampling Theorem <span class="text-[10px] px-1 bg-rose-100 dark:bg-rose-900 text-rose-700 dark:text-rose-300 rounded">Required</span></button>
       <button onclick="go('m2d-1')" class="sb-item block" data-s="m2d-1">2D Transform Overview</button>
     </div>
   </details>
@@ -167,8 +167,8 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:16px;heigh
       M3 — DFT/FFT & Spectral
     </summary>
     <div class="ml-3 mt-0.5 pl-3 border-l-2 border-emerald-200 dark:border-emerald-800 space-y-px">
-      <button onclick="go('m3a-1')" class="sb-item block" data-s="m3a-1">3A.1 DTFT</button>
-      <button onclick="go('m3a-2')" class="sb-item block" data-s="m3a-2">3A.2 DFT & FFT</button>
+      <button onclick="go('m3a-1')" class="sb-item block" data-s="m3a-1">3A.1 DTFT <span class="text-[10px] px-1 bg-rose-100 dark:bg-rose-900 text-rose-700 dark:text-rose-300 rounded">Required</span></button>
+      <button onclick="go('m3a-2')" class="sb-item block" data-s="m3a-2">3A.2 DFT & FFT <span class="text-[10px] px-1 bg-rose-100 dark:bg-rose-900 text-rose-700 dark:text-rose-300 rounded">Required</span></button>
       <button onclick="go('m3a-3')" class="sb-item block" data-s="m3a-3">3A.3 Advanced FFT</button>
       <button onclick="go('m3b-1')" class="sb-item block" data-s="m3b-1">3B Window Functions</button>
       <button onclick="go('m3c-1')" class="sb-item block" data-s="m3c-1">3C Welch / Multitaper</button>
@@ -309,6 +309,8 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:16px;heigh
   <span class="text-slate-400">→</span>
   <a onclick="go('m2a-2')" class="px-3 py-1.5 bg-cyan-100 dark:bg-cyan-900 text-cyan-800 dark:text-cyan-200 rounded-lg cursor-pointer hover:bg-cyan-200 transition font-medium">2A.2 CTFT</a>
   <span class="text-slate-400">→</span>
+  <a onclick="go('m2b-1')" class="px-3 py-1.5 bg-cyan-100 dark:bg-cyan-900 text-cyan-800 dark:text-cyan-200 rounded-lg cursor-pointer hover:bg-cyan-200 transition font-medium">2B.1 Discrete Signals</a>
+  <span class="text-slate-400">→</span>
   <a onclick="go('m2b-2')" class="px-3 py-1.5 bg-cyan-100 dark:bg-cyan-900 text-cyan-800 dark:text-cyan-200 rounded-lg cursor-pointer hover:bg-cyan-200 transition font-medium">2B.2 LTI & Convolution</a>
   <span class="text-slate-400">→</span>
   <a onclick="go('m3a-2')" class="px-3 py-1.5 bg-cyan-100 dark:bg-cyan-900 text-cyan-800 dark:text-cyan-200 rounded-lg cursor-pointer hover:bg-cyan-200 transition font-medium">3A.2 DFT/FFT</a>
@@ -326,15 +328,15 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:16px;heigh
 <div class="grid md:grid-cols-2 gap-4">
 <div class="p-3 rounded-lg bg-emerald-50 dark:bg-emerald-900/20">
   <h3 class="font-bold text-emerald-700 dark:text-emerald-400 text-sm mb-2">📡 Communications Engineering Path</h3>
-  <p class="text-xs text-slate-500">Core → 2.5 Z-Transform → 6.3 OLA → 6.4 Filters → 6.6 OFDM</p>
+  <p class="text-xs text-slate-500">Core → 2B.4 Z-Transform → 5A Decimation/Interp → 4A FIR → 4B IIR → 9C OFDM</p>
 </div>
 <div class="p-3 rounded-lg bg-violet-50 dark:bg-violet-900/20">
   <h3 class="font-bold text-violet-700 dark:text-violet-400 text-sm mb-2">🔬 Biomedical Signal Path</h3>
-  <p class="text-xs text-slate-500">Core → 3.2 Welch → 4.1 Hilbert → 5.4 CWT → 6.9 EEG/ECG</p>
+  <p class="text-xs text-slate-500">Core → 5A Decimation/Interp → 3.2 Welch → 4.1 Hilbert → 5.4 CWT → 6.9 EEG/ECG</p>
 </div>
 <div class="p-3 rounded-lg bg-amber-50 dark:bg-amber-900/20">
   <h3 class="font-bold text-amber-700 dark:text-amber-400 text-sm mb-2">⚙️ Vibration/Mechanical Path</h3>
-  <p class="text-xs text-slate-500">Core → 3.2 Welch → 4.1 Hilbert → 4.2 Envelope → 6.10 Vibration Analysis</p>
+  <p class="text-xs text-slate-500">Core → 5A Decimation/Interp → 3.2 Welch → 4.1 Hilbert → 4.2 Envelope → 6.10 Vibration</p>
 </div>
 <div class="p-3 rounded-lg bg-red-50 dark:bg-red-900/20">
   <h3 class="font-bold text-red-700 dark:text-red-400 text-sm mb-2">📡 Radar/Array Path</h3>
@@ -1973,9 +1975,9 @@ $$x(t) = \sum_{n=-\infty}^{\infty}x(nT_s)\,\text{sinc}\!\left(\frac{t-nT_s}{T_s}
 </p>
 </div>
 
-<div class="card" style="background:linear-gradient(135deg,#f8fafc,#ecfeff); overflow-x:auto;">
+<div class="card" style="overflow-x:auto;">
 <h3 class="font-bold mb-3 text-center">Transform Relationship Diagram</h3>
-<table class="text-sm" style="margin:0 auto; border-collapse:separate; border-spacing:12px 8px;">
+<table class="dt text-sm" style="margin:0 auto; border-collapse:separate; border-spacing:12px 8px;">
 <tr>
 <td class="text-center p-3 rounded-lg bg-violet-100 dark:bg-violet-900/30 font-bold" style="min-width:120px;">FS<br><span class="text-xs font-normal">continuous periodic → discrete</span></td>
 <td class="text-center text-xs text-slate-500">$\xrightarrow{T \to \infty}$<br>de-periodization</td>
@@ -3421,7 +3423,7 @@ $$f_i[n] = \frac{f_s}{2\pi}\,\text{Im}\!\left(\frac{z[n]\,z^*[n-1]}{|z[n]\,z^*[n
   <div id="plotP42raw" class="plot" style="min-height:240px"></div>
   <div id="plotP42fft" class="plot" style="min-height:240px"></div>
   <div id="plotP42env" class="plot" style="min-height:240px"></div>
-  <div id="plotP42envfft" style="width:100%; height:220px;"></div>
+  <div class="plot" id="plotP42envfft" style="width:100%; height:220px;"></div>
 </div>
 
 
@@ -5123,9 +5125,7 @@ plt.pcolormesh(t, ssq_freqs, np.abs(Tx), shading='auto')</div>
     kn = \tfrac{1}{2}\bigl[k^2 + n^2 - (k-n)^2\bigr]
   </p>
   <p>Substituting into the DFT twiddle factor $W_N^{kn}$:</p>
-  <p class="fm">
-    X[k] = W_N^{k^2/2} \sum_{n=0}^{N-1} \bigl(x[n]\,W_N^{n^2/2}\bigr)\,W_N^{-(k-n)^2/2}
-  </p>
+  <p class="fm">$$X[k] = W_N^{k^2/2} \sum_{n=0}^{N-1} \bigl(x[n]\,W_N^{n^2/2}\bigr)\,W_N^{-(k-n)^2/2}$$</p>
   <p>Inside the parentheses, $x[n]$ is multiplied by a known sequence (chirp), and the outer operation is a convolution with another known sequence. Three FFTs (zero-padded to the next power of 2) can complete an arbitrary-length N DFT.</p>
 
   <p><strong>Goertzel Recursion:</strong></p>
@@ -5140,13 +5140,9 @@ plt.pcolormesh(t, ssq_freqs, np.abs(Tx), shading='auto')</div>
     <summary>Full Derivation: Bluestein Identity</summary>
     <p>DFT definition: $X[k] = \sum_{n=0}^{N-1} x[n]\,W_N^{kn}$, where $W_N = e^{-j2\pi/N}$.</p>
     <p>Using the identity $kn = \tfrac{1}{2}[k^2 + n^2 - (k-n)^2]$ (verify by expanding the right side):</p>
-    <p class="fm">
-      W_N^{kn} = W_N^{k^2/2}\,W_N^{n^2/2}\,W_N^{-(k-n)^2/2}
-    </p>
+    <p class="fm">$$W_N^{kn} = W_N^{k^2/2}\,W_N^{n^2/2}\,W_N^{-(k-n)^2/2}$$</p>
     <p>Substituting into the DFT:</p>
-    <p class="fm">
-      X[k] = W_N^{k^2/2} \sum_{n=0}^{N-1} \bigl[x[n]\,W_N^{n^2/2}\bigr]\,W_N^{-(k-n)^2/2}
-    </p>
+    <p class="fm">$$X[k] = W_N^{k^2/2} \sum_{n=0}^{N-1} \bigl[x[n]\,W_N^{n^2/2}\bigr]\,W_N^{-(k-n)^2/2}$$</p>
     <p>Let $a[n] = x[n]\,W_N^{n^2/2}$ and $b[n] = W_N^{-n^2/2}$. The summation term is the value of the convolution of $a$ and $b$ at point $k$. Zero-pad $a$ and $b$ to length $\geq 2N-1$ (next power of 2), and three FFTs can complete the convolution.</p>
   </details>
 
@@ -5154,10 +5150,10 @@ plt.pcolormesh(t, ssq_freqs, np.abs(Tx), shading='auto')</div>
     <summary>Full Derivation: Goertzel Algorithm</summary>
     <p>DFT bin k: $X[k] = \sum_{n=0}^{N-1} x[n]\,W_N^{kn}$.</p>
     <p>Observe that $W_N^{-kN} = 1$, so:</p>
-    <p class="fm">X[k] = W_N^{-kN}\sum_{n=0}^{N-1} x[n]\,W_N^{kn} = \sum_{n=0}^{N-1} x[n]\,W_N^{-k(N-n)}</p>
+    <p class="fm">$$X[k] = W_N^{-kN}\sum_{n=0}^{N-1} x[n]\,W_N^{kn} = \sum_{n=0}^{N-1} x[n]\,W_N^{-k(N-n)}$$</p>
     <p>This is equivalent to passing $x[n]$ through a filter with system function $H(z)=\frac{1}{1-W_N^{-k}z^{-1}}$ and taking the output at $n=N$.</p>
     <p>However, this is a first-order complex recursion. To avoid complex multiplications, multiply both numerator and denominator by $(1-W_N^{k}z^{-1})$:</p>
-    <p class="fm">H(z) = \frac{1 - W_N^{k}z^{-1}}{1 - 2\cos(2\pi k/N)z^{-1} + z^{-2}}</p>
+    <p class="fm">$$H(z) = \frac{1 - W_N^{k}z^{-1}}{1 - 2\cos(2\pi k/N)z^{-1} + z^{-2}}$$</p>
     <p>The denominator is a second-order recursion with real coefficients (requiring only real multiplications). After running N steps, the numerator (one complex multiplication) yields $X[k]$.</p>
     <p>Total: N real multiplications + 1 complex multiplication = O(N) per bin.</p>
   </details>
@@ -5305,9 +5301,7 @@ for each freq in [697, 770, 852, 941, 1209, 1336, 1477, 1633]:
   <p><strong>Intuition:</strong> FFT is a cascade of butterfly operations. Each butterfly involves multiplication and addition, and each step introduces rounding error. $\log_2 N$ butterfly stages = $\log_2 N$ rounds of error accumulation.</p>
 
   <p><strong>Floating-point FFT error bound:</strong></p>
-  <p class="fm">
-    \|X_{\text{computed}} - X_{\text{exact}}\|_{\text{rms}} \;\leq\; C\,\varepsilon_m\,\sqrt{\log_2 N}\;\|x\|_{\text{rms}}
-  </p>
+  <p class="fm">$$\|X_{\text{computed}} - X_{\text{exact}}\|_{\text{rms}} \;\leq\; C\,\varepsilon_m\,\sqrt{\log_2 N}\;\|x\|_{\text{rms}}$$</p>
   <p>where $\varepsilon_m$ is the machine epsilon: $\approx 1.19 \times 10^{-7}$ for float32, $\approx 2.22 \times 10^{-16}$ for float64.</p>
 
   <p><strong>The problem with fixed-point FFT — Overflow:</strong></p>
@@ -5799,14 +5793,10 @@ for n in range(-36, 37):  // -M/2 to M/2
   <p><strong>Intuition:</strong> In 1D, low frequency = slow variation, high frequency = fast variation. The 2D case is entirely analogous: low spatial frequencies = slowly varying regions (smooth areas, overall brightness); high spatial frequencies = rapidly varying regions (edges, textures, noise).</p>
 
   <p><strong>2D DFT formula:</strong></p>
-  <p class="fm">
-    F[u,v] = \sum_{m=0}^{M-1}\sum_{n=0}^{N-1} f[m,n]\,e^{-j2\pi(um/M + vn/N)}
-  </p>
+  <p class="fm">$$F[u,v] = \sum_{m=0}^{M-1}\sum_{n=0}^{N-1} f[m,n]\,e^{-j2\pi(um/M + vn/N)}$$</p>
 
   <p><strong>Separability:</strong> 2D DFT can be decomposed into row FFTs first, then column FFTs:</p>
-  <p class="fm">
-    F[u,v] = \sum_{m=0}^{M-1}\left(\sum_{n=0}^{N-1} f[m,n]\,e^{-j2\pi vn/N}\right)e^{-j2\pi um/M}
-  </p>
+  <p class="fm">$$F[u,v] = \sum_{m=0}^{M-1}\left(\sum_{n=0}^{N-1} f[m,n]\,e^{-j2\pi vn/N}\right)e^{-j2\pi um/M}$$</p>
   <p>Computational cost: 2D FFT of an M&times;N image = M row FFTs of length N + N column FFTs of length M = O(MN log(MN)).</p>
 
   <p><strong>Meaning of the frequency domain center:</strong></p>
@@ -5820,9 +5810,9 @@ for n in range(-36, 37):  // -M/2 to M/2
   <details class="deriv">
     <summary>Derivation: Separability of 2D DFT</summary>
     <p>The kernel of 2D DFT, $e^{-j2\pi(um/M + vn/N)}$, can be factored into the product of two 1D kernels:</p>
-    <p class="fm">e^{-j2\pi(um/M + vn/N)} = e^{-j2\pi um/M} \cdot e^{-j2\pi vn/N}</p>
+    <p class="fm">$$e^{-j2\pi(um/M + vn/N)} = e^{-j2\pi um/M} \cdot e^{-j2\pi vn/N}$$</p>
     <p>Therefore:</p>
-    <p class="fm">F[u,v] = \sum_m e^{-j2\pi um/M} \underbrace{\left(\sum_n f[m,n]\,e^{-j2\pi vn/N}\right)}_{G[m,v] = \text{1D DFT of row } m}</p>
+    <p class="fm">$$F[u,v] = \sum_m e^{-j2\pi um/M} \underbrace{\left(\sum_n f[m,n]\,e^{-j2\pi vn/N}\right)}_{G[m,v] = \text{1D DFT of row } m}$$</p>
     <p>First perform 1D DFT on each row to obtain $G[m,v]$, then perform 1D DFT on each column of $G[m,v]$ to obtain $F[u,v]$. The order can be swapped (columns first, then rows).</p>
   </details>
 
@@ -6205,7 +6195,7 @@ result = real(ifft2(ifftshift(G)))
 
   <h4>Matched Filter</h4>
   <p>The optimal filter that maximizes SNR = the time-reversed conjugate of the transmitted signal:</p>
-  <p class="fm">h_{\text{MF}}(t) = s^*(-t)</p>
+  <p class="fm">$$h_{\text{MF}}(t) = s^*(-t)$$</p>
   <p>Frequency-domain implementation: $Y(\omega) = S^*(\omega) \cdot X(\omega)$ → IFFT → compressed pulse</p>
 
   <h4>Range-Doppler Processing</h4>
@@ -6220,15 +6210,11 @@ result = real(ifft2(ifftshift(G)))
   <p class="fm">
     \Delta R = \frac{c}{2B} \quad (\text{range resolution, B = bandwidth})
   </p>
-  <p class="fm">
-    \Delta v = \frac{\lambda}{2T_{\text{CPI}}} \quad (\text{velocity resolution, }T_{\text{CPI}} = \text{coherent processing interval})
-  </p>
+  <p class="fm">$$\Delta v = \frac{\lambda}{2T_{\text{CPI}}} \quad (\text{velocity resolution, }T_{\text{CPI}} = \text{coherent processing interval})$$</p>
 
   <h4>Ambiguity Function</h4>
   <p>Definition:</p>
-  <p class="fm">
-    \chi(\tau, f_d) = \int_{-\infty}^{\infty} s(t)\,s^*(t-\tau)\,e^{j2\pi f_d t}\,dt
-  </p>
+  <p class="fm">$$\chi(\tau, f_d) = \int_{-\infty}^{\infty} s(t)\,s^*(t-\tau)\,e^{j2\pi f_d t}\,dt$$</p>
   <p><strong>Intuitive interpretation:</strong> The ambiguity function describes a waveform's resolution capability on the "range ($\tau$) — Doppler ($f_d$)" plane. $|\chi(0,0)|$ = peak (perfect match); $|\chi(\tau, f_d)|$ at other locations = sidelobes (degree of ambiguity).</p>
   <p><strong>Woodward's Theorem:</strong> The total volume of the ambiguity function is conserved — suppressing sidelobes in one area raises them elsewhere. Waveform design is about "sculpting" sidelobe shapes on the range-Doppler plane.</p>
 
@@ -6530,9 +6516,7 @@ v_max = λ / (4 × T_chirp) = 3.896×10⁻³ / (4 × 50×10⁻⁶) = 19.5 m/s �
   </p>
 
   <p><strong>Steering Vector:</strong></p>
-  <p class="fm">
-    \mathbf{a}(\theta) = \begin{bmatrix} 1 \\ e^{j\frac{2\pi d\sin\theta}{\lambda}} \\ e^{j\frac{2\pi \cdot 2d\sin\theta}{\lambda}} \\ \vdots \\ e^{j\frac{2\pi(M-1)d\sin\theta}{\lambda}} \end{bmatrix}
-  </p>
+  <p class="fm">$$\mathbf{a}(\theta) = \begin{bmatrix} 1 \\ e^{j\frac{2\pi d\sin\theta}{\lambda}} \\ e^{j\frac{2\pi \cdot 2d\sin\theta}{\lambda}} \\ \vdots \\ e^{j\frac{2\pi(M-1)d\sin\theta}{\lambda}} \end{bmatrix}$$</p>
 
   <h4>Beamforming = Spatial Filtering</h4>
   <p class="fm">y = \mathbf{w}^H \mathbf{x}</p>
@@ -6549,10 +6533,10 @@ v_max = λ / (4 × T_chirp) = 3.896×10⁻³ / (4 × 50×10⁻⁶) = 19.5 m/s �
   <details class="deriv">
     <summary>Derivation: Spatial DFT and Angular Resolution</summary>
     <p>Spatial power spectrum of the DAS beamformer:</p>
-    <p class="fm">P_{\text{DAS}}(\theta) = \frac{1}{M^2}\left|\sum_{m=0}^{M-1} e^{j\frac{2\pi md}{\lambda}(\sin\theta - \sin\theta_0)}\right|^2</p>
+    <p class="fm">$$P_{\text{DAS}}(\theta) = \frac{1}{M^2}\left|\sum_{m=0}^{M-1} e^{j\frac{2\pi md}{\lambda}(\sin\theta - \sin\theta_0)}\right|^2$$</p>
     <p>Let the spatial frequency be $u = d\sin\theta/\lambda$ — this is a discrete Fourier sum!</p>
     <p>Main beam width (3dB beamwidth):</p>
-    <p class="fm">\Delta\theta_{3\text{dB}} \approx \frac{0.886\lambda}{Md\cos\theta_0}</p>
+    <p class="fm">$$\Delta\theta_{3\text{dB}} \approx \frac{0.886\lambda}{Md\cos\theta_0}$$</p>
     <p>At broadside ($\theta_0 = 0$), this simplifies to $\Delta\theta \approx 0.886\lambda/(Md)$.</p>
     <p>More antennas (larger M) and wider spacing (larger d) → narrower beam → higher angular resolution. But d &gt; &lambda;/2 produces grating lobes.</p>
   </details>
@@ -6586,16 +6570,12 @@ d = λ/2 = 5.36 mm (antenna spacing)
 
   <h4>Advanced Methods</h4>
   <p><strong>Capon (MVDR) Beamformer:</strong></p>
-  <p class="fm">
-    \mathbf{w}_{\text{Capon}} = \frac{\mathbf{R}^{-1}\mathbf{a}(\theta_0)}{\mathbf{a}^H(\theta_0)\mathbf{R}^{-1}\mathbf{a}(\theta_0)}
-  </p>
+  <p class="fm">$$\mathbf{w}_{\text{Capon}} = \frac{\mathbf{R}^{-1}\mathbf{a}(\theta_0)}{\mathbf{a}^H(\theta_0)\mathbf{R}^{-1}\mathbf{a}(\theta_0)}$$</p>
   <p>Minimizes output power subject to unity gain in the desired direction. Result: a much narrower beam than DAS, effectively suppressing interference.</p>
 
   <p><strong>MUSIC DOA Estimation:</strong></p>
   <p>Completely analogous to the frequency-domain MUSIC (see Section 3.4), just replacing "frequency" with "angle":</p>
-  <p class="fm">
-    P_{\text{MUSIC}}(\theta) = \frac{1}{\mathbf{a}^H(\theta)\,\mathbf{E}_n\mathbf{E}_n^H\,\mathbf{a}(\theta)}
-  </p>
+  <p class="fm">$$P_{\text{MUSIC}}(\theta) = \frac{1}{\mathbf{a}^H(\theta)\,\mathbf{E}_n\mathbf{E}_n^H\,\mathbf{a}(\theta)}$$</p>
   <p>where $\mathbf{E}_n$ is the noise subspace. Peak positions = signal directions of arrival. Can resolve sources separated by much less than the beamwidth.</p>
 
   <!-- Interactive element -->
@@ -7192,7 +7172,7 @@ FTF = (1/2) × 30 × (1 - 7.94/38.5) = 15 × 0.7938
 <h1 class="text-2xl font-bold mb-1">2b.1 Discrete-Time Signals</h1>
 <p class="text-slate-500 text-sm mb-2">Stepping from the continuous world into the discrete world — the starting point of digital signal processing</p>
 
-<div class="fm" style="border-left:4px solid #06b6d4; background:linear-gradient(90deg,#ecfeff 0%,#f0fdfa 100%);">
+<div class="fm" style="border-left:4px solid #06b6d4;">
 <p class="text-base"><strong>One-Sentence Summary:</strong> A discrete-time signal is a sequence $x[n]$ defined only at integer time indices $n$; these sequences are the fundamental "atoms" on which all DSP operations are built.</p>
 </div>
 
@@ -7417,7 +7397,7 @@ $$x_o[n] = \frac{x[n]-x[-n]}{2} \quad(\text{Odd Part})$$
 <h1 class="text-2xl font-bold mb-1">2b.2 LTI Systems &amp; Convolution</h1>
 <p class="text-slate-500 text-sm mb-2">A single impulse response fully describes an entire system — the most elegant result in DSP</p>
 
-<div class="fm" style="border-left:4px solid #06b6d4; background:linear-gradient(90deg,#ecfeff 0%,#f0fdfa 100%);">
+<div class="fm" style="border-left:4px solid #06b6d4;">
 <p class="text-base"><strong>One-Sentence Summary:</strong> If a system is Linear and Time-Invariant (LTI), then knowing only its response to $\delta[n]$ — the impulse response $h[n]$ — is enough to compute the output for any input via convolution $y[n] = x[n] * h[n]$.</p>
 </div>
 
@@ -7639,7 +7619,7 @@ n=4: y[4] = 3·(1/3) = 1.0</div>
 <h1 class="text-2xl font-bold mb-1">2b.3 Difference Equations &amp; System Function $H(z)$</h1>
 <p class="text-slate-500 text-sm mb-2">From time-domain recursion to Z-domain algebra — a unified view of FIR and IIR</p>
 
-<div class="fm" style="border-left:4px solid #06b6d4; background:linear-gradient(90deg,#ecfeff 0%,#f0fdfa 100%);">
+<div class="fm" style="border-left:4px solid #06b6d4;">
 <p class="text-base"><strong>One-Sentence Summary:</strong> The Linear Constant-Coefficient Difference Equation (LCCDE) is the time-domain language for describing LTI systems; applying the Z-transform converts it into the algebraic expression $H(z) = B(z)/A(z)$, where system stability and frequency response are entirely encoded in the poles and zeros.</p>
 </div>
 
@@ -7834,10 +7814,10 @@ At $\omega=0$: $|H|=1/0.2=5$ (high gain at low frequencies); at $\omega=\pi$: $|
   <button class="text-xs px-3 py-1 rounded border border-cyan-600 text-cyan-700 hover:bg-cyan-50 dark:text-cyan-300 dark:hover:bg-cyan-900/20" onclick="presetM2b3('ap')">All-pass</button>
 </div>
 
-<div style="display:flex; flex-wrap:wrap; gap:8px; justify-content:center;">
-  <div id="plotM2b3pz" style="width:340px; height:340px;"></div>
-  <div id="plotM2b3freq" style="width:340px; height:300px;"></div>
-  <div id="plotM2b3imp" style="width:340px; height:300px;"></div>
+<div class="grid md:grid-cols-3 gap-3">
+  <div class="plot" id="plotM2b3pz" style="width:340px; height:340px;"></div>
+  <div class="plot" id="plotM2b3freq" style="width:340px; height:300px;"></div>
+  <div class="plot" id="plotM2b3imp" style="width:340px; height:300px;"></div>
 </div>
 </div>
 
@@ -8093,7 +8073,7 @@ $$\frac{Y(z)}{X(z)} = \frac{T/2 \cdot (1+z^{-1})}{1 - z^{-1}} = \frac{T}{2}\,\fr
   <span id="m4b1ripplev">1.0</span>
 </div>
 
-<div id="plotM4b1" style="width:100%; height:400px;"></div>
+<div class="plot" id="plotM4b1" style="width:100%; height:400px;"></div>
 <p class="text-xs text-slate-500 mt-1">Observe: Butterworth is smooth but rolls off slowly; Elliptic is the steepest but has ripple. Adjust the order to see convergence speed differences.</p>
 </div>
 
@@ -8110,8 +8090,8 @@ $$\frac{Y(z)}{X(z)} = \frac{T/2 \cdot (1+z^{-1})}{1 - z^{-1}} = \frac{T}{2}\,\fr
 
 <!-- ch-nav -->
 <div class="ch-nav">
-<a href="#sec-m4a-1">&larr; Prev: FIR Filter Design</a>
-<a href="#sec-m4c-1">Next: Filter Realization Structures &rarr;</a>
+<a onclick="go(\'m4a-1\')">&larr; Prev: FIR Filter Design</a>
+<a onclick="go(\'m4c-1\')">Next: Filter Realization Structures &rarr;</a>
 </div>
 </section>
 
@@ -8293,7 +8273,7 @@ $$\frac{\partial p_i}{\partial a_{1i}} = \frac{-p_i}{p_i - p_i^*} = \frac{-p_i}{
   </select>
 </div>
 
-<div id="plotM4c1" style="width:100%; height:420px;"></div>
+<div class="plot" id="plotM4c1" style="width:100%; height:420px;"></div>
 <p class="text-xs text-slate-500 mt-1">Red dashed = float32 Direct Form (note high-frequency deviation), blue solid = float64 reference, green = float32 SOS (nearly coincides with reference).</p>
 </div>
 
@@ -8309,8 +8289,8 @@ $$\frac{\partial p_i}{\partial a_{1i}} = \frac{-p_i}{p_i - p_i^*} = \frac{-p_i}{
 
 <!-- ch-nav -->
 <div class="ch-nav">
-<a href="#sec-m4b-1">&larr; Prev: IIR Filter Design</a>
-<a href="#sec-m4d-1">Next: Numerical Precision &rarr;</a>
+<a onclick="go(\'m4b-1\')">&larr; Prev: IIR Filter Design</a>
+<a onclick="go(\'m4d-1\')">Next: Numerical Precision &rarr;</a>
 </div>
 </section>
 
@@ -8523,8 +8503,8 @@ $$J_{\text{excess}} \approx \mu \cdot M \cdot \sigma_{e_o}^2 / 2 = \text{misadju
   <span id="m4e1Mv">16</span>
 </div>
 
-<div id="plotM4e1sig" style="width:100%; height:280px;"></div>
-<div id="plotM4e1mse" style="width:100%; height:240px;"></div>
+<div class="plot" id="plotM4e1sig" style="width:100%; height:280px;"></div>
+<div class="plot" id="plotM4e1mse" style="width:100%; height:240px;"></div>
 <p class="text-xs text-slate-500 mt-1">Top: gray = noisy signal $d[n]$, blue = LMS output $e[n]$ (after noise cancellation). Bottom: learning curve (MSE vs. iterations). Try making $\mu$ too large to see divergence!</p>
 </div>
 
@@ -8541,8 +8521,8 @@ $$J_{\text{excess}} \approx \mu \cdot M \cdot \sigma_{e_o}^2 / 2 = \text{misadju
 
 <!-- ch-nav -->
 <div class="ch-nav">
-<a href="#sec-m4d-1">&larr; Prev: Numerical Precision</a>
-<a href="#sec-m5a-1">Next: Module 5 &rarr;</a>
+<a onclick="go(\'m4d-1\')">&larr; Prev: Numerical Precision</a>
+<a onclick="go(\'m5a-1\')">Next: Module 5 &rarr;</a>
 </div>
 </section>
 
@@ -9615,9 +9595,9 @@ $$S_{xx}(e^{j\omega}) = \frac{\sigma^2}{|1 - 0.9\, e^{-j\omega}|^2} = \frac{1}{1
            oninput="document.getElementById('m8a1nrealv').textContent=this.value; updateM8a1()">
   </div>
 </div>
-<div id="plotM8a1real" style="width:100%; min-height:260px;"></div>
-<div id="plotM8a1acf"  style="width:100%; min-height:260px;"></div>
-<div id="plotM8a1psd"  style="width:100%; min-height:260px;"></div>
+<div class="plot" id="plotM8a1real" style="width:100%; min-height:260px;"></div>
+<div class="plot" id="plotM8a1acf"  style="width:100%; min-height:260px;"></div>
+<div class="plot" id="plotM8a1psd"  style="width:100%; min-height:260px;"></div>
 </div>
 
 <!-- Applications -->
@@ -9838,9 +9818,9 @@ $$H_{\text{opt}}[k] = \frac{\hat{S}_{dd}[k]}{\hat{S}_{dd}[k] + \hat{S}_{vv}[k]}$
            oninput="document.getElementById('m8b1snrv').textContent=this.value; updateM8b1()">
   </div>
 </div>
-<div id="plotM8b1time" style="width:100%; min-height:260px;"></div>
-<div id="plotM8b1filt" style="width:100%; min-height:260px;"></div>
-<div id="plotM8b1out"  style="width:100%; min-height:260px;"></div>
+<div class="plot" id="plotM8b1time" style="width:100%; min-height:260px;"></div>
+<div class="plot" id="plotM8b1filt" style="width:100%; min-height:260px;"></div>
+<div class="plot" id="plotM8b1out"  style="width:100%; min-height:260px;"></div>
 <div id="m8b1info" style="margin-top:10px; padding:10px; border-radius:6px; font-size:.875rem; font-weight:600; text-align:center; background:rgba(6,182,212,0.1); border:1px solid rgba(6,182,212,0.3);">
   Output SNR: ---
 </div>
