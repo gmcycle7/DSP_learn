@@ -1713,6 +1713,54 @@ $$\begin{aligned} a' &= a + W_N^k \cdot b \\ b' &= a - W_N^k \cdot b \end{aligne
 </table>
 </div>
 </div>
+
+<div class="card">
+<h3 class="font-bold text-base mb-3">完整推導：8 點 FFT 帶數字算給你看</h3>
+<p class="text-sm text-slate-500 mb-3">選擇一個輸入訊號，看蝴蝶圖如何一步步把時域訊號轉成頻譜。每一級都顯示具體的複數值，最終得到 $|X[k]|$ 頻譜。</p>
+
+<div class="flex flex-wrap gap-3 mb-3">
+  <div>
+    <label class="text-xs font-medium mr-2">輸入訊號：</label>
+    <select id="fftExSig" class="border rounded px-2 py-1 text-sm dark:bg-slate-700 dark:border-slate-600" onchange="runFFTexample()">
+      <option value="cos1" selected>cos(2π·n/8) — 純餘弦 k=1</option>
+      <option value="cos2">cos(2π·2n/8) — 純餘弦 k=2</option>
+      <option value="rect">[1,1,1,1,0,0,0,0] — 矩形脈衝</option>
+      <option value="impulse">[1,0,0,0,0,0,0,0] — 單位脈衝</option>
+      <option value="dc">[1,1,1,1,1,1,1,1] — 直流</option>
+      <option value="alt">[1,-1,1,-1,1,-1,1,-1] — 最高頻</option>
+    </select>
+  </div>
+</div>
+
+<p class="text-xs font-bold text-slate-500 mb-1">Step 1: 原始輸入 x[n]（按時間順序）</p>
+<div id="fftExStep1" class="overflow-x-auto"></div>
+
+<p class="text-xs font-bold text-slate-500 mb-1 mt-3">Step 2: 位元反轉重排（蝴蝶圖左側輸入）</p>
+<div id="fftExStep2" class="overflow-x-auto"></div>
+
+<p class="text-xs font-bold text-slate-500 mb-1 mt-3">Step 3: Stage 1 後的中間值（4 個 2 點 DFT）</p>
+<div id="fftExStage1" class="overflow-x-auto"></div>
+
+<p class="text-xs font-bold text-slate-500 mb-1 mt-3">Step 4: Stage 2 後的中間值（2 個 4 點 DFT）</p>
+<div id="fftExStage2" class="overflow-x-auto"></div>
+
+<p class="text-xs font-bold text-slate-500 mb-1 mt-3">Step 5: Stage 3 後的最終 DFT 輸出 X[k]（複數）</p>
+<div id="fftExStage3" class="overflow-x-auto"></div>
+
+<p class="text-xs font-bold text-slate-500 mb-1 mt-3">Step 6: 頻譜 $|X[k]|$ 視覺化</p>
+<p class="text-xs text-slate-400 mb-2">取每個 X[k] 的絕對值就得到頻譜。物理頻率 $f_k = k\cdot f_s/N$。</p>
+<div id="plotFFTex" class="plot" style="min-height:300px"></div>
+
+<div class="tip mt-3">
+<p class="text-sm"><strong>怎麼讀懂這個推導？</strong></p>
+<ul class="text-xs space-y-1 mt-1 list-disc pl-5">
+<li><strong>從上往下看</strong>：每一級的輸入是上一級的輸出</li>
+<li><strong>每一格的數字</strong>就是該節點的複數值，格式 <code>a + bj</code></li>
+<li><strong>Stage k 的蝴蝶</strong>：把上一級兩個值合成兩個新值（公式 $a' = a + W \cdot b$, $b' = a - W \cdot b$）</li>
+<li><strong>最後 X[k] 取絕對值</strong>得到頻譜。例如選 cos(2π·n/8) 應該在 k=1 和 k=7 看到峰值</li>
+</ul>
+</div>
+</div>
 <div class="ch-nav"><a onclick="go('m3a-1')">← 2.3 DTFT</a><a onclick="go('m2b-4')">2.5 Z 轉換 →</a></div>
 </section>
 
@@ -10743,7 +10791,7 @@ function initPlots(s){
     case'm1-1':updateP11();break;case'm1-3':updateP13();break;case'm1-4':updateP14();break;
     case'm2a-1':updateP21();break;case'm2a-2':updateP22();break;case'm3a-1':updateP23();break;
     case'm2b-1':updateM2b1();break;case'm2b-2':updateM2b2(0);break;case'm2b-3':updateM2b3();break;case'm2b-4':updateP25();break;case'm2c-1':updateP26();break;
-    case'm3a-2':updateP24();drawButterfly();break;case'm3b-1':updateP31();updateP31b();break;
+    case'm3a-2':updateP24();drawButterfly();runFFTexample();break;case'm3b-1':updateP31();updateP31b();break;
     case'm3c-1':updateP32();break;case'm3d-1':updateP33();break;case'm3d-2':updateP34();break;
     case'm5a-1':updateM5a1();break;case'm5b-1':updateM5b1();break;case'm5c-1':updateM5c1();break;case'm5d-1':updateM5d1();break;case'm6-1':updateP41();break;case'm6-2':updateP42();break;case'm6-3':updateP43();break;
     case'm7-1':updateP51();break;case'm7-2':updateP52();break;case'm7-5':updateP55();break;
@@ -11529,6 +11577,112 @@ function drawButterfly(){
     annotations:[...inputLabels,...outputLabels,...stageLabels,...twiddleLabels],
     margin:{l:20,r:20,t:30,b:20},
     showlegend:false
+  }),pc);
+}
+
+// === 8-point FFT Worked Example: butterfly → spectrum ===
+function runFFTexample(){
+  const sigType=(document.getElementById('fftExSig')||{value:'cos1'}).value;
+  const N=8;
+  // Generate input signal
+  let x=[];
+  if(sigType==='cos1') x=Array.from({length:N},(_,n)=>Math.cos(2*Math.PI*n/N));
+  else if(sigType==='cos2') x=Array.from({length:N},(_,n)=>Math.cos(2*Math.PI*2*n/N));
+  else if(sigType==='rect') x=[1,1,1,1,0,0,0,0];
+  else if(sigType==='impulse') x=[1,0,0,0,0,0,0,0];
+  else if(sigType==='dc') x=[1,1,1,1,1,1,1,1];
+  else if(sigType==='alt') x=[1,-1,1,-1,1,-1,1,-1];
+
+  // Helper: format complex number
+  const fmt=(re,im)=>{
+    const r=Math.abs(re)<1e-10?0:re;
+    const i=Math.abs(im)<1e-10?0:im;
+    if(i===0) return r.toFixed(3);
+    if(r===0) return (i>=0?'':'-')+Math.abs(i).toFixed(3)+'j';
+    return r.toFixed(3)+(i>=0?'+':'')+i.toFixed(3)+'j';
+  };
+
+  // Helper: render a row of 8 values as a table
+  const renderRow=(label,re,im,colorFn)=>{
+    let html='<table class="dt text-xs" style="font-family:ui-monospace,monospace"><thead><tr><th style="width:8%">索引</th>';
+    for(let i=0;i<N;i++) html+=`<th>${i}</th>`;
+    html+='</tr></thead><tbody><tr><td><strong>'+label+'</strong></td>';
+    for(let i=0;i<N;i++){
+      const cell=fmt(re[i],im[i]);
+      const color=colorFn?colorFn(i,re[i],im[i]):'';
+      html+=`<td style="${color}">${cell}</td>`;
+    }
+    html+='</tr></tbody></table>';
+    return html;
+  };
+
+  // Step 1: original
+  const im0=new Array(N).fill(0);
+  document.getElementById('fftExStep1').innerHTML=renderRow('x[n]',x,im0);
+
+  // Step 2: bit-reversed
+  const bitRev=[0,4,2,6,1,5,3,7];
+  const xBR=bitRev.map(i=>x[i]);
+  const imBR=new Array(N).fill(0);
+  let html2='<table class="dt text-xs" style="font-family:ui-monospace,monospace"><thead><tr><th>位置</th>';
+  for(let i=0;i<N;i++) html2+=`<th>${i}</th>`;
+  html2+='</tr></thead><tbody>';
+  html2+='<tr><td><strong>原索引</strong></td>';
+  for(let i=0;i<N;i++) html2+=`<td>x[${bitRev[i]}]</td>`;
+  html2+='</tr><tr><td><strong>數值</strong></td>';
+  for(let i=0;i<N;i++) html2+=`<td>${fmt(xBR[i],0)}</td>`;
+  html2+='</tr></tbody></table>';
+  document.getElementById('fftExStep2').innerHTML=html2;
+
+  // Now perform stage-by-stage FFT
+  // Initialize working arrays
+  let re=xBR.slice(),imA=new Array(N).fill(0);
+
+  // Stage by stage butterfly operations
+  for(let s=1;s<=3;s++){
+    const m=Math.pow(2,s);
+    const half=m/2;
+    const newRe=re.slice(),newIm=imA.slice();
+    for(let g=0;g<N;g+=m){
+      for(let k=0;k<half;k++){
+        const top=g+k, bot=g+k+half;
+        // Twiddle factor W_8^(k * N/m) = e^(-j2pi*k*N/m/N) = e^(-j2pi*k/m)
+        const angle=-2*Math.PI*k/m;
+        const wr=Math.cos(angle),wi=Math.sin(angle);
+        // t = W * b
+        const tr=wr*re[bot]-wi*imA[bot];
+        const ti=wr*imA[bot]+wi*re[bot];
+        newRe[top]=re[top]+tr;
+        newIm[top]=imA[top]+ti;
+        newRe[bot]=re[top]-tr;
+        newIm[bot]=imA[top]-ti;
+      }
+    }
+    re=newRe; imA=newIm;
+    // Render this stage
+    document.getElementById('fftExStage'+s).innerHTML=renderRow('Stage '+s,re,imA);
+  }
+
+  // Final magnitude spectrum |X[k]|
+  const mag=re.map((r,i)=>Math.sqrt(r*r+imA[i]*imA[i]));
+  const kArr=Array.from({length:N},(_,i)=>i);
+
+  // Stem plot
+  const stemX=[],stemY=[];
+  for(let i=0;i<N;i++){
+    stemX.push(i,i,null);
+    stemY.push(0,mag[i],null);
+  }
+
+  Plotly.react('plotFFTex',[
+    {x:stemX,y:stemY,mode:'lines',line:{color:'#06b6d4',width:3},showlegend:false,hoverinfo:'skip'},
+    {x:kArr,y:mag,mode:'markers+text',marker:{size:12,color:'#06b6d4',line:{color:'#0e7490',width:2}},
+     text:mag.map(m=>m.toFixed(2)),textposition:'top center',textfont:{size:11,color:dk()?'#e2e8f0':'#0e7490'},
+     showlegend:false}
+  ],Object.assign(pl('','頻率索引 k','|X[k]|'),{
+    xaxis:{title:'頻率索引 k',range:[-0.5,N-0.5],dtick:1,color:dk()?'#94a3b8':'#475569',gridcolor:dk()?'#1e293b':'#e2e8f0'},
+    yaxis:{title:'|X[k]|',rangemode:'tozero',color:dk()?'#94a3b8':'#475569',gridcolor:dk()?'#1e293b':'#e2e8f0'},
+    margin:{l:55,r:30,t:25,b:50}
   }),pc);
 }
 
