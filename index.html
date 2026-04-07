@@ -1653,6 +1653,66 @@ $$f_k = \frac{k \cdot f_s}{N}, \quad k = 0, 1, \ldots, N-1$$
 </div>
 <div id="plotP24" class="plot" style="text-align:center;color:#94a3b8;font-size:.875rem;padding:2rem 0;">調整上方參數後圖表將自動顯示</div>
 </div>
+
+<div class="card">
+<h3 class="font-bold text-base mb-3">範例：8 點 FFT 蝴蝶圖 (Butterfly Diagram)</h3>
+<p class="text-sm text-slate-500 mb-3">Radix-2 Cooley-Tukey FFT 把 N=8 點 DFT 分解成 $\log_2 8 = 3$ 級運算，每級有 $N/2=4$ 個「蝴蝶」運算。每個蝴蝶把兩個輸入合成兩個輸出，總共需要 $\frac{N}{2}\log_2 N = 12$ 次複數乘法（直接 DFT 需要 $N^2 = 64$ 次）。</p>
+
+<div class="fm">
+<p class="text-sm font-bold">基本蝴蝶運算 (Butterfly):</p>
+<p class="text-sm">給定兩個輸入 $a$, $b$ 和旋轉因子 $W_N^k = e^{-j2\pi k/N}$：</p>
+$$\begin{aligned} a' &= a + W_N^k \cdot b \\ b' &= a - W_N^k \cdot b \end{aligned}$$
+<p class="text-xs mt-2">每個蝴蝶 = 1 次複數乘法 + 2 次複數加法。</p>
+</div>
+
+<p class="text-sm mt-3 mb-2"><strong>輸入位元反轉 (Bit-Reversal) 排序：</strong>輸入順序 0,1,2,3,4,5,6,7 經過位元反轉變成 0,4,2,6,1,5,3,7。輸出則保持自然順序 X[0]~X[7]。</p>
+
+<div class="overflow-x-auto">
+<table class="dt text-xs my-3">
+<thead><tr><th>原始索引</th><th>二進位</th><th>反轉</th><th>新位置</th></tr></thead>
+<tbody>
+<tr><td>0</td><td>000</td><td>000</td><td>0</td></tr>
+<tr><td>1</td><td>001</td><td>100</td><td>4</td></tr>
+<tr><td>2</td><td>010</td><td>010</td><td>2</td></tr>
+<tr><td>3</td><td>011</td><td>110</td><td>6</td></tr>
+<tr><td>4</td><td>100</td><td>001</td><td>1</td></tr>
+<tr><td>5</td><td>101</td><td>101</td><td>5</td></tr>
+<tr><td>6</td><td>110</td><td>011</td><td>3</td></tr>
+<tr><td>7</td><td>111</td><td>111</td><td>7</td></tr>
+</tbody>
+</table>
+</div>
+
+<p class="text-xs font-bold text-slate-500 mb-1 mt-3">8 點 FFT 完整資料流圖</p>
+<p class="text-xs text-slate-400 mb-2">藍線 = 加法路徑 (a 路徑)；紅線 = 乘以旋轉因子後相減 (b 路徑)。標籤 $W_8^k$ 顯示每個蝴蝶用的旋轉因子。</p>
+<div id="plotBfly" class="plot" style="min-height:480px"></div>
+
+<div class="tip mt-3">
+<p class="text-sm"><strong>觀察重點：</strong></p>
+<ul class="text-xs space-y-1 mt-1 list-disc pl-5">
+<li><strong>3 級 (Stage 1, 2, 3)</strong>：每級都把問題規模減半，最後合成完整 DFT</li>
+<li><strong>Stage 1</strong>：4 組「2 點 DFT」，蝴蝶距離 = 1，旋轉因子 $W_8^0 = 1$（不需乘法）</li>
+<li><strong>Stage 2</strong>：2 組「4 點 DFT」，蝴蝶距離 = 2，旋轉因子 $W_8^0, W_8^2$</li>
+<li><strong>Stage 3</strong>：1 組「8 點 DFT」，蝴蝶距離 = 4，旋轉因子 $W_8^0, W_8^1, W_8^2, W_8^3$</li>
+<li>總乘法數：$\frac{N}{2}\log_2 N = 12$（vs 直接 DFT 的 $N^2 = 64$，加速 5.3 倍）</li>
+<li>對於 $N=1024$：FFT 5,120 次 vs DFT 1,048,576 次，加速 <strong>205 倍</strong></li>
+</ul>
+</div>
+
+<div class="fm mt-3">
+<p class="text-sm font-bold">旋轉因子值（N=8）:</p>
+<p class="text-xs mt-2">$W_8 = e^{-j2\pi/8} = e^{-j\pi/4}$</p>
+<table class="dt text-xs mt-2">
+<thead><tr><th>k</th><th>$W_8^k$</th><th>數值</th></tr></thead>
+<tbody>
+<tr><td>0</td><td>$1$</td><td>$1 + 0j$</td></tr>
+<tr><td>1</td><td>$e^{-j\pi/4}$</td><td>$0.707 - 0.707j$</td></tr>
+<tr><td>2</td><td>$e^{-j\pi/2}$</td><td>$0 - j$</td></tr>
+<tr><td>3</td><td>$e^{-j3\pi/4}$</td><td>$-0.707 - 0.707j$</td></tr>
+</tbody>
+</table>
+</div>
+</div>
 <div class="ch-nav"><a onclick="go('m3a-1')">← 2.3 DTFT</a><a onclick="go('m2b-4')">2.5 Z 轉換 →</a></div>
 </section>
 
@@ -10683,7 +10743,7 @@ function initPlots(s){
     case'm1-1':updateP11();break;case'm1-3':updateP13();break;case'm1-4':updateP14();break;
     case'm2a-1':updateP21();break;case'm2a-2':updateP22();break;case'm3a-1':updateP23();break;
     case'm2b-1':updateM2b1();break;case'm2b-2':updateM2b2(0);break;case'm2b-3':updateM2b3();break;case'm2b-4':updateP25();break;case'm2c-1':updateP26();break;
-    case'm3a-2':updateP24();break;case'm3b-1':updateP31();updateP31b();break;
+    case'm3a-2':updateP24();drawButterfly();break;case'm3b-1':updateP31();updateP31b();break;
     case'm3c-1':updateP32();break;case'm3d-1':updateP33();break;case'm3d-2':updateP34();break;
     case'm5a-1':updateM5a1();break;case'm5b-1':updateM5b1();break;case'm5c-1':updateM5c1();break;case'm5d-1':updateM5d1();break;case'm6-1':updateP41();break;case'm6-2':updateP42();break;case'm6-3':updateP43();break;
     case'm7-1':updateP51();break;case'm7-2':updateP52();break;case'm7-5':updateP55();break;
@@ -11356,6 +11416,120 @@ function updateP24() {
         { x: 55, y: 8, text: '55Hz', showarrow: false, font: { size: 10, color: '#f59e0b' } }
       ]
     }), pc);
+}
+
+// === 8-point FFT Butterfly Diagram ===
+function drawButterfly(){
+  const N=8, stages=3;
+  // Bit-reversed input order
+  const bitRev=[0,4,2,6,1,5,3,7];
+  // Layout: x = stage (0=input, 1=stage1 out, 2=stage2 out, 3=stage3 out)
+  // y = sample index (0 to 7)
+  const xStep=2.5;
+  const traces=[];
+  // Node coordinates: nodes[stage][index] = {x, y}
+  const nodes=[];
+  for(let s=0;s<=stages;s++){
+    const stageNodes=[];
+    for(let i=0;i<N;i++) stageNodes.push({x:s*xStep, y:N-1-i});
+    nodes.push(stageNodes);
+  }
+  // Butterfly connections per stage
+  // Stage s: groups of 2^(s+1), butterfly distance = 2^s
+  // Twiddle: W_8^(k * 8/(2^(s+1))) where k = (i mod 2^(s+1)) - 2^s for upper, etc.
+  const twiddleLabels=[];
+  for(let s=1;s<=stages;s++){
+    const m=Math.pow(2,s); // group size
+    const half=m/2; // butterfly distance
+    for(let g=0;g<N;g+=m){
+      for(let k=0;k<half;k++){
+        const top=g+k, bot=g+k+half;
+        // Twiddle factor index: k * (N/m)
+        const twk=k*(N/m);
+        // Top output: a + W*b
+        traces.push({
+          x:[nodes[s-1][top].x, nodes[s][top].x],
+          y:[nodes[s-1][top].y, nodes[s][top].y],
+          mode:'lines',line:{color:'#06b6d4',width:1.5},showlegend:false,hoverinfo:'skip'
+        });
+        traces.push({
+          x:[nodes[s-1][bot].x, nodes[s][top].x],
+          y:[nodes[s-1][bot].y, nodes[s][top].y],
+          mode:'lines',line:{color:'#06b6d4',width:1.5},showlegend:false,hoverinfo:'skip'
+        });
+        // Bottom output: a - W*b
+        traces.push({
+          x:[nodes[s-1][top].x, nodes[s][bot].x],
+          y:[nodes[s-1][top].y, nodes[s][bot].y],
+          mode:'lines',line:{color:'#ef4444',width:1.5},showlegend:false,hoverinfo:'skip'
+        });
+        traces.push({
+          x:[nodes[s-1][bot].x, nodes[s][bot].x],
+          y:[nodes[s-1][bot].y, nodes[s][bot].y],
+          mode:'lines',line:{color:'#ef4444',width:1.5},showlegend:false,hoverinfo:'skip'
+        });
+        // Twiddle factor label at midpoint of bottom→top input edge
+        twiddleLabels.push({
+          x:(nodes[s-1][bot].x+nodes[s][top].x)/2-0.15,
+          y:(nodes[s-1][bot].y+nodes[s][top].y)/2,
+          text:'W₈^'+twk,
+          showarrow:false,
+          font:{size:9,color:'#7c3aed'},
+          bgcolor:dk()?'#1e293b':'#fff',
+          borderpad:1
+        });
+      }
+    }
+  }
+  // Node markers (each stage)
+  for(let s=0;s<=stages;s++){
+    traces.push({
+      x:nodes[s].map(n=>n.x),
+      y:nodes[s].map(n=>n.y),
+      mode:'markers',marker:{size:8,color:'#0891b2',line:{color:'#fff',width:1.5}},
+      showlegend:false,hoverinfo:'skip'
+    });
+  }
+  // Input labels (left side, with bit-reversed order)
+  const inputLabels=[];
+  for(let i=0;i<N;i++){
+    inputLabels.push({
+      x:nodes[0][i].x-0.4,y:nodes[0][i].y,
+      text:'x['+bitRev[i]+']',
+      showarrow:false,
+      font:{size:11,color:dk()?'#e2e8f0':'#0e7490'},
+      xanchor:'right'
+    });
+  }
+  // Output labels (right side, natural order)
+  const outputLabels=[];
+  for(let i=0;i<N;i++){
+    outputLabels.push({
+      x:nodes[stages][i].x+0.4,y:nodes[stages][i].y,
+      text:'X['+i+']',
+      showarrow:false,
+      font:{size:11,color:dk()?'#e2e8f0':'#0e7490'},
+      xanchor:'left'
+    });
+  }
+  // Stage labels (top)
+  const stageLabels=[];
+  for(let s=1;s<=stages;s++){
+    stageLabels.push({
+      x:(s-0.5)*xStep,y:N-0.3,
+      text:'Stage '+s,
+      showarrow:false,
+      font:{size:11,color:'#10b981',weight:'bold'},
+      yanchor:'bottom'
+    });
+  }
+  Plotly.react('plotBfly',traces,Object.assign(pl('','',''),{
+    xaxis:{range:[-1.5,stages*xStep+1.5],showgrid:false,zeroline:false,showticklabels:false},
+    yaxis:{range:[-0.7,N+0.2],showgrid:false,zeroline:false,showticklabels:false,scaleanchor:'x',scaleratio:0.65},
+    annotations:[...inputLabels,...outputLabels,...stageLabels,...twiddleLabels],
+    margin:{l:20,r:20,t:30,b:20},
+    showlegend:false
+  }),pc);
 }
 
 // ============================================================
