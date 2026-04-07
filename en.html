@@ -113,7 +113,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:16px;heigh
     <span class="font-bold text-base bg-gradient-to-r from-cyan-600 to-emerald-600 bg-clip-text text-transparent hidden sm:inline">DSP Teaching Lab — Graduate Level</span>
   </div>
   <div class="flex items-center gap-2">
-    <a href="index.html" class="px-2.5 py-1 rounded-lg text-xs font-bold border border-slate-300 dark:border-slate-600 hover:bg-slate-100 dark:hover:bg-slate-800 transition" title="切換中文版">中</a>
+    <a href="index.html" class="px-2.5 py-1 rounded-lg text-xs font-bold border border-slate-300 dark:border-slate-600 hover:bg-slate-100 dark:hover:bg-slate-800 transition" title="switchChinese版">中</a>
     <button onclick="toggleDark()" class="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800">
       <svg class="w-5 h-5 hidden dark:block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5" stroke-width="2"/><path stroke-width="2" d="M12 1v2m0 18v2m-9-11H1m22 0h-2m-2.636-7.364L16.95 5.05m-9.9 9.9l-1.414 1.414m0-12.728L7.05 5.05m9.9 9.9l1.414 1.414"/></svg>
       <svg class="w-5 h-5 block dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9 9 0 0012 21a9 9 0 008.354-5.646z"/></svg>
@@ -168,8 +168,8 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:16px;heigh
     </summary>
     <div class="ml-3 mt-0.5 pl-3 border-l-2 border-emerald-200 dark:border-emerald-800 space-y-px">
       <button onclick="go('m3a-1')" class="sb-item block" data-s="m3a-1">3A.1 DTFT</button>
-      <button onclick="go('m3a-2')" class="sb-item block" data-s="m3a-2">3A.2 DFT 與 FFT</button>
-      <button onclick="go('m3a-3')" class="sb-item block" data-s="m3a-3">3A.3 進階 FFT</button>
+      <button onclick="go('m3a-2')" class="sb-item block" data-s="m3a-2">3A.2 DFT & FFT</button>
+      <button onclick="go('m3a-3')" class="sb-item block" data-s="m3a-3">3A.3 Advanced FFT</button>
       <button onclick="go('m3b-1')" class="sb-item block" data-s="m3b-1">3B Window Functions</button>
       <button onclick="go('m3c-1')" class="sb-item block" data-s="m3c-1">3C Welch / Multitaper</button>
       <button onclick="go('m3d-1')" class="sb-item block" data-s="m3d-1">3D.1 AR Parametric</button>
@@ -2866,7 +2866,7 @@ $$\mathbf{E}_{s2} = \mathbf{E}_{s1}\,\mathbf{\Phi}, \quad \mathbf{\Phi} = \text{
 <p class="text-xs text-slate-400 mt-1">FFT bin width = 15.6 Hz. When $\Delta f < 15.6$ Hz, the FFT fundamentally cannot resolve them. Lower the SNR to observe the threshold effect.</p>
 </div>
 
-<div class="ref-box"><p><strong>References:</strong> [1] Schmidt, <em>Multiple Emitter Location and Signal Parameter Estimation</em>, IEEE Trans. AP, 1986 (原始報告 1979). [2] Roy &amp; Kailath, <em>ESPRIT — Estimation of Signal Parameters via Rotational Invariance Techniques</em>, IEEE Trans. ASSP, 1989. [3] Stoica &amp; Moses, <em>Spectral Analysis of Signals</em>, Ch.4, Pearson, 2005. [4] Van Trees, <em>Optimum Array Processing</em>, Part IV of Detection, Estimation, and Modulation Theory, Wiley, 2002.</p></div>
+<div class="ref-box"><p><strong>References:</strong> [1] Schmidt, <em>Multiple Emitter Location and Signal Parameter Estimation</em>, IEEE Trans. AP, 1986 (Originalreport 1979). [2] Roy &amp; Kailath, <em>ESPRIT — Estimation of Signal Parameters via Rotational Invariance Techniques</em>, IEEE Trans. ASSP, 1989. [3] Stoica &amp; Moses, <em>Spectral Analysis of Signals</em>, Ch.4, Pearson, 2005. [4] Van Trees, <em>Optimum Array Processing</em>, Part IV of Detection, Estimation, and Modulation Theory, Wiley, 2002.</p></div>
 <div class="card" style="border-left:4px solid #10b981;">
 <h3 class="font-bold text-emerald-700 text-sm mb-3">✅ Quick Check</h3>
 <div class="space-y-3 text-sm">
@@ -8446,7 +8446,7 @@ $$E[v_i[n+1]] = (1 - \mu\lambda_i)\,E[v_i[n]]$$
 <p class="mt-2">The convergence speed is determined by the slowest mode: $\tau_i = -1/\ln(1-\mu\lambda_i) \approx 1/(\mu\lambda_i)$. The slowest mode corresponds to $\lambda_{\min}$, so <strong>the larger the eigenvalue spread $\chi = \lambda_{\max}/\lambda_{\min}$, the slower the convergence</strong>.</p>
 <p class="mt-2">Steady-state excess MSE:</p>
 $$J_{\text{excess}} \approx \mu \cdot M \cdot \sigma_{e_o}^2 / 2 = \text{misadjustment} \times J_{\min}$$
-<p>misadjustment $\mathcal{M} \approx \mu\,M\,\sigma_x^2 / 2 = \mu\,\text{tr}(\mathbf{R}_{xx})/2$。$\;\blacksquare$</p>
+<p>Misadjustment $\mathcal{M} \approx \mu\,M\,\sigma_x^2 / 2 = \mu\,\text{tr}(\mathbf{R}_{xx})/2$. $\;\blacksquare$</p>
 </div>
 </details>
 </div>
@@ -8981,9 +8981,9 @@ Speedup: 4x!</div>
 <p class="text-base">A filter bank splits a signal into multiple subbands, decimates each for independent processing, then upsamples and synthesizes back to the original signal. If designed properly, <strong>Perfect Reconstruction (PR)</strong> is achievable — the output is exactly a delayed version of the input with no distortion whatsoever.</p>
 </div>
 
-<!-- 為什麼要學 -->
+<!-- Why does this matter -->
 <div class="hist">
-<h2 class="text-lg font-bold mb-3">Why Learn This?</h2>
+<h2 class="text-lg font-bold mb-3">Why does this matter</h2>
 <p><strong>Esteban &amp; Galand (1977)</strong> proposed the Quadrature Mirror Filter (QMF) for sub-band speech coding at the ICASSP conference, inaugurating the era of subband processing. Their motivation: different frequency bands of speech have different perceptual importance; by processing them separately, more bits can be allocated to important bands and fewer to unimportant ones — the seed of <strong>Perceptual Coding</strong>. The MDCT (Modified Discrete Cosine Transform) used in MP3 is essentially a perfect reconstruction filter bank, and the DWT used in JPEG 2000 is as well. It is fair to say that <strong>half of modern compression technology is built on filter bank theory</strong>.</p>
 </div>
 
@@ -9046,67 +9046,67 @@ $$Y(z) = \underbrace{\tfrac{1}{2}\bigl[F_0(z)H_0(z) + F_1(z)H_1(z)\bigr]}_{\text
 $$F_0(z)H_0(z) + F_1(z)H_1(z) = 2cz^{-d}$$</li>
 </ol>
 
-<h3 class="font-bold mt-4 mb-2">QMF 設計</h3>
-<p class="mb-2">經典 QMF 選擇：$H_1(z) = H_0(-z)$（鏡像關係），即 $h_1[n] = (-1)^n h_0[n]$。</p>
-<div class="tip"><p><strong>含義：</strong>如果 $H_0$ 是低通，那 $H_0(-z)$ 就是把頻率軸翻轉，自動成為高通。這就是「Quadrature Mirror」名稱的Origin——高通是低通的鏡像。</p></div>
+<h3 class="font-bold mt-4 mb-2">QMF design</h3>
+<p class="mb-2">The classical QMF choice is $H_1(z) = H_0(-z)$ (mirror relation), i.e. $h_1[n] = (-1)^n h_0[n]$.</p>
+<div class="tip"><p><strong>Meaning:</strong> if $H_0$ is a low-pass, then $H_0(-z)$ flips the frequency axis and automatically becomes a high-pass. This is the origin of the name "Quadrature Mirror"—the high-pass is the mirror image of the low-pass.</p></div>
 
-<h3 class="font-bold mt-4 mb-2">與 DWT 的連結：Mallat 演算法</h3>
-<p class="mb-2">把雙通道分析的低頻輸出 $v_0[n]$ 再送入另一組 $(H_0, H_1)$ + $\downarrow 2$：</p>
-<div class="code">Level 1: x[n] → H0 ↓2 → a1[n]   (近似係數)
-                → H1 ↓2 → d1[n]   (細節係數)
-Level 2: a1[n] → H0 ↓2 → a2[n]
-                → H1 ↓2 → d2[n]
-Level 3: a2[n] → H0 ↓2 → a3[n]
-                → H1 ↓2 → d3[n]
+<h3 class="font-bold mt-4 mb-2">Link to the DWT: the Mallat algorithm</h3>
+<p class="mb-2">Feed the low-pass output $v_0[n]$ of a two-channel analysis back into another $(H_0, H_1)$ + $\downarrow 2$ stage:</p>
+<div class="code">Level 1: x[n] &rarr; H0 &darr;2 &rarr; a1[n]   (approximation coefficients)
+                &rarr; H1 &darr;2 &rarr; d1[n]   (detail coefficients)
+Level 2: a1[n] &rarr; H0 &darr;2 &rarr; a2[n]
+                &rarr; H1 &darr;2 &rarr; d2[n]
+Level 3: a2[n] &rarr; H0 &darr;2 &rarr; a3[n]
+                &rarr; H1 &darr;2 &rarr; d3[n]
    ...</div>
-<p class="mt-2 text-sm">這正是<strong>離散小波轉換 (DWT)</strong>！每一層提取不同尺度的細節。$H_0/H_1$ 就是小波的縮放函數/母小波 (Scaling Function / Mother Wavelet) 對應的濾波器。</p>
+<p class="mt-2 text-sm">This is exactly the <strong>Discrete Wavelet Transform (DWT)</strong>! Each level extracts details at a different scale. $H_0/H_1$ are the filters associated with the wavelet's scaling function / mother wavelet.</p>
 
 <details class="deriv my-4">
-<summary>Expand：完美重建條件推導</summary>
+<summary>Show full derivation: the perfect-reconstruction condition</summary>
 <div>
-<p>在雙通道系統中，降取樣 $\downarrow 2$ 再升取樣 $\uparrow 2$ 的組合效應為：</p>
+<p>In a two-channel system, the combined effect of $\downarrow 2$ followed by $\uparrow 2$ is:</p>
 $$(\uparrow 2 \circ \downarrow 2)\{v\}(z) = \frac{1}{2}\bigl[V(z^{1/2}) + V(-z^{1/2})\bigr] \bigg|_{z \to z^2}$$
-<p class="mt-2">更明確地，設 $v_0[n]$ 是 $x[n]$ 經 $H_0$ 濾波再 $\downarrow 2$ 的結果：</p>
+<p class="mt-2">More explicitly, let $v_0[n]$ be the result of filtering $x[n]$ with $H_0$ and then $\downarrow 2$:</p>
 $$V_0(z) = \frac{1}{2}\bigl[H_0(z^{1/2})X(z^{1/2}) + H_0(-z^{1/2})X(-z^{1/2})\bigr]$$
-<p class="mt-2">（這裡用了 $\downarrow 2$ 的頻域公式）。升取樣回去再通過 $F_0$：</p>
+<p class="mt-2">(using the frequency-domain formula for $\downarrow 2$). Upsample again and pass through $F_0$:</p>
 $$U_0(z) = F_0(z) \cdot \frac{1}{2}\bigl[H_0(z)X(z) + H_0(-z)X(-z)\bigr]$$
-<p class="mt-2">同理 $U_1(z) = F_1(z) \cdot \frac{1}{2}[H_1(z)X(z) + H_1(-z)X(-z)]$。</p>
-<p class="mt-2">合成輸出：</p>
+<p class="mt-2">Similarly $U_1(z) = F_1(z) \cdot \frac{1}{2}[H_1(z)X(z) + H_1(-z)X(-z)]$.</p>
+<p class="mt-2">Synthesis output:</p>
 $$Y(z) = U_0(z) + U_1(z) = T(z)X(z) + A(z)X(-z)$$
-<p>其中：</p>
+<p>where:</p>
 $$T(z) = \frac{1}{2}[F_0(z)H_0(z) + F_1(z)H_1(z)]$$
 $$A(z) = \frac{1}{2}[F_0(z)H_0(-z) + F_1(z)H_1(-z)]$$
-<p class="mt-2"><strong>完美重建要求：</strong>$A(z) = 0$（無混疊）且 $T(z) = cz^{-d}$（純延遲）。</p>
-<p class="mt-2">若取 $H_1(z) = H_0(-z)$、$F_0(z) = H_0(z)$、$F_1(z) = -H_0(-z)$，則：</p>
+<p class="mt-2"><strong>Perfect reconstruction requires:</strong> $A(z) = 0$ (no aliasing) and $T(z) = cz^{-d}$ (pure delay).</p>
+<p class="mt-2">If we take $H_1(z) = H_0(-z)$, $F_0(z) = H_0(z)$, $F_1(z) = -H_0(-z)$, then:</p>
 $$A(z) = \frac{1}{2}[H_0(z)H_0(-z) - H_0(-z)H_0(z)] = 0 \checkmark$$
 $$T(z) = \frac{1}{2}[H_0^2(z) - H_0^2(-z)]$$
-<p>PR 要求 $T(z) = cz^{-d}$，這對 $H_0$ 的係數施加了非平凡的約束（Power Complementarity）。Daubechies 小波就是滿足此條件的著名解。</p>
+<p>PR requires $T(z) = cz^{-d}$, which imposes non-trivial constraints on the coefficients of $H_0$ (power complementarity). Daubechies wavelets are famous solutions that satisfy this condition.</p>
 </div>
 </details>
 </div>
 
 <!-- How to Use -->
 <div class="card">
-<h2 class="text-lg font-bold mb-3">How to Use：雙通道濾波器組設計步驟</h2>
+<h2 class="text-lg font-bold mb-3">How to Use: designing a two-channel filter bank</h2>
 <ol class="list-decimal pl-5 space-y-2 text-sm">
-<li><strong>選擇原型低通濾波器 $H_0(z)$：</strong>設計截止在 $\pi/2$ 的半帶 (Half-Band) FIR 低通，如使用 Daubechies 係數或 CQF 設計法</li>
-<li><strong>由鏡像關係得到高通：</strong>$H_1(z) = H_0(-z)$，即 $h_1[n] = (-1)^n h_0[n]$（將低通的偶數係數不變、奇數係數反號）</li>
-<li><strong>設定合成濾波器：</strong>$F_0(z) = H_0(z)$，$F_1(z) = -H_1(z)$（或依 PR 條件調整）</li>
-<li><strong>驗證 PR：</strong>Compute $T(z)$ 確認為純延遲，Compute $A(z)$ 確認為零</li>
-<li><strong>（若要 DWT）</strong>迭代：將 $v_0[n]$ 再送入同一組分析濾波器，重複所需層數</li>
+<li><strong>Choose a prototype low-pass filter $H_0(z)$:</strong> design a half-band FIR low-pass with cutoff at $\pi/2$, e.g. using Daubechies coefficients or a CQF design.</li>
+<li><strong>Derive the high-pass from the mirror relation:</strong> $H_1(z) = H_0(-z)$, i.e. $h_1[n] = (-1)^n h_0[n]$ (leave the even coefficients of the low-pass unchanged and flip the sign of the odd coefficients).</li>
+<li><strong>Set the synthesis filters:</strong> $F_0(z) = H_0(z)$, $F_1(z) = -H_1(z)$ (or adjust according to the PR condition).</li>
+<li><strong>Verify PR:</strong> compute $T(z)$ to confirm it is a pure delay and compute $A(z)$ to confirm it is zero.</li>
+<li><strong>(For a DWT)</strong> iterate: feed $v_0[n]$ back into the same analysis filters and repeat for the desired number of levels.</li>
 </ol>
-<div class="tip"><p><strong>數值例：</strong>Daubechies db2 (4-tap)：$h_0 = [0.4830, 0.8365, 0.2241, -0.1294]$。可以驗證 $T(z) = z^{-3}$（延遲 3 個樣本），完美重建。</p></div>
+<div class="tip"><p><strong>Numerical example:</strong> Daubechies db2 (4-tap): $h_0 = [0.4830, 0.8365, 0.2241, -0.1294]$. You can verify that $T(z) = z^{-3}$ (3-sample delay) and the reconstruction is perfect.</p></div>
 </div>
 
 <!-- Interactive Demo -->
 <div class="card">
-<h2 class="text-lg font-bold mb-3">Interactive：雙通道濾波器組分析與重建</h2>
-<p class="text-sm text-slate-500 mb-3">觀察輸入訊號如何被分成低頻和高頻子帶，以及完美重建 vs 非完美重建的差異。</p>
+<h2 class="text-lg font-bold mb-3">Interactive: two-channel filter bank analysis and reconstruction</h2>
+<p class="text-sm text-slate-500 mb-3">See how the input signal is split into low- and high-frequency subbands, and compare perfect reconstruction against non-perfect reconstruction.</p>
 
 <div class="flex flex-wrap gap-3 mb-3 items-center">
   <div>
     <label class="text-xs font-medium">
-      <input type="checkbox" id="m5c1pr" checked onchange="updateM5c1()"> 完美重建 (Perfect Reconstruction)
+      <input type="checkbox" id="m5c1pr" checked onchange="updateM5c1()"> Perfect Reconstruction
     </label>
   </div>
 </div>
@@ -9118,21 +9118,21 @@ $$T(z) = \frac{1}{2}[H_0^2(z) - H_0^2(-z)]$$
 <div class="card">
 <h2 class="text-lg font-bold mb-3">Applications</h2>
 <ol class="list-decimal pl-5 space-y-3 text-sm">
-<li><strong>語音編碼 (G.722)：</strong>ITU-T G.722 標準使用雙通道 QMF 將 7 kHz 語音分成高低頻帶，分別用 ADPCM 編碼。低頻帶用較多位元（語音主要能量所在），高頻帶用較少位元</li>
-<li><strong>MP3 音訊壓縮：</strong>使用 32 通道 MDCT (Modified Discrete Cosine Transform) 濾波器組，本質上是餘弦調變濾波器組 (Cosine-Modulated Filter Bank) 的一種。每個子帶根據心理聲學模型 (Psychoacoustic Model) 分配不同的量化位元</li>
-<li><strong>JPEG 2000 影像壓縮：</strong>使用 CDF 9/7 或 Le Gall 5/3 雙正交小波濾波器組，對影像做多級 2D 子帶分解。比 JPEG 的 DCT 更適合處理不同解析度的影像細節</li>
-<li><strong>回聲消除 (AEC)：</strong>子帶自適應濾波器在每個頻帶獨立收斂，比全頻帶演算法收斂更快，Compute量更低</li>
+<li><strong>Speech coding (G.722):</strong> the ITU-T G.722 standard uses a two-channel QMF to split 7 kHz speech into low and high bands, coded separately with ADPCM. The low band receives more bits (most speech energy) and the high band fewer.</li>
+<li><strong>MP3 audio compression:</strong> uses a 32-channel MDCT (Modified Discrete Cosine Transform) filter bank, essentially a type of cosine-modulated filter bank. Each subband is allocated a different number of quantization bits based on a psychoacoustic model.</li>
+<li><strong>JPEG 2000 image compression:</strong> uses CDF 9/7 or Le Gall 5/3 biorthogonal wavelet filter banks for multi-level 2D subband decomposition of images. Better suited than the DCT of JPEG for handling image detail at different resolutions.</li>
+<li><strong>Acoustic echo cancellation (AEC):</strong> subband adaptive filters converge independently in each band, converging faster and using less computation than full-band algorithms.</li>
 </ol>
 </div>
 
-<!-- 陷阱/限制 -->
+<!-- Pitfalls / limitations -->
 <div class="warn">
 <h2 class="text-lg font-bold mb-3">Pitfalls and Limitations</h2>
 <ul class="list-disc pl-5 space-y-2 text-sm">
-<li><strong>經典 QMF 無法真正 PR：</strong>Esteban-Galand 的原始 QMF 只能消除混疊，但殘留振幅失真。要真正 PR 必須使用 CQF/PR-QMF 設計</li>
-<li><strong>線性相位 vs PR 的矛盾：</strong>正交 (Orthogonal) 濾波器組（如 Daubechies）可以 PR 但不是線性相位。雙正交 (Biorthogonal) 濾波器組可以兩者兼得，但分析和合成濾波器不同</li>
-<li><strong>頻帶間的洩漏：</strong>理想的 brick-wall 分頻不可能用有限長度濾波器實現。過渡帶必然有洩漏，影響子帶獨立處理的效果</li>
-<li><strong>延遲：</strong>PR 濾波器組引入的延遲 $d$ 等於分析+合成濾波器的總長度減一。在即時通訊中，這個延遲可能超過可接受的範圍</li>
+<li><strong>Classical QMF cannot achieve true PR:</strong> the original Esteban-Galand QMF can only cancel aliasing while leaving residual amplitude distortion. True PR requires CQF/PR-QMF designs.</li>
+<li><strong>Linear phase vs. PR conflict:</strong> orthogonal filter banks (e.g. Daubechies) achieve PR but not linear phase. Biorthogonal filter banks can achieve both, but analysis and synthesis filters differ.</li>
+<li><strong>Leakage between bands:</strong> an ideal brick-wall split is impossible with finite-length filters. There is always leakage in the transition band, affecting independent subband processing.</li>
+<li><strong>Delay:</strong> a PR filter bank introduces a delay $d$ equal to the combined length of analysis + synthesis filters minus one. In real-time communications this delay may exceed the acceptable range.</li>
 </ul>
 </div>
 
@@ -9140,21 +9140,21 @@ $$T(z) = \frac{1}{2}[H_0^2(z) - H_0^2(-z)]$$
 <div class="card">
 <h2 class="text-lg font-bold mb-3">Quick Check</h2>
 
-<p class="mb-2"><strong>Q1：</strong>為什麼 $H_1(z) = H_0(-z)$ 可以把低通變成高通？從頻域解釋。</p>
+<p class="mb-2"><strong>Q1:</strong> Why does $H_1(z) = H_0(-z)$ turn a low-pass into a high-pass? Explain in the frequency domain.</p>
 <details class="deriv my-2"><summary>Show answer</summary><div>
-<p>$H_0(-z)$ 等價於在 $H_0(e^{j\omega})$ 中將 $\omega$ 替換為 $\omega + \pi$：
+<p>$H_0(-z)$ is equivalent to replacing $\omega$ with $\omega + \pi$ in $H_0(e^{j\omega})$:
 $$H_1(e^{j\omega}) = H_0(e^{j(\omega+\pi)})$$
-這把頻率軸平移了 $\pi$：原本在 $\omega = 0$ 的通帶（低頻）移到了 $\omega = \pi$（高頻），原本在 $\omega = \pi$ 的止帶移到了 $\omega = 0$。所以低通變成了高通，且頻率響應互為鏡像，這就是「Quadrature Mirror」的含義。</p>
+This shifts the frequency axis by $\pi$: the passband originally at $\omega = 0$ (low frequencies) moves to $\omega = \pi$ (high frequencies), and the stopband originally at $\omega = \pi$ moves to $\omega = 0$. So a low-pass becomes a high-pass, and the two frequency responses are mirror images — that is the meaning of "Quadrature Mirror."</p>
 </div></details>
 
-<p class="mt-3 mb-2"><strong>Q2：</strong>Mallat 演算法每多一層分解，低頻子帶的取樣率和頻寬各變為多少？</p>
+<p class="mt-3 mb-2"><strong>Q2:</strong> With each extra level of decomposition in the Mallat algorithm, what happens to the sample rate and the bandwidth of the low-frequency subband?</p>
 <details class="deriv my-2"><summary>Show answer</summary><div>
-<p>每一層分解都是 $\downarrow 2$，所以每多一層：取樣率減半，頻寬也減半。
-<br>第 $j$ 層的低頻子帶：取樣率 = $f_s/2^j$，頻寬 = $[0, f_s/2^{j+1}]$。
-<br>例如 $f_s = 8$ kHz 做 3 層分解：
-<br>Level 1 低頻帶：$f_s/2 = 4$ kHz，頻寬 $[0, 2\text{ kHz}]$
-<br>Level 2 低頻帶：$f_s/4 = 2$ kHz，頻寬 $[0, 1\text{ kHz}]$
-<br>Level 3 低頻帶：$f_s/8 = 1$ kHz，頻寬 $[0, 0.5\text{ kHz}]$</p>
+<p>Each level is a $\downarrow 2$, so for every additional level: sample rate halves and bandwidth halves.
+<br>Level-$j$ low subband: sample rate = $f_s/2^j$, bandwidth = $[0, f_s/2^{j+1}]$.
+<br>For example with $f_s = 8$ kHz and 3 levels of decomposition:
+<br>Level 1 low band: $f_s/2 = 4$ kHz, bandwidth $[0, 2\text{ kHz}]$
+<br>Level 2 low band: $f_s/4 = 2$ kHz, bandwidth $[0, 1\text{ kHz}]$
+<br>Level 3 low band: $f_s/8 = 1$ kHz, bandwidth $[0, 0.5\text{ kHz}]$</p>
 </div></details>
 </div>
 
@@ -9180,170 +9180,170 @@ $$H_1(e^{j\omega}) = H_0(e^{j(\omega+\pi)})$$
 <!-- One-Sentence Summary -->
 <div class="card">
 <h2 class="text-lg font-bold mb-3">One-Sentence Summary</h2>
-<p class="text-base">Sigma-Delta ($\Sigma\Delta$) ADC 用世界上最粗糙的量化器（1-bit 比較器）以極高的速度取樣，再用回授迴路把量化噪聲「推」到訊號頻帶之外，最後用數位濾波器 + 降取樣得到高解析度（16-24 bit）的輸出。<strong>它把「精度」的問題轉化為「速度」的問題</strong>。</p>
+<p class="text-base">A Sigma-Delta ($\Sigma\Delta$) ADC samples with the crudest quantizer in the world (a 1-bit comparator) at a very high rate, then uses a feedback loop to "push" the quantization noise out of the signal band, and finally recovers a high-resolution (16-24 bit) output with a digital filter and decimation. <strong>It trades the "precision" problem for a "speed" problem.</strong></p>
 </div>
 
-<!-- 為什麼要學 -->
+<!-- Why does this matter -->
 <div class="hist">
-<h2 class="text-lg font-bold mb-3">Why Learn This?</h2>
-<p><strong>Inose, Yasuda &amp; Murakami (1962)</strong> 在日本東京大學首次提出了 Delta-Sigma 調變（最初稱為 Delta Modulation 的改進版）。<strong>James Candy (1974)</strong> 在 Bell Labs 進一步發展了超取樣 ADC 的理論基礎。然而，Sigma-Delta ADC 真正爆發要等到 1990 年代 VLSI 製程成熟之後——因為它只需要一個比較器（1-bit 量化器）和一些數位邏輯，<strong>幾乎完全用數位電路實現</strong>，完美契合 CMOS 製程的縮放趨勢。</p>
-<p class="mt-2">今天，<strong>幾乎所有消費電子的音訊 ADC/DAC 都是 Sigma-Delta 架構</strong>——你的手機、耳機、音效卡裡都有。理解它如何用 1-bit + 超取樣 + 噪聲整形達到 24-bit 解析度，是數位訊號處理中最優雅的「以速度換精度」的範例。</p>
+<h2 class="text-lg font-bold mb-3">Why does this matter</h2>
+<p><strong>Inose, Yasuda &amp; Murakami (1962)</strong> first proposed Delta-Sigma modulation (originally an improvement to Delta Modulation) at the University of Tokyo. <strong>James Candy (1974)</strong> further developed the theoretical basis of oversampling ADCs at Bell Labs. However, Sigma-Delta ADCs did not really take off until CMOS VLSI processes matured in the 1990s—because they only need a comparator (1-bit quantizer) and some digital logic, and are <strong>implemented almost entirely in digital circuits</strong>, perfectly aligned with CMOS scaling trends.</p>
+<p class="mt-2">Today, <strong>almost every consumer-electronics audio ADC/DAC is a Sigma-Delta architecture</strong>—your phone, headphones and sound cards all contain one. Understanding how it achieves 24-bit resolution from 1-bit + oversampling + noise shaping is one of the most elegant examples of trading speed for precision in DSP.</p>
 </div>
 
 <!-- Previously... -->
 <div class="card">
-<h2 class="text-lg font-bold mb-3">Previously...</h2>
+<h2 class="text-lg font-bold mb-3">Previously</h2>
 <ul class="list-disc pl-5 space-y-2 text-sm">
-<li><strong>量化噪聲 (Quantization Noise)：</strong>$B$-bit 均勻量化器的信噪比 (SQNR) = $6.02B + 1.76$ dB。1-bit 量化器 → SQNR $\approx 7.78$ dB（極差）</li>
-<li><strong>功率譜密度 (PSD)：</strong>量化噪聲在加性白噪聲模型下均勻分佈在 $[0, f_s/2]$，PSD = $\Delta^2/(12 f_s)$</li>
-<li><strong>降取樣 + 低通濾波（5.1 節）：</strong>先濾波把帶外噪聲去掉，再降取樣到目標速率</li>
+<li><strong>Quantization noise:</strong> a $B$-bit uniform quantizer has SQNR = $6.02B + 1.76$ dB. A 1-bit quantizer gives SQNR $\approx 7.78$ dB (dreadful).</li>
+<li><strong>Power spectral density (PSD):</strong> under the additive white-noise model, quantization noise is uniformly distributed over $[0, f_s/2]$ with PSD = $\Delta^2/(12 f_s)$.</li>
+<li><strong>Decimation + low-pass filtering (section 5.1):</strong> first filter out the out-of-band noise, then decimate to the target rate.</li>
 </ul>
 </div>
 
-<!-- Pain Point -->
+<!-- The Problem -->
 <div class="card">
-<h2 class="text-lg font-bold mb-3">Pain Point：高解析度 ADC 的代價</h2>
-<p class="mb-3">傳統的 Nyquist-rate ADC（如 SAR、Pipeline）要達到高解析度面臨嚴峻挑戰：</p>
+<h2 class="text-lg font-bold mb-3">The Problem: the cost of high-resolution ADCs</h2>
+<p class="mb-3">Traditional Nyquist-rate ADCs (SAR, Pipeline) face severe challenges to reach high resolution:</p>
 <ul class="list-disc pl-5 space-y-2 text-sm">
-<li><strong>16-bit ADC：</strong>需要比較器能分辨 $V_{\text{ref}}/65536$ 的電壓差。對於 3.3V 參考，這是 $50\,\mu\text{V}$——比晶片上的熱噪聲還小！</li>
-<li><strong>電阻/電容匹配：</strong>Pipeline ADC 需要 0.001% 的元件匹配精度，良率低、成本高</li>
-<li><strong>功耗：</strong>高速高精度 ADC 的功耗可達數瓦，不適合行動裝置</li>
+<li><strong>16-bit ADC:</strong> the comparator must distinguish $V_{\text{ref}}/65536$ volts. With a 3.3 V reference that is $50\,\mu\text{V}$—smaller than on-chip thermal noise!</li>
+<li><strong>Resistor/capacitor matching:</strong> pipeline ADCs need 0.001% component matching, leading to low yield and high cost.</li>
+<li><strong>Power:</strong> high-speed, high-precision ADCs can dissipate several watts, unsuitable for mobile devices.</li>
 </ul>
-<div class="warn"><p><strong>根本矛盾：</strong>CMOS 製程擅長做「快但粗」的數位電路，不擅長做「慢但精」的類比電路。有沒有辦法用「快但粗」的 1-bit 量化器達到「慢但精」的效果？</p></div>
+<div class="warn"><p><strong>Fundamental tension:</strong> CMOS processes are good at making "fast but crude" digital circuits, not "slow but precise" analog ones. Is there a way to use a "fast but crude" 1-bit quantizer and still get a "slow but precise" result?</p></div>
 </div>
 
 <!-- Origin -->
 <div class="card">
 <h2 class="text-lg font-bold mb-3">Origin</h2>
-<p class="mb-2">Sigma-Delta 的演化路線：</p>
+<p class="mb-2">Evolution of Sigma-Delta:</p>
 <ol class="list-decimal pl-5 space-y-2 text-sm">
-<li><strong>Delta Modulation (1946, Deloraine)：</strong>用 1-bit 量化器編碼訊號的「差分」。問題：斜率過載 (Slope Overload) 和粒狀噪聲 (Granular Noise)</li>
-<li><strong>Delta-Sigma Modulation (1962, Inose et al.)：</strong>在 Delta Modulation 前加一個積分器。積分器使得量化噪聲被微分（高通化），大幅降低帶內噪聲</li>
-<li><strong>高階調變器 (1980s-90s)：</strong>用多個積分器級聯，每增加一階，噪聲被推得更遠。但穩定性成為關鍵挑戰</li>
+<li><strong>Delta Modulation (1946, Deloraine):</strong> a 1-bit quantizer encoding the signal's "difference." Problems: slope overload and granular noise.</li>
+<li><strong>Delta-Sigma Modulation (1962, Inose et al.):</strong> an integrator placed before Delta Modulation. The integrator causes quantization noise to be differentiated (high-pass shaped), greatly reducing in-band noise.</li>
+<li><strong>Higher-order modulators (1980s-90s):</strong> cascading multiple integrators; each extra order pushes noise further away. Stability becomes a key challenge.</li>
 </ol>
-<div class="tip"><p><strong>命名爭議：</strong>原始論文叫「Delta-Sigma」（$\Delta\Sigma$），因為先做差分（Delta）再積分（Sigma）。但業界普遍稱為「Sigma-Delta」（$\Sigma\Delta$），因為在方塊圖中積分器在前。兩個名稱指的是同一個東西。</p></div>
+<div class="tip"><p><strong>Naming dispute:</strong> the original paper called it "Delta-Sigma" ($\Delta\Sigma$) because the difference (Delta) comes first and then the integration (Sigma). The industry generally calls it "Sigma-Delta" ($\Sigma\Delta$) because in the block diagram the integrator comes first. Both names refer to the same thing.</p></div>
 </div>
 
 <!-- Core Concepts -->
 <div class="card">
 <h2 class="text-lg font-bold mb-3">Core Concepts</h2>
 
-<h3 class="font-bold mt-2 mb-2">第一步：超取樣 (Oversampling)</h3>
-<p class="mb-2"><strong>直覺：</strong>想像你在一面牆上均勻灑一把沙子（量化噪聲）。沙子總量固定，但如果你把牆變大 $R$ 倍（頻寬擴展），每平方公分的沙子就少了 $R$ 倍。你只要看牆的中間一小部分（訊號頻帶），沙子（噪聲）就少了很多。</p>
+<h3 class="font-bold mt-2 mb-2">Step 1: oversampling</h3>
+<p class="mb-2"><strong>Intuition:</strong> imagine sprinkling a fistful of sand (quantization noise) uniformly on a wall. The total amount of sand is fixed, but if you make the wall $R$ times larger (expanded bandwidth), the sand per square centimeter drops by a factor of $R$. If you only look at a small middle portion of the wall (the signal band), there is far less sand (noise).</p>
 
 <div class="fm">
-<p class="font-bold text-center mb-2">超取樣的 SNR 提升</p>
+<p class="font-bold text-center mb-2">SNR improvement from oversampling</p>
 $$\text{SNR}_{\text{oversampled}} = \text{SQNR} + 10\log_{10}(R) \quad \text{dB}$$
-<p class="text-xs text-center mt-2">$R = f_s / (2f_b)$ 為超取樣比 (Oversampling Ratio, OSR)，$f_b$ 為訊號頻寬</p>
+<p class="text-xs text-center mt-2">$R = f_s / (2f_b)$ is the Oversampling Ratio (OSR); $f_b$ is the signal bandwidth.</p>
 </div>
 
-<p class="mt-2 text-sm">每增加 $2\times$ 超取樣，帶內噪聲降低 3 dB → 等效增加 0.5 bit 解析度。效率很低！256 倍超取樣只多了 4 bit。</p>
+<p class="mt-2 text-sm">Every doubling of the oversampling ratio reduces in-band noise by 3 dB, an effective gain of only 0.5 bit of resolution. That is very inefficient—256x oversampling only buys 4 bits.</p>
 
-<h3 class="font-bold mt-4 mb-2">第二步：噪聲整形 (Noise Shaping)</h3>
-<p class="mb-2"><strong>直覺：</strong>如果不只是把沙子撒得更均勻，而是用掃把把中間的沙子掃到邊緣呢？中間（訊號頻帶）幾乎乾淨，邊緣（高頻帶外）堆滿了沙子——反正你等一下要用低通濾波器把邊緣切掉。</p>
+<h3 class="font-bold mt-4 mb-2">Step 2: noise shaping</h3>
+<p class="mb-2"><strong>Intuition:</strong> what if, instead of just spreading the sand more uniformly, you used a broom to sweep the middle sand to the edges? The middle (signal band) is almost clean, and the edges (out-of-band, high frequency) are piled up—and you are going to chop off the edges with a low-pass filter anyway.</p>
 
-<p class="mb-2"><strong>1 階 Sigma-Delta 調變器的結構：</strong></p>
-<div class="code">        ┌─────────────────────┐
-x[n] ──(+)── 積分器 ── 1-bit 量化器 ──┬── y[n] (1-bit 輸出)
-        ↑(-)                           │
-        └──── DAC (1-bit) ─────────────┘</div>
+<p class="mb-2"><strong>Structure of a first-order Sigma-Delta modulator:</strong></p>
+<div class="code">        &#9484;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9488;
+x[n] &#9472;&#9472;(+)&#9472;&#9472; integrator &#9472;&#9472; 1-bit quantizer &#9472;&#9472;&#9516;&#9472;&#9472; y[n] (1-bit output)
+        &#8593;(-)                                     &#9474;
+        &#9492;&#9472;&#9472;&#9472;&#9472; DAC (1-bit) &#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9496;</div>
 
-<p class="mt-3 mb-2">線性化模型（將量化器視為 $+$ 量化噪聲 $e[n]$）：</p>
+<p class="mt-3 mb-2">Linearized model (treat the quantizer as adding quantization noise $e[n]$):</p>
 <div class="fm">
-<p class="font-bold text-center mb-2">1 階 Sigma-Delta 輸出</p>
+<p class="font-bold text-center mb-2">First-order Sigma-Delta output</p>
 $$Y(z) = \underbrace{z^{-1}}_{\text{STF}} X(z) + \underbrace{(1 - z^{-1})}_{\text{NTF}} E(z)$$
-<p class="text-xs text-center mt-2">STF = Signal Transfer Function（訊號延遲一個樣本），NTF = Noise Transfer Function（噪聲被高通化）</p>
+<p class="text-xs text-center mt-2">STF = Signal Transfer Function (signal is delayed by one sample); NTF = Noise Transfer Function (noise is high-pass shaped).</p>
 </div>
 
-<p class="mt-3 mb-2"><strong>NTF 的頻率響應：</strong></p>
+<p class="mt-3 mb-2"><strong>Frequency response of the NTF:</strong></p>
 <div class="fm">
 $$|NTF(e^{j\omega})| = |1 - e^{-j\omega}| = 2\left|\sin\frac{\omega}{2}\right|$$
-<p class="text-xs text-center mt-2">在 $\omega = 0$（DC，低頻）為零，在 $\omega = \pi$（Nyquist）為 2 → 噪聲被推向高頻</p>
+<p class="text-xs text-center mt-2">Zero at $\omega = 0$ (DC, low frequency), 2 at $\omega = \pi$ (Nyquist) &rarr; noise is pushed to high frequencies.</p>
 </div>
 
-<h3 class="font-bold mt-4 mb-2">$L$ 階噪聲整形</h3>
-<p class="mb-2">用 $L$ 個積分器級聯（$L$ 階調變器）：</p>
+<h3 class="font-bold mt-4 mb-2">$L$-th order noise shaping</h3>
+<p class="mb-2">Cascading $L$ integrators (an $L$-th order modulator):</p>
 <div class="fm">
-<p class="font-bold text-center mb-2">$L$ 階 NTF</p>
+<p class="font-bold text-center mb-2">$L$-th order NTF</p>
 $$NTF_L(z) = (1 - z^{-1})^L$$
-<p class="text-xs text-center mt-2">$L$ 階微分 → 噪聲在低頻被壓制得更厲害</p>
+<p class="text-xs text-center mt-2">$L$-th order differentiation &rarr; noise at low frequencies is suppressed even more strongly.</p>
 </div>
 
 <div class="fm">
-<p class="font-bold text-center mb-2">$L$ 階 + $R$ 倍超取樣的 SNR</p>
+<p class="font-bold text-center mb-2">SNR of $L$-th order + $R$x oversampling</p>
 $$\text{SNR} \approx 6.02B + 1.76 + (2L+1) \cdot 10\log_{10}(R) - 10\log_{10}\!\left(\frac{\pi^{2L}}{2L+1}\right) \;\text{dB}$$
-<p class="text-xs text-center mt-2">對 1-bit ($B=1$)：每 $2\times$ 超取樣提升 $(2L+1) \times 3$ dB</p>
+<p class="text-xs text-center mt-2">For a 1-bit converter ($B=1$), each doubling of OSR gains $(2L+1) \times 3$ dB.</p>
 </div>
 
-<div class="tip"><p><strong>關鍵比較：</strong>
-<br>純超取樣：$2\times$ OSR → +3 dB (+0.5 bit)
-<br>1 階整形：$2\times$ OSR → +9 dB (+1.5 bit)
-<br>2 階整形：$2\times$ OSR → +15 dB (+2.5 bit)
-<br>4 階整形：$2\times$ OSR → +27 dB (+4.5 bit)
-<br>4 階 + 256x OSR → $\approx 27 \times 8 = 216$ dB 理論 → 實際約 120 dB (20 bit)</p></div>
+<div class="tip"><p><strong>Key comparison:</strong>
+<br>Plain oversampling: $2\times$ OSR &rarr; +3 dB (+0.5 bit)
+<br>1st-order shaping: $2\times$ OSR &rarr; +9 dB (+1.5 bit)
+<br>2nd-order shaping: $2\times$ OSR &rarr; +15 dB (+2.5 bit)
+<br>4th-order shaping: $2\times$ OSR &rarr; +27 dB (+4.5 bit)
+<br>4th-order + 256x OSR &rarr; $\approx 27 \times 8 = 216$ dB theoretical &rarr; roughly 120 dB (20 bit) in practice.</p></div>
 
-<h3 class="font-bold mt-4 mb-2">第三步：數位濾波 + 降取樣</h3>
-<p class="mb-2">調變器輸出的 1-bit 高速位元流，經過：</p>
+<h3 class="font-bold mt-4 mb-2">Step 3: digital filtering + decimation</h3>
+<p class="mb-2">The modulator output is a high-rate 1-bit bitstream; it passes through:</p>
 <ol class="list-decimal pl-5 text-sm space-y-1">
-<li>數位低通濾波器（截止 $f_b$）→ 去除被整形到高頻的量化噪聲</li>
-<li>降取樣（因子 $R$）→ 回到目標取樣率 $2f_b$</li>
-<li>得到高解析度（16-24 bit）的輸出</li>
+<li>Digital low-pass filter (cutoff $f_b$) &rarr; removes the quantization noise that was shaped to high frequencies</li>
+<li>Decimation (factor $R$) &rarr; returns to the target sample rate $2f_b$</li>
+<li>Produces a high-resolution (16-24 bit) output</li>
 </ol>
-<p class="mt-2 text-sm">這個「數位濾波 + 降取樣」通常用 CIC (Cascaded Integrator-Comb) 濾波器 + 半帶濾波器的多級架構實現，正好用到 5.1-5.2 節的所有技術！</p>
+<p class="mt-2 text-sm">This "digital filter + decimation" is usually implemented as a multi-stage CIC (Cascaded Integrator-Comb) filter followed by half-band filters — using exactly the techniques from sections 5.1-5.2!</p>
 
 <details class="deriv my-4">
-<summary>Expand：1 階 Sigma-Delta 調變器轉移函數推導</summary>
+<summary>Show full derivation: transfer function of a first-order Sigma-Delta modulator</summary>
 <div>
-<p>設積分器的轉移函數為 $\frac{z^{-1}}{1-z^{-1}}$（離散積分器），量化器輸出 $y[n]$ 寫成 $y[n] = u[n] + e[n]$，其中 $u[n]$ 是量化器輸入，$e[n]$ 是量化誤差。</p>
-<p class="mt-2">迴路方程式（Z 域）：</p>
+<p>Let the integrator have transfer function $\frac{z^{-1}}{1-z^{-1}}$ (discrete integrator), and write the quantizer output as $y[n] = u[n] + e[n]$, where $u[n]$ is the quantizer input and $e[n]$ is the quantization error.</p>
+<p class="mt-2">Loop equations in the Z-domain:</p>
 $$U(z) = \frac{z^{-1}}{1-z^{-1}}\bigl[X(z) - Y(z)\bigr]$$
 $$Y(z) = U(z) + E(z)$$
-<p class="mt-2">將第一式代入第二式：</p>
+<p class="mt-2">Substituting the first into the second:</p>
 $$Y(z) = \frac{z^{-1}}{1-z^{-1}}[X(z) - Y(z)] + E(z)$$
 $$Y(z)\left[1 + \frac{z^{-1}}{1-z^{-1}}\right] = \frac{z^{-1}}{1-z^{-1}}X(z) + E(z)$$
 $$Y(z) \cdot \frac{1}{1-z^{-1}} = \frac{z^{-1}}{1-z^{-1}}X(z) + E(z)$$
 $$Y(z) = z^{-1}X(z) + (1-z^{-1})E(z)$$
-<p class="mt-2">因此 STF = $z^{-1}$（訊號只延遲一個樣本，無失真），NTF = $(1-z^{-1})$（量化噪聲被一階高通整形）。</p>
-<p class="mt-2"><strong>帶內噪聲功率：</strong></p>
+<p class="mt-2">Therefore STF = $z^{-1}$ (the signal is delayed by one sample, distortion-free) and NTF = $(1-z^{-1})$ (quantization noise is shaped by a first-order high-pass).</p>
+<p class="mt-2"><strong>In-band noise power:</strong></p>
 $$\sigma_{\text{in-band}}^2 = \frac{\sigma_e^2}{f_s}\int_0^{2\pi f_b} |1-e^{-j2\pi f/f_s}|^2 df \approx \sigma_e^2 \cdot \frac{\pi^2}{3R^3}$$
-<p>其中 $R = f_s/(2f_b)$ 為 OSR。對比無整形時 $\sigma_e^2/R$，1 階整形額外降低了 $\pi^2/(3R^2)$ 倍。</p>
+<p>where $R = f_s/(2f_b)$ is the OSR. Compared with the unshaped $\sigma_e^2/R$, first-order shaping provides an additional $\pi^2/(3R^2)$ reduction.</p>
 </div>
 </details>
 </div>
 
 <!-- How to Use -->
 <div class="card">
-<h2 class="text-lg font-bold mb-3">How to Use：Sigma-Delta ADC 設計Compute</h2>
+<h2 class="text-lg font-bold mb-3">How to Use: Sigma-Delta ADC design calculation</h2>
 
-<h3 class="font-bold mb-2">範例：音訊 ADC（20 kHz 頻寬，目標 16-bit）</h3>
+<h3 class="font-bold mb-2">Example: audio ADC (20 kHz bandwidth, 16-bit target)</h3>
 <ol class="list-decimal pl-5 space-y-2 text-sm">
-<li><strong>目標 SNR：</strong>16 bit → $6.02 \times 16 + 1.76 = 98.1$ dB</li>
-<li><strong>選擇架構：</strong>3 階調變器 + 128 倍超取樣
+<li><strong>Target SNR:</strong> 16 bit &rarr; $6.02 \times 16 + 1.76 = 98.1$ dB</li>
+<li><strong>Architecture choice:</strong> 3rd-order modulator + 128x oversampling
   <ul class="list-disc pl-5 mt-1">
     <li>1-bit SQNR = 7.78 dB</li>
-    <li>OSR 增益 = $(2 \times 3 + 1) \times 10\log_{10}(128) = 7 \times 21.1 = 147.5$ dB</li>
-    <li>噪聲整形修正 = $-10\log_{10}(\pi^6/7) \approx -12.7$ dB</li>
-    <li>理論 SNR $\approx 7.78 + 147.5 - 12.7 = 142.6$ dB (23.4 bit)</li>
-    <li>考慮非理想因素（運放非理想、時鐘抖動、DAC 非線性）衰減 20-30 dB → 實際約 112-122 dB (18-20 bit) &#10003;</li>
+    <li>OSR gain = $(2 \times 3 + 1) \times 10\log_{10}(128) = 7 \times 21.1 = 147.5$ dB</li>
+    <li>Noise-shaping correction = $-10\log_{10}(\pi^6/7) \approx -12.7$ dB</li>
+    <li>Theoretical SNR $\approx 7.78 + 147.5 - 12.7 = 142.6$ dB (23.4 bit)</li>
+    <li>With non-ideal effects (op-amp limits, clock jitter, DAC nonlinearity) attenuated by 20-30 dB &rarr; actual roughly 112-122 dB (18-20 bit) &#10003;</li>
   </ul>
 </li>
-<li><strong>取樣頻率：</strong>$f_s = 2 \times 20{,}000 \times 128 = 5.12$ MHz。1-bit 比較器在此速度下輕鬆實現</li>
-<li><strong>數位濾波器：</strong>CIC 4 階 ($R = 16$) → 半帶 FIR ($\downarrow 2$, 3 級) → FIR 補償 → 最終 $128 \times$ 降取樣到 40 kHz</li>
+<li><strong>Sample rate:</strong> $f_s = 2 \times 20{,}000 \times 128 = 5.12$ MHz. A 1-bit comparator handles this speed easily.</li>
+<li><strong>Digital filter:</strong> 4th-order CIC ($R = 16$) &rarr; 3 stages of half-band FIR ($\downarrow 2$) &rarr; FIR compensator &rarr; final $128\times$ decimation to 40 kHz.</li>
 </ol>
 </div>
 
-<!-- 具體數值 -->
+<!-- Concrete numbers -->
 <div class="card">
-<h2 class="text-lg font-bold mb-3">具體數值一覽</h2>
+<h2 class="text-lg font-bold mb-3">Concrete numbers at a glance</h2>
 <div class="fm">
 <table class="dt">
-<thead><tr><th>配置</th><th>理論 SNR</th><th>等效位元</th><th>備註</th></tr></thead>
+<thead><tr><th>Configuration</th><th>Theoretical SNR</th><th>Equivalent bits</th><th>Notes</th></tr></thead>
 <tbody>
-<tr><td>1-bit, 無超取樣</td><td>7.78 dB</td><td>1.0 bit</td><td>比較器裸奔</td></tr>
-<tr><td>1-bit, 256x OSR, 無整形</td><td>$7.78 + 24.1 = 31.9$ dB</td><td>~5 bit</td><td>靠超取樣只能做到這樣</td></tr>
-<tr><td>1-bit, 256x OSR, 1 階</td><td>~79 dB</td><td>~13 bit</td><td>噪聲整形的威力開始顯現</td></tr>
-<tr><td>1-bit, 256x OSR, 2 階</td><td>~127 dB</td><td>~21 bit</td><td>理論上很高</td></tr>
-<tr><td>1-bit, 256x OSR, 4 階</td><td>~224 dB</td><td>~37 bit（理論）</td><td>實際受限於非理想因素，~120 dB (20 bit)</td></tr>
+<tr><td>1-bit, no oversampling</td><td>7.78 dB</td><td>1.0 bit</td><td>Bare comparator</td></tr>
+<tr><td>1-bit, 256x OSR, no shaping</td><td>$7.78 + 24.1 = 31.9$ dB</td><td>~5 bit</td><td>Best you can do with oversampling alone</td></tr>
+<tr><td>1-bit, 256x OSR, 1st-order</td><td>~79 dB</td><td>~13 bit</td><td>Noise shaping starts to pay off</td></tr>
+<tr><td>1-bit, 256x OSR, 2nd-order</td><td>~127 dB</td><td>~21 bit</td><td>Very high in theory</td></tr>
+<tr><td>1-bit, 256x OSR, 4th-order</td><td>~224 dB</td><td>~37 bit (theory)</td><td>Limited by non-idealities in practice, ~120 dB (20 bit)</td></tr>
 </tbody>
 </table>
 </div>
@@ -9351,16 +9351,16 @@ $$\sigma_{\text{in-band}}^2 = \frac{\sigma_e^2}{f_s}\int_0^{2\pi f_b} |1-e^{-j2\
 
 <!-- Interactive Demo -->
 <div class="card">
-<h2 class="text-lg font-bold mb-3">Interactive：超取樣與噪聲整形的效果</h2>
-<p class="text-sm text-slate-500 mb-3">調整超取樣比和噪聲整形階數，觀察量化噪聲的功率譜密度如何變化，以及等效 SNR 和位元數。</p>
+<h2 class="text-lg font-bold mb-3">Interactive: effects of oversampling and noise shaping</h2>
+<p class="text-sm text-slate-500 mb-3">Adjust the oversampling ratio and the noise-shaping order and observe how the quantization-noise power spectral density changes, along with the equivalent SNR and bits.</p>
 
 <div class="flex flex-wrap gap-3 mb-3 items-center">
   <div>
-    <label class="text-xs font-medium">超取樣比 OSR = <span id="m5d1osrV">64</span>x</label>
+    <label class="text-xs font-medium">Oversampling ratio OSR = <span id="m5d1osrV">64</span>x</label>
     <input type="range" id="m5d1osr" min="0" max="8" value="6" step="1" class="w-32" oninput="var v=Math.pow(2,+this.value); document.getElementById('m5d1osrV').textContent=v; updateM5d1()">
   </div>
   <div>
-    <label class="text-xs font-medium">噪聲整形階數 $L$ = <span id="m5d1orderV">1</span></label>
+    <label class="text-xs font-medium">Noise-shaping order $L$ = <span id="m5d1orderV">1</span></label>
     <input type="range" id="m5d1order" min="0" max="4" value="1" step="1" class="w-32" oninput="document.getElementById('m5d1orderV').textContent=this.value; updateM5d1()">
   </div>
 </div>
@@ -9373,23 +9373,23 @@ $$\sigma_{\text{in-band}}^2 = \frac{\sigma_e^2}{f_s}\int_0^{2\pi f_b} |1-e^{-j2\
 <div class="card">
 <h2 class="text-lg font-bold mb-3">Applications</h2>
 <ol class="list-decimal pl-5 space-y-3 text-sm">
-<li><strong>音訊 ADC/DAC：</strong>從手機到錄音室，幾乎全部採用 Sigma-Delta。AKM AK5397 (32-bit/768kHz) 和 ESS ES9038PRO 是高階代表</li>
-<li><strong>精密量測 (Precision Measurement)：</strong>24-bit Sigma-Delta ADC（如 ADS1256）用於秤重、溫度量測、應變規。超高解析度 + 低速 = Sigma-Delta 的最佳戰場</li>
-<li><strong>感測器介面：</strong>MEMS 加速度計、陀螺儀內部大量使用 Sigma-Delta 將微小的電容變化轉為數位值</li>
-<li><strong>數位無線電接收機：</strong>寬帶 Sigma-Delta ADC + 數位下轉換可以直接數位化 RF 頻段（Bandpass $\Sigma\Delta$）</li>
-<li><strong>Class-D 音頻放大器：</strong>本質上是 Sigma-Delta DAC——用 PWM 開關驅動喇叭，噪聲整形確保可聽範圍內的失真極低</li>
+<li><strong>Audio ADC/DAC:</strong> from mobile phones to recording studios, almost every audio converter uses Sigma-Delta. The AKM AK5397 (32-bit/768 kHz) and ESS ES9038PRO are high-end examples.</li>
+<li><strong>Precision measurement:</strong> 24-bit Sigma-Delta ADCs (e.g. ADS1256) are used for weighing, temperature measurement and strain gauges. Very high resolution + low speed = the sweet spot for Sigma-Delta.</li>
+<li><strong>Sensor interfaces:</strong> MEMS accelerometers and gyroscopes use Sigma-Delta extensively to convert tiny capacitance changes into digital values.</li>
+<li><strong>Digital radio receivers:</strong> a wideband Sigma-Delta ADC + digital downconversion can digitize an RF band directly (bandpass $\Sigma\Delta$).</li>
+<li><strong>Class-D audio amplifiers:</strong> essentially Sigma-Delta DACs—driving a speaker with PWM switches, with noise shaping ensuring very low distortion in the audible range.</li>
 </ol>
 </div>
 
-<!-- 陷阱/限制 -->
+<!-- Pitfalls / limitations -->
 <div class="warn">
 <h2 class="text-lg font-bold mb-3">Pitfalls and Limitations</h2>
 <ul class="list-disc pl-5 space-y-2 text-sm">
-<li><strong>高階調變器的穩定性：</strong>3 階以上的單迴路調變器可能不穩定（量化器非線性打破了線性分析的假設）。解決方案：MASH (Multi-stAge noise SHaping) 結構或 feedforward 架構</li>
-<li><strong>延遲：</strong>數位降取樣濾波器（尤其是 CIC + FIR 多級）引入顯著延遲。對即時控制應用可能不可接受</li>
-<li><strong>頻寬限制：</strong>要達到高 OSR，取樣頻率必須很高。20 kHz 音訊 × 256 = 5.12 MHz 還好，但寬帶通訊（幾十 MHz）就需要超高速比較器</li>
-<li><strong>音調 (Tones)：</strong>低階 Sigma-Delta 在 DC 或低頻輸入時會產生周期性模式（idle tones），聽起來像嗡鳴。需要用抖動 (Dither) 或高階調變器來消除</li>
-<li><strong>DAC 非線性（多位元 Sigma-Delta）：</strong>回授 DAC 的非線性直接注入到訊號路徑。多位元內部量化器可提升性能但 DAC 線性度要求嚴苛。解決方案：DEM (Dynamic Element Matching)</li>
+<li><strong>Stability of high-order modulators:</strong> single-loop modulators of 3rd order or higher can become unstable (the quantizer's nonlinearity breaks the linear-analysis assumption). Remedies: MASH (Multi-stAge noise SHaping) structures or feedforward architectures.</li>
+<li><strong>Latency:</strong> the digital decimation filters (especially multi-stage CIC + FIR) introduce significant delay, which may be unacceptable for real-time control applications.</li>
+<li><strong>Bandwidth limit:</strong> high OSR demands a very high sample rate. 20 kHz audio &times; 256 = 5.12 MHz is fine, but wideband communications (tens of MHz) need ultra-fast comparators.</li>
+<li><strong>Tones:</strong> low-order Sigma-Delta modulators can produce periodic patterns (idle tones) for DC or low-frequency inputs, which sound like a hum. Dither or higher-order modulators are needed to eliminate them.</li>
+<li><strong>DAC nonlinearity (multi-bit Sigma-Delta):</strong> nonlinearity in the feedback DAC injects directly into the signal path. Multi-bit internal quantizers improve performance but demand very linear DACs. Remedy: DEM (Dynamic Element Matching).</li>
 </ul>
 </div>
 
@@ -9397,22 +9397,22 @@ $$\sigma_{\text{in-band}}^2 = \frac{\sigma_e^2}{f_s}\int_0^{2\pi f_b} |1-e^{-j2\
 <div class="card">
 <h2 class="text-lg font-bold mb-3">Quick Check</h2>
 
-<p class="mb-2"><strong>Q1：</strong>一個 2 階 Sigma-Delta 調變器使用 64 倍超取樣。每增加 $2\times$ 超取樣，SNR 提升多少 dB？等效增加多少 bit？</p>
+<p class="mb-2"><strong>Q1:</strong> A 2nd-order Sigma-Delta modulator uses 64x oversampling. How many dB does SNR improve per doubling of OSR? How many equivalent bits?</p>
 <details class="deriv my-2"><summary>Show answer</summary><div>
-<p>$L = 2$ 階，SNR 提升 = $(2L+1) \times 3 = 5 \times 3 = 15$ dB per octave of OSR。</p>
-<p>等效位元增加 = $15/6.02 \approx 2.5$ bit per $2\times$ OSR。</p>
-<p>所以 64x OSR ($= 2^6$)：從基準 SQNR 開始增加 $6 \times 15 = 90$ dB ($\approx 15$ bit)，加上 1-bit 基底和整形修正，理論可達約 85 dB ($\approx 14$ bit)。</p>
+<p>For $L = 2$, SNR improvement = $(2L+1) \times 3 = 5 \times 3 = 15$ dB per octave of OSR.</p>
+<p>Equivalent bits gained = $15/6.02 \approx 2.5$ bit per $2\times$ OSR.</p>
+<p>So at 64x OSR ($= 2^6$): an increase of $6 \times 15 = 90$ dB ($\approx 15$ bit) above the baseline SQNR, and combined with the 1-bit baseline and shaping correction, the theoretical figure reaches about 85 dB ($\approx 14$ bit).</p>
 </div></details>
 
-<p class="mt-3 mb-2"><strong>Q2：</strong>為什麼 Sigma-Delta ADC 的「數位濾波器 + 降取樣」部分正好用到前面學的多速率技術（Polyphase、CIC）？</p>
+<p class="mt-3 mb-2"><strong>Q2:</strong> Why is the "digital filter + decimation" stage of a Sigma-Delta ADC exactly the place where the multirate techniques we learned earlier (polyphase, CIC) are used?</p>
 <details class="deriv my-2"><summary>Show answer</summary><div>
-<p>調變器輸出的是一個極高速率（如 5.12 MHz）的 1-bit 位元流。要把它變成低速率（如 40 kHz）的多位元輸出，需要降取樣 128 倍。</p>
-<p>直接用一個 FIR 在 5.12 MHz 下濾波再降取樣 128 倍 = 99.2% 的Compute被浪費。所以實務上使用：</p>
+<p>The modulator outputs a very high-rate (e.g. 5.12 MHz) 1-bit bitstream. Turning it into a low-rate (e.g. 40 kHz) multi-bit output requires 128x decimation.</p>
+<p>Running a single FIR at 5.12 MHz and then decimating by 128 wastes 99.2% of the computation. In practice we therefore use:</p>
 <ul class="list-disc pl-5 mt-1">
-<li><strong>CIC 濾波器：</strong>不需要乘法器，只用加法器和延遲，天然適合高速率第一級降取樣</li>
-<li><strong>Polyphase 半帶濾波器：</strong>後續各級 $\downarrow 2$，每級用 Polyphase 結構避免浪費</li>
+<li><strong>CIC filter:</strong> no multipliers, only adders and delays—naturally suited to the first high-rate decimation stage.</li>
+<li><strong>Polyphase half-band filters:</strong> for the subsequent $\downarrow 2$ stages, with a polyphase structure avoiding wasted computation.</li>
 </ul>
-<p>這正是 5.1-5.2 節所學技術的最佳實戰Applications。</p>
+<p>This is the ideal real-world application of the techniques from sections 5.1-5.2.</p>
 </div></details>
 </div>
 
@@ -9439,178 +9439,178 @@ $$\sigma_{\text{in-band}}^2 = \frac{\sigma_e^2}{f_s}\int_0^{2\pi f_b} |1-e^{-j2\
 <!-- One-Sentence Summary -->
 <div class="card">
 <h2 class="text-lg font-bold mb-3">One-Sentence Summary</h2>
-<p class="text-base">隨機過程把「隨機性」和「時間」結合在一起，而 Wiener-Khinchin 定理告訴我們：<strong>自相關函數的傅立葉轉換就是功率頻譜密度 (Power Spectral Density, PSD)</strong>——這座橋讓我們能用頻域工具分析隨機訊號。</p>
+<p class="text-base">Random processes combine "randomness" with "time," and the Wiener-Khinchin theorem tells us: <strong>the Fourier transform of the autocorrelation function is the Power Spectral Density (PSD)</strong>—this bridge lets us analyse random signals with frequency-domain tools.</p>
 </div>
 
-<!-- 為什麼要學 -->
+<!-- Why does this matter -->
 <div class="hist">
-<p><strong>Why does this matter?</strong> 因為真實世界中沒有「乾淨」的訊號。每個感測器讀數都夾帶雜訊 (Noise)、干擾 (Interference)、通道衰落 (Fading)。到目前為止我們學的 DFT、STFT、小波都假設訊號是確定性 (Deterministic) 的——但面對隨機訊號，你需要<strong>統計工具</strong>來描述「平均行為」。這是進入 Wiener 濾波、Kalman 濾波、自適應濾波的必要基礎。</p>
+<p><strong>Why does this matter?</strong> Because there is no such thing as a "clean" signal in the real world. Every sensor reading contains noise, interference, and channel fading. The DFT, STFT and wavelets we have learned so far all assume the signal is deterministic—but for random signals you need <strong>statistical tools</strong> to describe the "average behaviour." This is the necessary foundation before Wiener filtering, Kalman filtering and adaptive filtering.</p>
 </div>
 
 <!-- Previously... -->
 <div class="hist">
-<p class="text-sm"><strong>Previously:</strong>5.7 的 Synchrosqueezing 讓我們看到精細的時頻結構，但前提是訊號本身是確定性的。現在我們進入<strong>隨機訊號分析</strong>的領域——不再問「這個訊號長什麼樣？」而是問「這類訊號的<em>統計特性</em>是什麼？」這需要全新的數學框架。</p>
+<p class="text-sm"><strong>Previously:</strong> 5.7 Synchrosqueezing showed us fine time-frequency structure, but only for deterministic signals. Now we enter <strong>random signal analysis</strong>—we no longer ask "what does this signal look like?" but instead "what are the <em>statistical properties</em> of signals like these?" That requires a new mathematical framework.</p>
 </div>
 
-<!-- Pain Point -->
+<!-- The Problem -->
 <div class="card">
-<h2 class="text-lg font-bold mb-3">Pain Point：確定性分析不夠用</h2>
-<p class="mb-3">假設你在量測一個引擎振動訊號。每次開機量到的波形都不一樣（因為環境雜訊、初始條件等隨機因素），但它們的「統計特性」（平均功率、頻譜形狀）是穩定的：</p>
+<h2 class="text-lg font-bold mb-3">The Problem: deterministic analysis is not enough</h2>
+<p class="mb-3">Suppose you are measuring vibration from an engine. Every time you start the engine the waveform is different (due to random factors such as ambient noise and initial conditions), yet the "statistical properties" (average power, spectral shape) are stable:</p>
 <ul class="list-disc pl-5 space-y-2 text-sm">
-<li><strong>通訊：</strong>接收到的訊號 = 原始訊號 + 通道雜訊。你無法預測每一個雜訊樣本，但你可以描述雜訊的統計特性（高斯白雜訊、功率 $\sigma^2$）</li>
-<li><strong>雷達：</strong>目標回波被雜波 (Clutter) 和熱雜訊淹沒。偵測理論需要知道雜訊的功率頻譜密度</li>
-<li><strong>金融：</strong>股價走勢不可預測（隨機遊走），但波動率 (Volatility) 有統計規律</li>
-<li><strong>生醫：</strong>腦電圖 (EEG) 的 alpha 波功率是跨多次量測的統計量，單次量測不可靠</li>
+<li><strong>Communications:</strong> received signal = original signal + channel noise. You cannot predict each noise sample, but you can describe its statistics (Gaussian white noise, power $\sigma^2$).</li>
+<li><strong>Radar:</strong> the target echo is buried in clutter and thermal noise. Detection theory requires the noise power spectral density.</li>
+<li><strong>Finance:</strong> stock prices are unpredictable (random walk) but volatility has statistical regularities.</li>
+<li><strong>Biomedical:</strong> the alpha-band power of EEG is a statistic averaged over many measurements; a single measurement is unreliable.</li>
 </ul>
-<div class="warn"><p><strong>核心問題：</strong>對隨機訊號做 FFT 得到的頻譜「每次都不一樣」，沒有收斂到固定函數。我們需要一種方法把隨機訊號的頻域特性<strong>用統計平均來定義</strong>。</p></div>
+<div class="warn"><p><strong>Core question:</strong> the FFT spectrum of a random signal is "different every time" and does not converge to a fixed function. We need a way to define the frequency-domain properties of random signals <strong>through statistical averages</strong>.</p></div>
 </div>
 
 <!-- Origin -->
 <div class="hist">
 <h2 class="text-lg font-bold mb-3">Origin</h2>
-<p><strong>Norbert Wiener (1930)</strong> 在其開創性著作 <em>Generalized Harmonic Analysis</em> 中提出：對於<strong>功率有限但能量無限</strong>的訊號（如隨機訊號），傳統的傅立葉轉換不存在，但自相關函數的傅立葉轉換（即功率頻譜密度）是有意義的。</p>
-<p class="mt-2"><strong>Alexander Khinchin (1934)</strong> 獨立地從機率論的角度證明了同樣的結果：平穩隨機過程的自相關函數與功率頻譜密度構成傅立葉轉換對。這就是<strong>Wiener-Khinchin 定理</strong>——連接時域統計量（相關函數）和頻域表示（PSD）的核心橋樑。</p>
-<p class="mt-2 text-sm text-slate-500">Wiener 後來更進一步，用 PSD 的概念推導出最佳線性濾波器（Wiener Filter, 見 8B），開啟了統計訊號處理的時代。</p>
+<p><strong>Norbert Wiener (1930)</strong> proposed in his pioneering work <em>Generalized Harmonic Analysis</em> that for signals with <strong>finite power but infinite energy</strong> (such as random signals), the classical Fourier transform does not exist, but the Fourier transform of the autocorrelation function (the power spectral density) does make sense.</p>
+<p class="mt-2"><strong>Alexander Khinchin (1934)</strong> independently proved the same result from a probability-theoretic perspective: for a stationary random process, the autocorrelation function and the power spectral density form a Fourier transform pair. This is the <strong>Wiener-Khinchin theorem</strong>—the central bridge between time-domain statistics (correlation functions) and frequency-domain representation (PSD).</p>
+<p class="mt-2 text-sm text-slate-500">Wiener went further and used PSD to derive the optimal linear filter (Wiener filter, see 8B), ushering in the era of statistical signal processing.</p>
 </div>
 
 <!-- Core Concepts -->
 <div class="card">
 <h2 class="text-lg font-bold mb-3">Core Concepts</h2>
 
-<p class="mb-3"><strong>直覺：</strong>想像一個工廠有 100 條相同的生產線，每條線上的振動感測器都在同時錄資料。每條線的波形都不一樣（因為隨機性），但它們的「平均波形」和「平均功率」是穩定的。<strong>隨機過程</strong>就是把這 100 條「可能的波形」（稱為 realization 或 sample function）打包成一個數學物件。</p>
+<p class="mb-3"><strong>Intuition:</strong> imagine a factory with 100 identical production lines, each with a vibration sensor recording data simultaneously. The waveform on each line is different (because of randomness), but their "average waveform" and "average power" are stable. A <strong>random process</strong> packages these 100 "possible waveforms" (each called a realization or sample function) into a single mathematical object.</p>
 
-<h3 class="font-bold mt-4 mb-2">隨機過程 (Random Process) 定義</h3>
-<p class="text-sm mb-3">隨機過程 $\{x[n]\}$ 是一組以時間 $n$ 為索引的隨機變數。對於每一個 $n$，$x[n]$ 是一個隨機變數；對於每一次「實驗」（realization），$x[n]$ 是一個確定的時間序列（sample function）。</p>
+<h3 class="font-bold mt-4 mb-2">Random process definition</h3>
+<p class="text-sm mb-3">A random process $\{x[n]\}$ is a collection of random variables indexed by time $n$. For each $n$, $x[n]$ is a random variable; for each "experiment" (realization), $x[n]$ is a deterministic time series (sample function).</p>
 
-<h3 class="font-bold mt-4 mb-2">集合平均 vs 時間平均 (Ensemble vs Time Average)</h3>
+<h3 class="font-bold mt-4 mb-2">Ensemble average vs. time average</h3>
 <table class="dt">
-<thead><tr><th>平均方式</th><th>定義</th><th>適用情境</th></tr></thead>
+<thead><tr><th>Averaging method</th><th>Definition</th><th>When it applies</th></tr></thead>
 <tbody>
-<tr><td>集合平均 (Ensemble)</td><td>$E[x[n]] = \int x \cdot f_X(x;n)\, dx$<br>固定 $n$，對所有 realizations 平均</td><td>理論分析（需要多次實驗）</td></tr>
-<tr><td>時間平均 (Time)</td><td>$\langle x[n] \rangle = \lim_{N\to\infty}\frac{1}{2N+1}\sum_{n=-N}^{N} x[n]$<br>固定一次 realization，對所有時間平均</td><td>實務（通常只有一次量測）</td></tr>
+<tr><td>Ensemble average</td><td>$E[x[n]] = \int x \cdot f_X(x;n)\, dx$<br>Fix $n$, average over all realizations</td><td>Theoretical analysis (requires multiple experiments)</td></tr>
+<tr><td>Time average</td><td>$\langle x[n] \rangle = \lim_{N\to\infty}\frac{1}{2N+1}\sum_{n=-N}^{N} x[n]$<br>Fix one realization, average over all time</td><td>Practice (usually only a single measurement)</td></tr>
 </tbody>
 </table>
-<div class="tip"><p><strong>遍歷性 (Ergodicity)：</strong>若隨機過程是遍歷的，集合平均 = 時間平均。這是實務中極重要的假設——因為我們通常只有一段錄音（一次 realization），但要用它來估計統計量。</p></div>
+<div class="tip"><p><strong>Ergodicity:</strong> if the random process is ergodic, ensemble average = time average. This is an extremely important assumption in practice—because we usually only have one recording (a single realization) and must use it to estimate statistics.</p></div>
 
-<h3 class="font-bold mt-4 mb-2">平穩性 (Stationarity)</h3>
+<h3 class="font-bold mt-4 mb-2">Stationarity</h3>
 
-<p class="mb-2"><strong>嚴格平穩 (Strict-Sense Stationary, SSS)：</strong>所有有限維聯合 PDF 對時間平移不變：</p>
+<p class="mb-2"><strong>Strict-Sense Stationary (SSS):</strong> all finite-dimensional joint PDFs are invariant under time shifts:</p>
 <div class="fm">
 $$f_{x[n_1],\ldots,x[n_k]}(a_1,\ldots,a_k) = f_{x[n_1+m],\ldots,x[n_k+m]}(a_1,\ldots,a_k) \quad \forall m, k$$
 </div>
-<p class="text-sm mt-2 mb-4">這個條件太強了——要驗證「所有」聯合 PDF 在實務上是不可能的。</p>
+<p class="text-sm mt-2 mb-4">This condition is too strong—verifying "all" joint PDFs is practically impossible.</p>
 
-<p class="mb-2"><strong>廣義平穩 (Wide-Sense Stationary, WSS)：</strong>只要求前兩階統計量不隨時間變化：</p>
+<p class="mb-2"><strong>Wide-Sense Stationary (WSS):</strong> only requires the first- and second-order statistics to be time-invariant:</p>
 <div class="fm">
-<p class="font-bold text-center mb-2">WSS 兩個條件</p>
-$$\text{(1)}\quad E[x[n]] = \mu_x \quad \text{（均值為常數，不隨 $n$ 改變）}$$
-$$\text{(2)}\quad R_{xx}[n, n-m] = R_{xx}[m] \quad \text{（自相關只依賴延遲 $m$，不依賴絕對時間 $n$）}$$
+<p class="font-bold text-center mb-2">Two WSS conditions</p>
+$$\text{(1)}\quad E[x[n]] = \mu_x \quad \text{(mean is constant, does not depend on $n$)}$$
+$$\text{(2)}\quad R_{xx}[n, n-m] = R_{xx}[m] \quad \text{(autocorrelation depends only on lag $m$, not on absolute time $n$)}$$
 </div>
-<div class="tip"><p><strong>WSS 是工程實務的標準假設。</strong>大多數穩態運轉的機器振動、穩態通訊通道、長時間的環境雜訊，都可以合理地視為 WSS。</p></div>
+<div class="tip"><p><strong>WSS is the standard engineering assumption.</strong> Vibrations from most steady-state machines, stationary communication channels, and long-time environmental noise can all reasonably be treated as WSS.</p></div>
 
-<h3 class="font-bold mt-4 mb-2">自相關函數 (Autocorrelation Function) 的性質</h3>
+<h3 class="font-bold mt-4 mb-2">Properties of the autocorrelation function</h3>
 <div class="fm">
 $$R_{xx}[m] = E\big[x[n]\, x^*[n-m]\big]$$
 </div>
 <ul class="list-disc pl-5 space-y-1 text-sm mt-3 mb-3">
-<li>$R_{xx}[0] = E[|x[n]|^2]$ = <strong>平均功率</strong></li>
-<li>$R_{xx}[0] \geq |R_{xx}[m]|$ 對所有 $m$（最大值在原點）</li>
-<li>$R_{xx}[-m] = R_{xx}^*[m]$（共軛對稱）</li>
-<li>$R_{xx}[m]$ 是半正定函數（保證 PSD 非負）</li>
+<li>$R_{xx}[0] = E[|x[n]|^2]$ = <strong>average power</strong></li>
+<li>$R_{xx}[0] \geq |R_{xx}[m]|$ for all $m$ (maximum at the origin)</li>
+<li>$R_{xx}[-m] = R_{xx}^*[m]$ (conjugate symmetry)</li>
+<li>$R_{xx}[m]$ is a positive semi-definite function (guaranteeing a non-negative PSD)</li>
 </ul>
 
-<p class="mb-2"><strong>互相關函數 (Cross-Correlation)：</strong></p>
+<p class="mb-2"><strong>Cross-correlation function:</strong></p>
 <div class="fm">
 $$R_{xy}[m] = E\big[x[n]\, y^*[n-m]\big]$$
 </div>
 
-<h3 class="font-bold mt-4 mb-2">Wiener-Khinchin 定理</h3>
-<p class="mb-3">這是本章最重要的結果——連接時域統計量和頻域表示的橋樑：</p>
+<h3 class="font-bold mt-4 mb-2">The Wiener-Khinchin theorem</h3>
+<p class="mb-3">This is the most important result of the chapter—the bridge between time-domain statistics and frequency-domain representation:</p>
 <div class="fm">
 <p class="font-bold text-center mb-2">Wiener-Khinchin Theorem</p>
 $$S_{xx}(e^{j\omega}) = \text{DTFT}\{R_{xx}[m]\} = \sum_{m=-\infty}^{\infty} R_{xx}[m]\, e^{-j\omega m}$$
-<p class="text-xs text-center mt-2">$S_{xx}(e^{j\omega})$ = 功率頻譜密度 (Power Spectral Density, PSD)</p>
+<p class="text-xs text-center mt-2">$S_{xx}(e^{j\omega})$ = Power Spectral Density (PSD)</p>
 </div>
 
-<p class="mt-3 text-sm"><strong>PSD 的關鍵性質：</strong></p>
+<p class="mt-3 text-sm"><strong>Key properties of the PSD:</strong></p>
 <ul class="list-disc pl-5 space-y-1 text-sm mb-3">
-<li>$S_{xx}(e^{j\omega}) \geq 0$（永遠非負、實數）——因為它代表「功率的頻率分佈」</li>
-<li>$\frac{1}{2\pi}\int_{-\pi}^{\pi} S_{xx}(e^{j\omega})\, d\omega = R_{xx}[0]$ =<strong>平均功率</strong></li>
-<li>$S_{xx}(e^{j\omega}) = S_{xx}(e^{-j\omega})$（對於實訊號，PSD 是偶函數）</li>
+<li>$S_{xx}(e^{j\omega}) \geq 0$ (always non-negative and real)—it represents the "frequency distribution of power."</li>
+<li>$\frac{1}{2\pi}\int_{-\pi}^{\pi} S_{xx}(e^{j\omega})\, d\omega = R_{xx}[0]$ = <strong>average power</strong></li>
+<li>$S_{xx}(e^{j\omega}) = S_{xx}(e^{-j\omega})$ (for real signals the PSD is an even function)</li>
 </ul>
 
 <details class="deriv my-4">
-<summary>Expand：Wiener-Khinchin 定理的推導思路</summary>
+<summary>Show full derivation: sketch of the Wiener-Khinchin theorem</summary>
 <div>
-<p>對有限功率的隨機訊號，直接做 DTFT 不收斂（因為能量無限）。我們改用截斷版本：</p>
+<p>For finite-power random signals the DTFT does not converge directly (infinite energy). Use the truncated version instead:</p>
 $$X_N(e^{j\omega}) = \sum_{n=0}^{N-1} x[n]\, e^{-j\omega n}$$
-<p>定義週期圖 (Periodogram)：</p>
+<p>Define the periodogram:</p>
 $$I_N(\omega) = \frac{1}{N}|X_N(e^{j\omega})|^2$$
-<p>取期望值：</p>
+<p>Take the expectation:</p>
 $$E[I_N(\omega)] = \frac{1}{N}\sum_{n=0}^{N-1}\sum_{k=0}^{N-1} E[x[n]x^*[k]]\, e^{-j\omega(n-k)}$$
-<p>令 $m = n - k$，利用 WSS 條件 $E[x[n]x^*[k]] = R_{xx}[n-k]$：</p>
+<p>Let $m = n - k$ and use the WSS condition $E[x[n]x^*[k]] = R_{xx}[n-k]$:</p>
 $$= \sum_{m=-(N-1)}^{N-1}\left(1 - \frac{|m|}{N}\right) R_{xx}[m]\, e^{-j\omega m}$$
-<p>當 $N \to \infty$：</p>
+<p>As $N \to \infty$:</p>
 $$\lim_{N\to\infty} E[I_N(\omega)] = \sum_{m=-\infty}^{\infty} R_{xx}[m]\, e^{-j\omega m} = S_{xx}(e^{j\omega}) \quad \blacksquare$$
-<p class="mt-2 text-sm">注意：這說明週期圖的<strong>期望值</strong>收斂到 PSD，但單次週期圖本身的變異數不會隨 $N$ 減小（這就是為什麼需要 Welch 或 Multitaper 方法來做 PSD 估計——回顧 3.2 節）。</p>
+<p class="mt-2 text-sm">Note: this shows that the <strong>expectation</strong> of the periodogram converges to the PSD, but the variance of a single periodogram does not decrease with $N$ (which is why PSD estimation requires Welch's method or multitapers—recall section 3.2).</p>
 </div>
 </details>
 
-<h3 class="font-bold mt-4 mb-2">白雜訊 (White Noise)</h3>
+<h3 class="font-bold mt-4 mb-2">White noise</h3>
 <div class="fm">
-$$R_{ww}[m] = \sigma^2\, \delta[m] \quad \Longleftrightarrow \quad S_{ww}(e^{j\omega}) = \sigma^2 \quad \text{（平坦頻譜）}$$
+$$R_{ww}[m] = \sigma^2\, \delta[m] \quad \Longleftrightarrow \quad S_{ww}(e^{j\omega}) = \sigma^2 \quad \text{(flat spectrum)}$$
 </div>
-<p class="text-sm mt-2">自相關只在 $m = 0$ 處非零 → 各時刻的樣本之間完全不相關。DTFT 是常數 → 所有頻率的功率相等（「白」的Origin，類比白光包含所有顏色）。</p>
+<p class="text-sm mt-2">The autocorrelation is nonzero only at $m = 0$, so samples at different times are completely uncorrelated. Its DTFT is a constant, meaning the power is the same at all frequencies (the origin of the term "white", by analogy with white light containing all colours).</p>
 
-<h3 class="font-bold mt-4 mb-2">彩色雜訊 (Colored Noise)：濾波後的白雜訊</h3>
-<p class="text-sm mb-2">若白雜訊 $w[n]$ 通過 LTI 系統 $H(z)$ → 輸出 $y[n]$：</p>
+<h3 class="font-bold mt-4 mb-2">Coloured noise: white noise after filtering</h3>
+<p class="text-sm mb-2">If white noise $w[n]$ passes through an LTI system $H(z)$ producing output $y[n]$:</p>
 <div class="fm">
 $$S_{yy}(e^{j\omega}) = |H(e^{j\omega})|^2 \cdot S_{ww}(e^{j\omega}) = \sigma^2 |H(e^{j\omega})|^2$$
 </div>
-<p class="text-sm mt-2">白雜訊的「平坦」頻譜被 $|H|^2$ 塑形 → 變成有特定頻譜形狀的「彩色」雜訊。例如 AR(1) 濾波器 $H(z) = 1/(1 - az^{-1})$ 產生低頻偏重的粉紅色雜訊。</p>
+<p class="text-sm mt-2">The "flat" white-noise spectrum is shaped by $|H|^2$, producing "coloured" noise with a specific spectral shape. For instance, the AR(1) filter $H(z) = 1/(1 - az^{-1})$ produces low-frequency-dominated pink noise.</p>
 </div>
 
 <!-- How to Use -->
 <div class="card">
-<h2 class="text-lg font-bold mb-3">How to Use：數值範例</h2>
+<h2 class="text-lg font-bold mb-3">How to Use: numerical example</h2>
 
-<h3 class="font-bold mb-2">Step 1：定義隨機過程</h3>
-<p class="text-sm mb-2">考慮 AR(1) 過程：$x[n] = 0.9\, x[n-1] + w[n]$，其中 $w[n]$ 是 $\sigma^2 = 1$ 的白雜訊。</p>
+<h3 class="font-bold mb-2">Step 1: define the random process</h3>
+<p class="text-sm mb-2">Consider the AR(1) process $x[n] = 0.9\, x[n-1] + w[n]$, where $w[n]$ is white noise with $\sigma^2 = 1$.</p>
 
-<h3 class="font-bold mt-3 mb-2">Step 2：Compute理論自相關</h3>
-<p class="text-sm mb-2">AR(1) 的自相關有閉合解：</p>
+<h3 class="font-bold mt-3 mb-2">Step 2: compute the theoretical autocorrelation</h3>
+<p class="text-sm mb-2">The AR(1) autocorrelation has a closed form:</p>
 <div class="fm">
 $$R_{xx}[m] = \frac{\sigma^2}{1 - a^2}\, a^{|m|} = \frac{1}{1 - 0.81} \cdot 0.9^{|m|} \approx 5.26 \cdot 0.9^{|m|}$$
 </div>
 
-<h3 class="font-bold mt-3 mb-2">Step 3：Compute理論 PSD</h3>
-<p class="text-sm mb-2">$H(z) = 1/(1 - 0.9z^{-1})$，所以：</p>
+<h3 class="font-bold mt-3 mb-2">Step 3: compute the theoretical PSD</h3>
+<p class="text-sm mb-2">$H(z) = 1/(1 - 0.9z^{-1})$, so:</p>
 <div class="fm">
 $$S_{xx}(e^{j\omega}) = \frac{\sigma^2}{|1 - 0.9\, e^{-j\omega}|^2} = \frac{1}{1.81 - 1.8\cos\omega}$$
 </div>
-<p class="text-sm mb-2">低頻處 $S_{xx}(1) = 1/(1.81 - 1.8) = 100$（= 20 dB），高頻處 $S_{xx}(-1) = 1/(1.81 + 1.8) \approx 0.277$（= -5.6 dB）。這是一個低通型的 PSD。</p>
+<p class="text-sm mb-2">At low frequency $S_{xx}(1) = 1/(1.81 - 1.8) = 100$ (= 20 dB); at high frequency $S_{xx}(-1) = 1/(1.81 + 1.8) \approx 0.277$ (= -5.6 dB). This is a low-pass type PSD.</p>
 
-<h3 class="font-bold mt-3 mb-2">Step 4：用實際數據估計</h3>
-<p class="text-sm mb-2">生成 $N = 1024$ 點的 AR(1) 數據，用 Welch 法估計 PSD，與理論值比較。平均次數越多，估計越準確。</p>
+<h3 class="font-bold mt-3 mb-2">Step 4: estimate from real data</h3>
+<p class="text-sm mb-2">Generate $N = 1024$ points of AR(1) data, estimate the PSD with Welch's method and compare to the theoretical value. The more averages, the more accurate the estimate.</p>
 
-<div class="tip"><p><strong>實務關鍵：</strong>估計 PSD 時，必須在<strong>頻率解析度</strong>和<strong>估計變異數</strong>之間取捨。段長越長 → 頻率解析度越好，但可平均的段數越少 → 估計越不穩定（回顧 3.2 Welch 法）。</p></div>
+<div class="tip"><p><strong>Practical key point:</strong> when estimating PSDs you always trade off <strong>frequency resolution</strong> against <strong>estimator variance</strong>. Longer segments give better frequency resolution but fewer segments to average, making the estimate less stable (recall Welch's method in 3.2).</p></div>
 </div>
 
 <!-- Interactive Demo -->
 <div class="card">
-<h2 class="text-lg font-bold mb-3">Interactive：隨機過程的統計量估計</h2>
-<p class="text-sm text-slate-500 mb-3">觀察：增加 realizations 數量時，估計的自相關與 PSD 如何逐漸逼近理論值。</p>
+<h2 class="text-lg font-bold mb-3">Interactive: estimating statistics of random processes</h2>
+<p class="text-sm text-slate-500 mb-3">Observe how, as the number of realizations increases, the estimated autocorrelation and PSD gradually approach the theoretical values.</p>
 <div class="flex flex-wrap gap-3 mb-3 items-center">
   <div>
-    <label class="text-xs font-medium">雜訊類型：</label>
+    <label class="text-xs font-medium">Noise type:</label>
     <select id="m8a1type" class="border rounded px-2 py-1 text-sm dark:bg-slate-700 dark:border-slate-600" onchange="updateM8a1()">
-      <option value="white">白雜訊 (White)</option>
-      <option value="ar1" selected>AR(1) 彩色雜訊</option>
-      <option value="ar2">AR(2) 彩色雜訊</option>
+      <option value="white">White noise</option>
+      <option value="ar1" selected>AR(1) coloured noise</option>
+      <option value="ar2">AR(2) coloured noise</option>
     </select>
   </div>
   <div>
-    <label class="text-xs font-medium">Realizations 數量：<span id="m8a1nrealv">50</span></label>
+    <label class="text-xs font-medium">Number of realizations: <span id="m8a1nrealv">50</span></label>
     <input type="range" id="m8a1nreal" min="10" max="500" step="10" value="50" class="w-40"
            oninput="document.getElementById('m8a1nrealv').textContent=this.value; updateM8a1()">
   </div>
@@ -9624,23 +9624,23 @@ $$S_{xx}(e^{j\omega}) = \frac{\sigma^2}{|1 - 0.9\, e^{-j\omega}|^2} = \frac{1}{1
 <div class="card">
 <h2 class="text-lg font-bold mb-3">Applications</h2>
 <ol class="list-decimal pl-5 space-y-3 text-sm">
-<li><strong>通訊系統設計：</strong>通道雜訊建模為 WSS 過程，PSD 決定了接收機靈敏度和調變方式的選擇。AWGN (Additive White Gaussian Noise) 通道是最基本的模型</li>
-<li><strong>雷達信號處理：</strong>雜波 (Clutter) 的 PSD 形狀決定了 MTI (Moving Target Indication) 濾波器的設計。高斯型雜波 PSD → 需要多脈衝對消器</li>
-<li><strong>振動監測：</strong>機器穩態運轉時的振動可視為 WSS 過程。PSD 的峰值頻率對應轉速和故障特徵頻率</li>
-<li><strong>金融時間序列：</strong>股價收益率的自相關結構（如 GARCH 模型）決定了波動率預測和風險管理策略</li>
-<li><strong>語音編碼：</strong>線性預測編碼 (LPC) 將語音建模為 AR 過程，自相關矩陣的 Levinson-Durbin 遞迴求解是核心演算法</li>
+<li><strong>Communication system design:</strong> channel noise is modelled as a WSS process, and its PSD determines receiver sensitivity and the choice of modulation. The AWGN (Additive White Gaussian Noise) channel is the most basic model.</li>
+<li><strong>Radar signal processing:</strong> the PSD shape of clutter determines the design of the MTI (Moving Target Indication) filter. Gaussian-shaped clutter PSD requires multi-pulse cancellers.</li>
+<li><strong>Vibration monitoring:</strong> vibration of a machine running in steady state can be treated as a WSS process. Peak frequencies in the PSD correspond to rotation speed and fault characteristic frequencies.</li>
+<li><strong>Financial time series:</strong> the autocorrelation structure of stock-return series (e.g. GARCH models) drives volatility forecasting and risk management strategies.</li>
+<li><strong>Speech coding:</strong> Linear Predictive Coding (LPC) models speech as an AR process; the Levinson-Durbin recursive solution of the autocorrelation matrix is the core algorithm.</li>
 </ol>
 </div>
 
-<!-- 陷阱/限制 -->
+<!-- Pitfalls / limitations -->
 <div class="warn">
 <h2 class="text-lg font-bold mb-3">Pitfalls and Limitations</h2>
 <ul class="list-disc pl-5 space-y-2 text-sm">
-<li><strong>WSS 假設不一定成立：</strong>非穩態過程（如引擎加速、語音中的過渡音段）違反 WSS。此時需要<strong>短時</strong>分析（假設短時間內近似 WSS）或用時變模型</li>
-<li><strong>遍歷性不能假設：</strong>並非所有 WSS 過程都是遍歷的。例如 $x[n] = A\cos(\omega_0 n)$（$A$ 是隨機變數）是 WSS 但不遍歷——時間平均永遠是零，集合平均也是零，但自相關的時間估計和集合估計可能不同</li>
-<li><strong>有限數據的估計偏差：</strong>自相關在大延遲 $|m|$ 處的估計值不可靠（只有 $N - |m|$ 個乘積項用來平均）。經驗法則：只信任 $|m| < N/10$ 的估計值</li>
-<li><strong>週期圖不是好的 PSD 估計：</strong>單次週期圖的變異數不隨 $N$ 減小（不一致估計）。必須用 Welch 法、Multitaper 或參數法（見 3.1–3.3 節）</li>
-<li><strong>互相關 ≠ 因果關係：</strong>$R_{xy}[m] \neq 0$ 只表示線性統計相關，不代表 $x$ 導致 $y$</li>
+<li><strong>The WSS assumption does not always hold:</strong> non-stationary processes (e.g. engine acceleration, speech transitions) violate WSS. You then need <strong>short-time</strong> analysis (assuming approximate WSS over short windows) or a time-varying model.</li>
+<li><strong>Ergodicity cannot be assumed:</strong> not every WSS process is ergodic. For example $x[n] = A\cos(\omega_0 n)$ (with $A$ a random variable) is WSS but not ergodic—the time average is always zero, the ensemble average is also zero, but the time-based and ensemble-based autocorrelation estimates may differ.</li>
+<li><strong>Estimator bias from finite data:</strong> autocorrelation estimates at large lags $|m|$ are unreliable (only $N - |m|$ products are available for averaging). Rule of thumb: only trust estimates with $|m| < N/10$.</li>
+<li><strong>The periodogram is a poor PSD estimator:</strong> the variance of a single periodogram does not decrease with $N$ (inconsistent estimator). You must use Welch's method, multitapers, or parametric methods (see sections 3.1–3.3).</li>
+<li><strong>Cross-correlation is not causation:</strong> $R_{xy}[m] \neq 0$ only indicates linear statistical correlation, not that $x$ causes $y$.</li>
 </ul>
 </div>
 
@@ -9649,12 +9649,12 @@ $$S_{xx}(e^{j\omega}) = \frac{\sigma^2}{|1 - 0.9\, e^{-j\omega}|^2} = \frac{1}{1
 <h3 class="font-bold text-emerald-700 text-sm mb-3">Quick Check</h3>
 <div class="space-y-3 text-sm">
   <div>
-    <p class="font-medium mb-1">Q1: 白雜訊的自相關函數 $R_{ww}[m] = \sigma^2 \delta[m]$，其 PSD 是什麼？為什麼叫「白」雜訊？</p>
-    <details><summary class="text-cyan-600 cursor-pointer text-xs">Show answer</summary><p class="mt-1 text-slate-600 dark:text-slate-400 text-xs">$S_{ww}(e^{j\omega}) = \sigma^2$，是一個常數——所有頻率的功率相等。這就像白光包含所有可見光頻率一樣，所以稱為「白」雜訊。數學上，$\delta[m]$ 的 DTFT 是常數 1，乘以 $\sigma^2$ 即得。</p></details>
+    <p class="font-medium mb-1">Q1: White noise has autocorrelation $R_{ww}[m] = \sigma^2 \delta[m]$. What is its PSD and why is it called "white" noise?</p>
+    <details><summary class="text-cyan-600 cursor-pointer text-xs">Show answer</summary><p class="mt-1 text-slate-600 dark:text-slate-400 text-xs">$S_{ww}(e^{j\omega}) = \sigma^2$, a constant—the power is equal at every frequency. Just as white light contains every visible frequency, this is why it is called "white" noise. Mathematically, the DTFT of $\delta[m]$ is the constant 1, multiplied by $\sigma^2$.</p></details>
   </div>
   <div>
-    <p class="font-medium mb-1">Q2: 某 WSS 過程的 PSD 在 $\omega = 0$ 處有一個很大的峰值，在 $\omega = \pi$ 附近接近零。這告訴你什麼？如何用濾波器的語言來描述它？</p>
-    <details><summary class="text-cyan-600 cursor-pointer text-xs">Show answer</summary><p class="mt-1 text-slate-600 dark:text-slate-400 text-xs">這是一個低頻成分為主的過程（如 1/f 雜訊或 AR(1) 正相關過程）。它等價於白雜訊通過一個低通濾波器 $H(z)$ 的輸出：$S_{xx} = |H|^2 \sigma^2$。相鄰樣本之間有正相關（$R_{xx}[1] > 0$），訊號變化較為平緩。</p></details>
+    <p class="font-medium mb-1">Q2: A WSS process has a PSD with a large peak at $\omega = 0$ and is near zero around $\omega = \pi$. What does this tell you? How would you describe it in filter language?</p>
+    <details><summary class="text-cyan-600 cursor-pointer text-xs">Show answer</summary><p class="mt-1 text-slate-600 dark:text-slate-400 text-xs">This is a low-frequency-dominated process (e.g. 1/f noise or an AR(1) process with positive correlation). It is equivalent to the output of a low-pass filter $H(z)$ driven by white noise: $S_{xx} = |H|^2 \sigma^2$. Adjacent samples are positively correlated ($R_{xx}[1] > 0$) and the signal varies smoothly.</p></details>
   </div>
 </div>
 </div>
@@ -9665,7 +9665,7 @@ $$S_{xx}(e^{j\omega}) = \frac{\sigma^2}{|1 - 0.9\, e^{-j\omega}|^2} = \frac{1}{1
 </div>
 
 <!-- ch-nav -->
-<div class="ch-nav"><a onclick="go('m7-7')">← 5.7 Synchrosqueezing</a><a onclick="go('m8b-1')">8B Wiener Filter →</a></div>
+<div class="ch-nav"><a onclick="go('m7-7')">&larr; 5.7 Synchrosqueezing</a><a onclick="go('m8b-1')">8B Wiener Filter &rarr;</a></div>
 </section>
 
 <section id="sec-m8b-1" class="sec hidden">
@@ -9683,157 +9683,157 @@ $$S_{xx}(e^{j\omega}) = \frac{\sigma^2}{|1 - 0.9\, e^{-j\omega}|^2} = \frac{1}{1
 <!-- One-Sentence Summary -->
 <div class="card">
 <h2 class="text-lg font-bold mb-3">One-Sentence Summary</h2>
-<p class="text-base">Wiener 濾波器是<strong>已知訊號與雜訊統計特性時的最佳線性濾波器</strong>——它根據每個頻率的 SNR 自動決定「放行還是壓制」，在 SNR 高的頻帶讓訊號通過，在 SNR 低的頻帶把雜訊壓下去。</p>
+<p class="text-base">The Wiener filter is the <strong>optimal linear filter when the signal and noise statistics are known</strong>—it automatically decides whether to "pass or suppress" at each frequency based on the local SNR, letting the signal through in high-SNR bands and attenuating the noise in low-SNR bands.</p>
 </div>
 
-<!-- 為什麼要學 -->
+<!-- Why does this matter -->
 <div class="hist">
-<p><strong>Why does this matter?</strong> 因為 Wiener 濾波器是所有「最佳線性濾波」理論的起點。LMS 自適應濾波器的目標就是逼近 Wiener 解；Kalman 濾波器是 Wiener 濾波器的非穩態推廣；語音增強、影像去噪、通訊等化器的經典方案都源自這個框架。理解 Wiener 濾波 = 理解統計訊號處理的基石。</p>
+<p><strong>Why does this matter?</strong> The Wiener filter is the starting point of all optimal linear filtering theory. The LMS adaptive filter aims to approximate the Wiener solution; the Kalman filter is its non-stationary generalisation; the classical approaches to speech enhancement, image denoising, and communication equalisation all come from this framework. Understanding Wiener filtering is understanding the cornerstone of statistical signal processing.</p>
 </div>
 
 <!-- Previously... -->
 <div class="hist">
-<p class="text-sm"><strong>Previously:</strong>8A 建立了 WSS 隨機過程的框架——自相關 $R_{xx}[m]$、功率頻譜密度 $S_{xx}(e^{j\omega})$、Wiener-Khinchin 定理。現在我們要用這些工具回答一個核心問題：<strong>如何從含噪觀測中「最好地」還原原始訊號？</strong></p>
+<p class="text-sm"><strong>Previously:</strong> 8A built up the WSS random-process framework—autocorrelation $R_{xx}[m]$, power spectral density $S_{xx}(e^{j\omega})$, and the Wiener-Khinchin theorem. Now we use these tools to answer a central question: <strong>how do we "best" recover the original signal from noisy observations?</strong></p>
 </div>
 
 <!-- Pain Point -->
 <div class="card">
-<h2 class="text-lg font-bold mb-3">Pain Point：簡單濾波器不夠聰明</h2>
-<p class="mb-3">你收到一個含噪訊號 $x[n] = d[n] + v[n]$（$d[n]$ 是想要的訊號，$v[n]$ 是雜訊）。直覺上你會用低通濾波器去噪，但：</p>
+<h2 class="text-lg font-bold mb-3">The Problem: simple filters are not smart enough</h2>
+<p class="mb-3">You receive a noisy signal $x[n] = d[n] + v[n]$ ($d[n]$ is the desired signal, $v[n]$ is noise). Intuitively you would use a low-pass filter to denoise, but:</p>
 <ul class="list-disc pl-5 space-y-2 text-sm">
-<li><strong>截止頻率怎麼選？</strong>如果訊號和雜訊的頻帶重疊（這幾乎總是會發生的），任何固定截止頻率都會「傷到」訊號或「漏掉」雜訊</li>
-<li><strong>語音去噪：</strong>語音的頻帶 (100 Hz – 4 kHz) 和白雜訊完全重疊。低通濾波會把高頻子音 (/s/, /f/) 一起砍掉</li>
-<li><strong>想法：</strong>理想的濾波器應該是<strong>頻率相依</strong>的——在訊號強的頻帶完全通過、在雜訊強的頻帶完全壓制、在兩者混合的頻帶做最佳折衷</li>
+<li><strong>How do you choose the cutoff frequency?</strong> If the signal and noise bands overlap (which almost always happens), any fixed cutoff will either damage the signal or let noise through.</li>
+<li><strong>Speech denoising:</strong> the speech band (100 Hz – 4 kHz) overlaps white noise completely. A low-pass filter will also cut the high-frequency consonants (/s/, /f/).</li>
+<li><strong>The idea:</strong> the ideal filter should be <strong>frequency-dependent</strong>—pass through in bands where the signal is strong, fully suppress in bands where noise dominates, and strike the best compromise in mixed bands.</li>
 </ul>
-<div class="warn"><p><strong>核心問題：</strong>給定訊號和雜訊的統計特性（PSD），能否系統性地求出「最佳」濾波器，使得估計誤差的功率最小？</p></div>
+<div class="warn"><p><strong>Core question:</strong> given the signal and noise statistics (PSDs), can we systematically derive the "best" filter so that the power of the estimation error is minimised?</p></div>
 </div>
 
 <!-- Origin -->
 <div class="hist">
 <h2 class="text-lg font-bold mb-3">Origin</h2>
-<p><strong>Norbert Wiener (1942/1949)：</strong>在二戰期間為了預測敵機飛行軌跡（用於防空砲瞄準）而發展了最佳線性預測與濾波理論。他的分類報告在戰後以 <em>Extrapolation, Interpolation, and Smoothing of Stationary Time Series</em> 為名出版（因封面是黃色的，暱稱 "The Yellow Peril"——因為太難讀了）。</p>
-<p class="mt-2"><strong>Andrey Kolmogorov (1941)：</strong>在蘇聯獨立推導出了本質上相同的結果，用於平穩時間序列的預測。因此有時也稱為 Kolmogorov-Wiener 濾波。</p>
-<p class="mt-2 text-sm text-slate-500">Wiener-Hopf 方程得名於 Wiener 與 Eberhard Hopf 在 1931 年合作研究的一類積分方程。Wiener 濾波問題恰好歸結為這類方程。</p>
+<p><strong>Norbert Wiener (1942/1949):</strong> during WWII Wiener developed optimal linear prediction and filtering theory in order to predict the flight trajectories of enemy aircraft for anti-aircraft gun aiming. His classified report was published after the war under the title <em>Extrapolation, Interpolation, and Smoothing of Stationary Time Series</em> (nicknamed "The Yellow Peril" because of its yellow cover—and because it was so hard to read).</p>
+<p class="mt-2"><strong>Andrey Kolmogorov (1941):</strong> in the Soviet Union Kolmogorov independently derived essentially the same result for the prediction of stationary time series. For this reason it is sometimes called Kolmogorov-Wiener filtering.</p>
+<p class="mt-2 text-sm text-slate-500">The Wiener-Hopf equation is named after a class of integral equations that Wiener and Eberhard Hopf studied together in 1931. The Wiener filtering problem happens to reduce to this class of equations.</p>
 </div>
 
 <!-- Core Concepts -->
 <div class="card">
 <h2 class="text-lg font-bold mb-3">Core Concepts</h2>
 
-<p class="mb-3"><strong>直覺：</strong>想像你在嘈雜的餐廳裡聽朋友說話。你的大腦在做什麼？在朋友聲音清晰的頻帶（如某些母音共振峰），你幾乎完全聽取；在背景噪音佔主導的頻帶（如低頻轟鳴），你自動忽略。Wiener 濾波器做的就是這件事——但是用數學最佳化的方式。</p>
+<p class="mb-3"><strong>Intuition:</strong> imagine listening to a friend in a noisy restaurant. What is your brain doing? In the bands where your friend's voice is clear (e.g. certain vowel formants) you listen almost completely; in the bands dominated by background noise (e.g. low-frequency rumble) you automatically ignore. The Wiener filter does exactly this—but in a mathematically optimal way.</p>
 
-<h3 class="font-bold mt-4 mb-2">問題設定</h3>
+<h3 class="font-bold mt-4 mb-2">Problem setup</h3>
 <ul class="list-disc pl-5 text-sm space-y-1 mb-3">
-<li>觀測：$x[n]$（含噪訊號）</li>
-<li>目標：$d[n]$（想要估計的訊號）</li>
-<li>濾波器輸出：$\hat{d}[n] = \sum_{k} h[k]\, x[n-k] = h * x$</li>
-<li>誤差：$e[n] = d[n] - \hat{d}[n]$</li>
-<li><strong>目標：</strong>最小化均方誤差 $J = E[|e[n]|^2]$</li>
+<li>Observation: $x[n]$ (noisy signal)</li>
+<li>Target: $d[n]$ (signal to be estimated)</li>
+<li>Filter output: $\hat{d}[n] = \sum_{k} h[k]\, x[n-k] = h * x$</li>
+<li>Error: $e[n] = d[n] - \hat{d}[n]$</li>
+<li><strong>Goal:</strong> minimise the mean-square error $J = E[|e[n]|^2]$</li>
 </ul>
 
-<h3 class="font-bold mt-4 mb-2">推導：Wiener-Hopf 方程</h3>
-<p class="text-sm mb-2">對 $J$ 求梯度並令其為零：</p>
+<h3 class="font-bold mt-4 mb-2">Derivation: the Wiener-Hopf equation</h3>
+<p class="text-sm mb-2">Take the gradient of $J$ and set it to zero:</p>
 <div class="fm">
-<p class="font-bold text-center mb-2">最佳性條件（正交Core Concepts）</p>
+<p class="font-bold text-center mb-2">Optimality condition (orthogonality principle)</p>
 $$\frac{\partial E[|e[n]|^2]}{\partial h^*[k]} = 0 \quad \forall k$$
 $$\Longrightarrow \quad E[e[n]\, x^*[n-k]] = 0 \quad \forall k$$
-<p class="text-xs text-center mt-2">最佳誤差與所有觀測正交（Orthogonality Principle）</p>
+<p class="text-xs text-center mt-2">The optimal error is orthogonal to all observations (Orthogonality Principle)</p>
 </div>
 
 <details class="deriv my-4">
-<summary>Expand：從正交Core Concepts到 Wiener-Hopf 方程的完整推導</summary>
+<summary>Show full derivation: from orthogonality principle to Wiener-Hopf equation</summary>
 <div>
-<p>Expand $e[n] = d[n] - \hat{d}[n] = d[n] - \sum_l h[l] x[n-l]$，代入正交條件：</p>
+<p>Expand $e[n] = d[n] - \hat{d}[n] = d[n] - \sum_l h[l] x[n-l]$ and substitute into the orthogonality condition:</p>
 $$E\Big[\Big(d[n] - \sum_l h[l] x[n-l]\Big) x^*[n-k]\Big] = 0$$
 $$E[d[n] x^*[n-k]] = \sum_l h[l]\, E[x[n-l] x^*[n-k]]$$
-<p>利用 WSS 定義，$E[x[n-l] x^*[n-k]] = R_{xx}[k-l]$ 且 $E[d[n] x^*[n-k]] = R_{dx}[k]$：</p>
+<p>Using the WSS definition, $E[x[n-l] x^*[n-k]] = R_{xx}[k-l]$ and $E[d[n] x^*[n-k]] = R_{dx}[k]$:</p>
 $$R_{dx}[k] = \sum_l h_{\text{opt}}[l]\, R_{xx}[k-l] = (h_{\text{opt}} * R_{xx})[k]$$
-<p>這就是<strong>卷積形式的 Wiener-Hopf 方程</strong>。</p>
+<p>This is the <strong>convolutional form of the Wiener-Hopf equation</strong>.</p>
 
-<p class="mt-3"><strong>矩陣形式（FIR 濾波器，$M$ 階）：</strong></p>
+<p class="mt-3"><strong>Matrix form (FIR filter, order $M$):</strong></p>
 $$\underbrace{\begin{bmatrix} R_{xx}[0] & R_{xx}[1] & \cdots & R_{xx}[M-1] \\ R_{xx}[1] & R_{xx}[0] & \cdots & R_{xx}[M-2] \\ \vdots & & \ddots & \vdots \\ R_{xx}[M-1] & & \cdots & R_{xx}[0] \end{bmatrix}}_{\mathbf{R}_{xx}\ (\text{Toeplitz})} \underbrace{\begin{bmatrix} h[0] \\ h[1] \\ \vdots \\ h[M-1] \end{bmatrix}}_{\mathbf{h}_{\text{opt}}} = \underbrace{\begin{bmatrix} R_{dx}[0] \\ R_{dx}[1] \\ \vdots \\ R_{dx}[M-1] \end{bmatrix}}_{\mathbf{r}_{dx}}$$
 
-<p class="mt-2">$\mathbf{R}_{xx}$ 是 Toeplitz 矩陣 → 可用 Levinson-Durbin 演算法在 $O(M^2)$ 求解（而非一般矩陣求逆的 $O(M^3)$）。</p>
+<p class="mt-2">$\mathbf{R}_{xx}$ is a Toeplitz matrix, so it can be solved with the Levinson-Durbin algorithm in $O(M^2)$ (instead of $O(M^3)$ for general matrix inversion).</p>
 
-<p class="mt-3"><strong>頻域形式：</strong>對卷積方程取 DTFT：</p>
+<p class="mt-3"><strong>Frequency-domain form:</strong> taking the DTFT of the convolution equation:</p>
 $$S_{dx}(e^{j\omega}) = H_{\text{opt}}(e^{j\omega}) \cdot S_{xx}(e^{j\omega})$$
 $$\boxed{H_{\text{opt}}(e^{j\omega}) = \frac{S_{dx}(e^{j\omega})}{S_{xx}(e^{j\omega})}} \quad \blacksquare$$
 </div>
 </details>
 
 <div class="fm">
-<p class="font-bold text-center mb-2">Wiener-Hopf 方程</p>
-$$\text{矩陣形式：}\quad \mathbf{R}_{xx}\, \mathbf{h}_{\text{opt}} = \mathbf{r}_{dx}$$
-$$\text{頻域形式：}\quad H_{\text{opt}}(e^{j\omega}) = \frac{S_{xd}(e^{j\omega})}{S_{xx}(e^{j\omega})}$$
+<p class="font-bold text-center mb-2">Wiener-Hopf equation</p>
+$$\text{Matrix form:}\quad \mathbf{R}_{xx}\, \mathbf{h}_{\text{opt}} = \mathbf{r}_{dx}$$
+$$\text{Frequency-domain form:}\quad H_{\text{opt}}(e^{j\omega}) = \frac{S_{xd}(e^{j\omega})}{S_{xx}(e^{j\omega})}$$
 </div>
 
-<h3 class="font-bold mt-4 mb-2">特殊情形：訊號 + 不相關雜訊</h3>
-<p class="text-sm mb-2">若 $x[n] = d[n] + v[n]$，且 $d$ 和 $v$ 不相關（$R_{dv}[m] = 0$），則：</p>
+<h3 class="font-bold mt-4 mb-2">Special case: signal + uncorrelated noise</h3>
+<p class="text-sm mb-2">If $x[n] = d[n] + v[n]$ where $d$ and $v$ are uncorrelated ($R_{dv}[m] = 0$), then:</p>
 <ul class="list-disc pl-5 text-sm space-y-1 mb-3">
-<li>$S_{xx} = S_{dd} + S_{vv}$（功率相加）</li>
-<li>$S_{xd} = S_{dd}$（互 PSD = 訊號的 PSD）</li>
+<li>$S_{xx} = S_{dd} + S_{vv}$ (powers add)</li>
+<li>$S_{xd} = S_{dd}$ (cross-PSD equals the signal PSD)</li>
 </ul>
 <div class="fm">
-<p class="font-bold text-center mb-2">Wiener 去噪公式</p>
+<p class="font-bold text-center mb-2">Wiener denoising formula</p>
 $$H_{\text{opt}}(e^{j\omega}) = \frac{S_{dd}(e^{j\omega})}{S_{dd}(e^{j\omega}) + S_{vv}(e^{j\omega})}$$
 </div>
-<p class="mt-3 text-sm"><strong>直觀解讀：</strong></p>
+<p class="mt-3 text-sm"><strong>Intuitive interpretation:</strong></p>
 <ul class="list-disc pl-5 text-sm space-y-1 mb-3">
-<li>SNR 高的頻帶（$S_{dd} \gg S_{vv}$）：$H \approx S_{dd}/S_{dd} = 1$ → <strong>完全通過</strong></li>
-<li>SNR 低的頻帶（$S_{vv} \gg S_{dd}$）：$H \approx S_{dd}/S_{vv} \approx 0$ → <strong>強力壓制</strong></li>
-<li>中間地帶：$H$ 隨局部 SNR 平滑過渡 → <strong>頻率相依的最佳折衷</strong></li>
+<li>High-SNR bands ($S_{dd} \gg S_{vv}$): $H \approx S_{dd}/S_{dd} = 1$ &rarr; <strong>pass through</strong></li>
+<li>Low-SNR bands ($S_{vv} \gg S_{dd}$): $H \approx S_{dd}/S_{vv} \approx 0$ &rarr; <strong>strongly suppressed</strong></li>
+<li>In between: $H$ transitions smoothly with local SNR &rarr; <strong>frequency-dependent optimal trade-off</strong></li>
 </ul>
-<div class="tip"><p><strong>本質：</strong>Wiener 濾波器是一個<strong>頻率相依的 SNR 閘門</strong>——它在每個頻率獨立判斷「這裡訊號多還是雜訊多？」然後做最佳的增益調整。這就是為什麼它比固定截止頻率的低通濾波器好得多。</p></div>
+<div class="tip"><p><strong>Essence:</strong> the Wiener filter is a <strong>frequency-dependent SNR gate</strong>—it independently asks at each frequency "is there more signal or more noise here?" and then applies the optimal gain. This is why it is far better than a low-pass filter with a fixed cutoff.</p></div>
 
-<h3 class="font-bold mt-4 mb-2">最小均方誤差 (MMSE)</h3>
+<h3 class="font-bold mt-4 mb-2">Minimum Mean-Square Error (MMSE)</h3>
 <div class="fm">
 $$J_{\min} = \frac{1}{2\pi}\int_{-\pi}^{\pi} \frac{S_{dd}(e^{j\omega})\, S_{vv}(e^{j\omega})}{S_{dd}(e^{j\omega}) + S_{vv}(e^{j\omega})}\, d\omega$$
 </div>
-<p class="text-sm mt-2">在 SNR 為零的頻帶，殘餘誤差 = $S_{dd}/2$（最佳也只能砍掉一半）；在 SNR 極高的頻帶，殘餘誤差趨近零。</p>
+<p class="text-sm mt-2">In bands with zero SNR, the residual error is $S_{dd}/2$ (the best you can do is cut it in half); in bands with very high SNR, the residual error approaches zero.</p>
 
-<h3 class="font-bold mt-4 mb-2">與 LMS 自適應濾波的關係</h3>
+<h3 class="font-bold mt-4 mb-2">Relationship to LMS adaptive filtering</h3>
 <table class="dt">
-<thead><tr><th>特性</th><th>Wiener 濾波</th><th>LMS 自適應濾波</th></tr></thead>
+<thead><tr><th>Property</th><th>Wiener filter</th><th>LMS adaptive filter</th></tr></thead>
 <tbody>
-<tr><td>需要的資訊</td><td>$R_{xx}$ 和 $r_{xd}$（離線統計量）</td><td>只需輸入 $x[n]$ 和參考 $d[n]$</td></tr>
-<tr><td>求解方式</td><td>解 Wiener-Hopf 方程（一次性）</td><td>梯度下降的隨機近似（逐樣本更新）</td></tr>
-<tr><td>收斂</td><td>瞬間（非遞迴）</td><td>需要時間收斂，受步長 $\mu$ 控制</td></tr>
-<tr><td>追蹤能力</td><td>無（假設 WSS）</td><td>有（可追蹤緩慢時變環境）</td></tr>
-<tr><td>關係</td><td colspan="2">LMS 收斂後 $\to$ 在 Wiener 解附近振盪</td></tr>
+<tr><td>Required information</td><td>$R_{xx}$ and $r_{xd}$ (offline statistics)</td><td>Only the input $x[n]$ and reference $d[n]$</td></tr>
+<tr><td>Solution method</td><td>Solve the Wiener-Hopf equation (one-shot)</td><td>Stochastic approximation via gradient descent (per-sample update)</td></tr>
+<tr><td>Convergence</td><td>Instantaneous (non-recursive)</td><td>Takes time to converge, controlled by step size $\mu$</td></tr>
+<tr><td>Tracking ability</td><td>None (assumes WSS)</td><td>Yes (can track slowly time-varying environments)</td></tr>
+<tr><td>Relationship</td><td colspan="2">After convergence, LMS oscillates around the Wiener solution</td></tr>
 </tbody>
 </table>
 </div>
 
 <!-- How to Use -->
 <div class="card">
-<h2 class="text-lg font-bold mb-3">How to Use：語音去噪的數值範例</h2>
+<h2 class="text-lg font-bold mb-3">How to Use: numerical example for speech denoising</h2>
 
-<h3 class="font-bold mb-2">Step 1：問題設定</h3>
-<p class="text-sm mb-2">乾淨語音 $d[n]$（100 Hz 基頻正弦波模擬）+ 白雜訊 $v[n]$（$\sigma^2 = 0.5$），輸入 SNR = 0 dB。</p>
+<h3 class="font-bold mb-2">Step 1: problem setup</h3>
+<p class="text-sm mb-2">Clean speech $d[n]$ (simulated by a 100 Hz sinusoid) + white noise $v[n]$ ($\sigma^2 = 0.5$), input SNR = 0 dB.</p>
 
-<h3 class="font-bold mt-3 mb-2">Step 2：估計 PSD</h3>
-<p class="text-sm mb-2">用 Welch 法分別估計 $S_{dd}$（從乾淨訊號）和 $S_{vv}$（從純雜訊段）。實務中乾淨訊號不可得，需用 VAD (Voice Activity Detection) 在靜音段估計 $S_{vv}$。</p>
+<h3 class="font-bold mt-3 mb-2">Step 2: estimate the PSDs</h3>
+<p class="text-sm mb-2">Use Welch's method to estimate $S_{dd}$ (from the clean signal) and $S_{vv}$ (from a noise-only segment). In practice the clean signal is not available, so VAD (Voice Activity Detection) is used to estimate $S_{vv}$ during silence.</p>
 
-<h3 class="font-bold mt-3 mb-2">Step 3：Compute Wiener 濾波器</h3>
+<h3 class="font-bold mt-3 mb-2">Step 3: compute the Wiener filter</h3>
 <div class="fm">
 $$H_{\text{opt}}[k] = \frac{\hat{S}_{dd}[k]}{\hat{S}_{dd}[k] + \hat{S}_{vv}[k]}$$
 </div>
-<p class="text-sm mb-2">其中 $k$ 是頻率 bin 索引。在 100 Hz 附近（訊號強）$H \approx 1$；在遠離 100 Hz 處（雜訊主導）$H \approx 0$。</p>
+<p class="text-sm mb-2">where $k$ is the frequency-bin index. Near 100 Hz (strong signal) $H \approx 1$; far from 100 Hz (noise-dominated) $H \approx 0$.</p>
 
-<h3 class="font-bold mt-3 mb-2">Step 4：頻域應用</h3>
-<p class="text-sm mb-2">$\hat{D}[k] = H_{\text{opt}}[k] \cdot X[k]$，然後 IFFT 回時域。</p>
+<h3 class="font-bold mt-3 mb-2">Step 4: apply in the frequency domain</h3>
+<p class="text-sm mb-2">$\hat{D}[k] = H_{\text{opt}}[k] \cdot X[k]$, then IFFT back to the time domain.</p>
 
-<h3 class="font-bold mt-3 mb-2">Step 5：評估</h3>
-<p class="text-sm mb-2">比較濾波前後的 SNR：SNR 從 0 dB 提升到 10–15 dB（視訊號和雜訊的頻譜重疊程度而定）。</p>
+<h3 class="font-bold mt-3 mb-2">Step 5: evaluation</h3>
+<p class="text-sm mb-2">Compare SNR before and after filtering: SNR improves from 0 dB to 10–15 dB (depending on how much the signal and noise spectra overlap).</p>
 </div>
 
 <!-- Interactive Demo -->
 <div class="card">
-<h2 class="text-lg font-bold mb-3">Interactive：Wiener 濾波去噪</h2>
-<p class="text-sm text-slate-500 mb-3">觀察 Wiener 濾波器如何根據 SNR 自動調整每個頻率的增益。拖動 SNR 滑桿，看濾波器形狀和輸出品質的變化。</p>
+<h2 class="text-lg font-bold mb-3">Interactive: Wiener denoising</h2>
+<p class="text-sm text-slate-500 mb-3">Watch how the Wiener filter automatically adjusts the gain at each frequency based on SNR. Drag the SNR slider to see how the filter shape and output quality change.</p>
 <div class="flex flex-wrap gap-3 mb-3 items-center">
   <div>
-    <label class="text-xs font-medium">輸入 SNR：<span id="m8b1snrv">0</span> dB</label>
+    <label class="text-xs font-medium">Input SNR: <span id="m8b1snrv">0</span> dB</label>
     <input type="range" id="m8b1snr" min="-10" max="30" step="1" value="0" class="w-40"
            oninput="document.getElementById('m8b1snrv').textContent=this.value; updateM8b1()">
   </div>
@@ -9850,23 +9850,23 @@ $$H_{\text{opt}}[k] = \frac{\hat{S}_{dd}[k]}{\hat{S}_{dd}[k] + \hat{S}_{vv}[k]}$
 <div class="card">
 <h2 class="text-lg font-bold mb-3">Applications</h2>
 <ol class="list-decimal pl-5 space-y-3 text-sm">
-<li><strong>語音增強 (Speech Enhancement)：</strong>手機通話中的雜訊消除。語音 PSD 集中在 100 Hz–4 kHz 的共振峰 (Formant) 區域，雜訊 PSD 相對平坦。Wiener 濾波器在共振峰頻帶讓語音通過，在其他頻帶壓制雜訊。現代手機的雜訊消除晶片本質上是 Wiener 濾波的改良版</li>
-<li><strong>天文影像去噪：</strong>哈伯太空望遠鏡的影像受到光子雜訊和讀出雜訊影響。Wiener 反卷積 (Wiener Deconvolution) 同時處理去噪和去模糊</li>
-<li><strong>通訊等化器 (Equalizer)：</strong>MMSE 等化器就是 Wiener 濾波器的直接應用——最小化 ISI (符號間干擾) + 雜訊的均方誤差</li>
-<li><strong>腦波 (EEG/ERP) 去偽影：</strong>去除眼動、肌電等偽影。訊號和偽影的 PSD 不同，Wiener 濾波器可以選擇性地壓制偽影頻帶</li>
-<li><strong>主動噪音控制 (ANC)：</strong>降噪耳機中的前饋/回饋路徑設計本質上求解的就是因果 Wiener 濾波問題</li>
+<li><strong>Speech Enhancement:</strong> noise cancellation in mobile phone calls. Speech PSD is concentrated in the formant regions between 100 Hz and 4 kHz, while noise PSD is relatively flat. The Wiener filter lets speech through in the formant bands and suppresses noise in the other bands. Modern mobile-phone noise-cancellation chips are essentially improved Wiener filters.</li>
+<li><strong>Astronomical image denoising:</strong> images from the Hubble Space Telescope suffer from photon noise and readout noise. Wiener deconvolution handles denoising and deblurring simultaneously.</li>
+<li><strong>Communication equalizers:</strong> the MMSE equalizer is a direct application of the Wiener filter—it minimizes the mean-square error of ISI (intersymbol interference) + noise.</li>
+<li><strong>EEG/ERP artifact removal:</strong> removing eye-movement, EMG and similar artifacts. Signal and artifact PSDs differ, so the Wiener filter can selectively suppress the artifact bands.</li>
+<li><strong>Active Noise Control (ANC):</strong> feedforward/feedback path design in noise-cancelling headphones is essentially solving a causal Wiener filtering problem.</li>
 </ol>
 </div>
 
-<!-- 陷阱/限制 -->
+<!-- Pitfalls / limitations -->
 <div class="warn">
 <h2 class="text-lg font-bold mb-3">Pitfalls and Limitations</h2>
 <ul class="list-disc pl-5 space-y-2 text-sm">
-<li><strong>需要已知 PSD：</strong>Wiener 濾波器需要 $S_{dd}$ 和 $S_{vv}$，但實務中乾淨訊號不可得。常用方法：在「靜音段」估計 $S_{vv}$，用 $S_{dd} = S_{xx} - S_{vv}$（可能出現負值 → 需做半波整流或 spectral floor）</li>
-<li><strong>假設 WSS：</strong>語音、音樂等訊號是高度非平穩的。解決方法：用<strong>短時 Wiener 濾波</strong>（每一幀重新估計 PSD 並Compute $H$），與 STFT 框架結合</li>
-<li><strong>Musical Noise（音樂雜訊）：</strong>頻譜減法（Wiener 濾波的簡化版）會產生隨機出現的殘餘頻譜峰值，聽起來像「哨聲」或「水滴聲」。改善方法：平滑 $H$ 的時間軌跡、設定 spectral floor</li>
-<li><strong>非因果：</strong>理論上的 Wiener 濾波器是非因果的（使用未來的樣本）。因果版本需要用 spectral factorization 求解，更加複雜</li>
-<li><strong>只是線性最佳：</strong>如果雜訊是非高斯的，非線性估計器可能更好。Wiener 是所有<strong>線性</strong>估計器中的最佳，不是所有估計器中的最佳</li>
+<li><strong>Requires known PSDs:</strong> the Wiener filter needs $S_{dd}$ and $S_{vv}$, but in practice the clean signal is unavailable. Common approach: estimate $S_{vv}$ during silent segments and use $S_{dd} = S_{xx} - S_{vv}$ (which can become negative, requiring half-wave rectification or a spectral floor).</li>
+<li><strong>Assumes WSS:</strong> speech, music and similar signals are highly non-stationary. Remedy: use <strong>short-time Wiener filtering</strong> (re-estimate the PSDs and recompute $H$ on each frame) combined with the STFT framework.</li>
+<li><strong>Musical noise:</strong> spectral subtraction (a simplified Wiener filter) produces randomly appearing residual spectral peaks that sound like "whistles" or "water drops". Remedies: smooth the time trajectory of $H$ and set a spectral floor.</li>
+<li><strong>Non-causal:</strong> the theoretical Wiener filter is non-causal (uses future samples). The causal version requires spectral factorization and is more complex.</li>
+<li><strong>Only linearly optimal:</strong> if the noise is non-Gaussian, a nonlinear estimator may do better. Wiener is optimal among all <strong>linear</strong> estimators, not all estimators.</li>
 </ul>
 </div>
 
@@ -9875,12 +9875,12 @@ $$H_{\text{opt}}[k] = \frac{\hat{S}_{dd}[k]}{\hat{S}_{dd}[k] + \hat{S}_{vv}[k]}$
 <h3 class="font-bold text-emerald-700 text-sm mb-3">Quick Check</h3>
 <div class="space-y-3 text-sm">
   <div>
-    <p class="font-medium mb-1">Q1: 在 Wiener 去噪公式 $H = S_{dd}/(S_{dd}+S_{vv})$ 中，如果某頻率的 SNR = 0 dB（即 $S_{dd} = S_{vv}$），此處的 $H$ 值是多少？直覺上合理嗎？</p>
-    <details><summary class="text-cyan-600 cursor-pointer text-xs">Show answer</summary><p class="mt-1 text-slate-600 dark:text-slate-400 text-xs">$H = S_{dd}/(S_{dd}+S_{dd}) = 0.5$。Wiener 濾波器把增益設為 0.5（衰減 6 dB）。直覺上合理：訊號和雜訊一樣大時，無法完全分離，最佳策略是折衷——通過一半的能量，損失一些訊號但也壓制了一半的雜訊。</p></details>
+    <p class="font-medium mb-1">Q1: In the Wiener denoising formula $H = S_{dd}/(S_{dd}+S_{vv})$, if the SNR at some frequency is 0 dB (i.e. $S_{dd} = S_{vv}$), what is the value of $H$ there? Does it make intuitive sense?</p>
+    <details><summary class="text-cyan-600 cursor-pointer text-xs">Show answer</summary><p class="mt-1 text-slate-600 dark:text-slate-400 text-xs">$H = S_{dd}/(S_{dd}+S_{dd}) = 0.5$. The Wiener filter sets the gain to 0.5 (6 dB attenuation). This is intuitive: when signal and noise have equal power they cannot be fully separated, and the optimal strategy is a compromise—pass half the energy, losing some signal but also suppressing half the noise.</p></details>
   </div>
   <div>
-    <p class="font-medium mb-1">Q2: 為什麼說 LMS 自適應濾波器是 Wiener 濾波器的「線上近似」？它的優勢是什麼？</p>
-    <details><summary class="text-cyan-600 cursor-pointer text-xs">Show answer</summary><p class="mt-1 text-slate-600 dark:text-slate-400 text-xs">Wiener 濾波器需要事先知道 $R_{xx}$ 和 $r_{xd}$（統計量），是離線的一次性求解。LMS 不需要這些統計量——它用當前的輸入和誤差來估計梯度方向，逐樣本更新濾波器係數。收斂後，LMS 的係數會在 Wiener 最佳解附近振盪。LMS 的優勢是：(1) 不需要先知道統計量 (2) 可以追蹤緩慢時變的環境。</p></details>
+    <p class="font-medium mb-1">Q2: Why is the LMS adaptive filter called an "online approximation" of the Wiener filter? What are its advantages?</p>
+    <details><summary class="text-cyan-600 cursor-pointer text-xs">Show answer</summary><p class="mt-1 text-slate-600 dark:text-slate-400 text-xs">The Wiener filter needs to know $R_{xx}$ and $r_{xd}$ (statistics) in advance and is an offline one-shot solution. LMS does not need these statistics—it uses the current input and error to estimate the gradient direction and updates the filter coefficients sample by sample. After convergence, the LMS coefficients oscillate around the optimal Wiener solution. LMS advantages: (1) no prior statistics required, (2) it can track slowly time-varying environments.</p></details>
   </div>
 </div>
 </div>
@@ -9891,7 +9891,7 @@ $$H_{\text{opt}}[k] = \frac{\hat{S}_{dd}[k]}{\hat{S}_{dd}[k] + \hat{S}_{vv}[k]}$
 </div>
 
 <!-- ch-nav -->
-<div class="ch-nav"><a onclick="go('m8a-1')">← 8A Random Processes WSS</a><a onclick="go('m9a-1')">9A OLA/OLS →</a></div>
+<div class="ch-nav"><a onclick="go('m8a-1')">&larr; 8A Random Processes WSS</a><a onclick="go('m9a-1')">9A OLA/OLS &rarr;</a></div>
 </section>
 
 <!-- ============================== Lab ============================== -->
@@ -10441,7 +10441,7 @@ function updateP11(){
   document.getElementById('p11m').textContent=m;document.getElementById('p11n').textContent=n;
   const N=500,t=ls(0,1,N),prod=t.map(ti=>Math.cos(2*Math.PI*m*ti)*Math.cos(2*Math.PI*n*ti));
   const integral=prod.reduce((a,b)=>a+b,0)/N;
-  Plotly.react('plotP11',[{x:t,y:prod,fill:'tozeroy',fillcolor:Math.abs(integral)>0.01?'rgba(16,185,129,0.2)':'rgba(239,68,68,0.15)',line:{color:Math.abs(integral)>0.01?'#10b981':'#ef4444',width:1.5}}],pl(`cos(2π·${m}·t) × cos(2π·${n}·t)`,'t','被積函數'),pc);
+  Plotly.react('plotP11',[{x:t,y:prod,fill:'tozeroy',fillcolor:Math.abs(integral)>0.01?'rgba(16,185,129,0.2)':'rgba(239,68,68,0.15)',line:{color:Math.abs(integral)>0.01?'#10b981':'#ef4444',width:1.5}}],pl(`cos(2π·${m}·t) × cos(2π·${n}·t)`,'t','integrand'),pc);
   document.getElementById('p11result').textContent=`∫₀¹ cos(2π·${m}·t)·cos(2π·${n}·t) dt ≈ ${integral.toFixed(4)} ${m===n?(m===0?'= 1 (DC²)':'= 0.5 (n=m≠0)'):'= 0 (正交！)'}`;
 }
 
@@ -10456,7 +10456,7 @@ function updateP13(){
     return s;}
   Plotly.react('plotP13',[
     {x:t,y:synth('sq'),name:'方波 (1/n)',line:{color:'#ef4444',width:1.5}},
-    {x:t,y:synth('tri'),name:'三角波 (1/n²)',line:{color:'#06b6d4',width:1.5}},
+    {x:t,y:synth('tri'),name:'3角波 (1/n²)',line:{color:'#06b6d4',width:1.5}},
     {x:t,y:synth('saw'),name:'鋸齒波 (1/n)',line:{color:'#8b5cf6',width:1.5}}
   ],pl(`N=${Nh} 項傅立葉級數收斂比較`,'t','Amplitude'),pc);
 }
@@ -10470,8 +10470,8 @@ function updateP14(){
   const dt=1/(2*Math.sqrt(alpha)),df=Math.sqrt(alpha)/(2*Math.PI);
   const product=(dt*df).toFixed(4);
   Plotly.react('plotP14',[
-    {x:t,y:xt,name:`時域 Δt=${dt.toFixed(3)}`,line:{color:'#06b6d4',width:2},xaxis:'x',yaxis:'y'},
-    {x:f,y:Xf.map(v=>v/Math.max(...Xf)),name:`頻域 Δf=${df.toFixed(3)}`,line:{color:'#10b981',width:2},xaxis:'x2',yaxis:'y2'}
+    {x:t,y:xt,name:`time domain Δt=${dt.toFixed(3)}`,line:{color:'#06b6d4',width:2},xaxis:'x',yaxis:'y'},
+    {x:f,y:Xf.map(v=>v/Math.max(...Xf)),name:`frequency domain Δf=${df.toFixed(3)}`,line:{color:'#10b981',width:2},xaxis:'x2',yaxis:'y2'}
   ],Object.assign(pl('','',''),{grid:{rows:1,columns:2,pattern:'independent'},xaxis:{title:'t',domain:[0,0.47],color:dk()?'#94a3b8':'#475569',gridcolor:dk()?'#1e293b':'#e2e8f0'},yaxis:{title:'g(t)'},xaxis2:{title:'f (Hz)',domain:[0.53,1],color:dk()?'#94a3b8':'#475569',gridcolor:dk()?'#1e293b':'#e2e8f0'},yaxis2:{title:'|G(f)| (norm)',anchor:'x2'}}),pc);
   document.getElementById('p14result').textContent=`Δt = ${dt.toFixed(4)}, Δf = ${df.toFixed(4)}, Δt·Δf = ${product} (下界 = ${(1/(4*Math.PI)).toFixed(4)})`;
 }
@@ -10505,7 +10505,7 @@ function updateP22(){
 // === 2.3 DTFT vs DFT ===
 function updateP23(){
   const N=parseInt(document.getElementById('p23N').value);document.getElementById('p23Nv').textContent=N;
-  // 測試序列：truncated sinc-like
+  // test序列：truncated sinc-like
   const x=[];for(let i=0;i<8;i++)x.push(i<4?1:0); // simple rect[4]
   // 高密度 DTFT（用大 FFT 近似）
   const Nhd=1024,xhd=zp(x,Nhd),imhd=new Array(Nhd).fill(0),Rhd=fft(xhd,imhd);
@@ -10516,7 +10516,7 @@ function updateP23(){
   Plotly.react('plotP23',[
     {x:fhd,y:mhd,name:'DTFT (近似)',line:{color:'#06b6d4',width:1.5}},
     {x:fn,y:mn,name:`${N}-pt DFT`,mode:'markers',marker:{size:7,color:'#ef4444'}}
-  ],pl('DTFT vs DFT 取樣','ω (rad)','|X|',{xaxis:{title:'ω (rad)',range:[0,2*Math.PI]}}),pc);
+  ],pl('DTFT vs DFT sampling','ω (rad)','|X|',{xaxis:{title:'ω (rad)',range:[0,2*Math.PI]}}),pc);
 }
 
 // === 2.5 Z-transform pole-zero ===
@@ -10545,9 +10545,9 @@ function updateP26(){
   const fSig=50,dur=0.1,tc=ls(0,dur,1000),xc=tc.map(t=>Math.sin(2*Math.PI*fSig*t));
   const Ns=Math.max(2,Math.round(fs*dur)),ts=ls(0,dur,Ns),xs=ts.map(t=>Math.sin(2*Math.PI*fSig*t));
   let fA=fSig;if(fs<2*fSig)fA=Math.abs(fSig-fs*Math.round(fSig/fs));
-  const tr=[{x:tc,y:xc,name:'原始 50Hz',line:{color:'#94a3b8',dash:'dash',width:1}},{x:ts,y:xs,name:'取樣 fs='+fs,mode:'markers',marker:{size:7,color:'#06b6d4'}}];
-  if(fs<100)tr.push({x:tc,y:tc.map(t=>Math.sin(2*Math.PI*fA*t)),name:'混疊 '+fA.toFixed(1)+'Hz',line:{color:'#ef4444',width:2}});
-  Plotly.react('plotP26',tr,pl(fs>=100?'Normal sampling':'混疊！fs='+fs+'<100','t (s)','Amplitude'),pc);
+  const tr=[{x:tc,y:xc,name:'Original 50Hz',line:{color:'#94a3b8',dash:'dash',width:1}},{x:ts,y:xs,name:'sampling fs='+fs,mode:'markers',marker:{size:7,color:'#06b6d4'}}];
+  if(fs<100)tr.push({x:tc,y:tc.map(t=>Math.sin(2*Math.PI*fA*t)),name:'Aliased '+fA.toFixed(1)+'Hz',line:{color:'#ef4444',width:2}});
+  Plotly.react('plotP26',tr,pl(fs>=100?'Normal sampling':'Aliased！fs='+fs+'<100','t (s)','Amplitude'),pc);
 }
 
 // === Window functions ===
@@ -10567,7 +10567,7 @@ function updateP31(){
   const N=128,win=getW(wn,N,beta),Nf=4096,re=zp(win,Nf),im=new Array(Nf).fill(0),R=fft(re,im);
   const pk=Math.sqrt(R.re[0]**2+R.im[0]**2),half=Nf/2,fb=[],db=[];
   for(let k=0;k<Nf;k++){const i=(k+half)%Nf;const m=Math.sqrt(R.re[i]**2+R.im[i]**2);db.push(20*Math.log10(m/pk+1e-12));fb.push((k-half)*N/Nf)}
-  Plotly.react('plotP31',[{x:fb,y:db,line:{color:'#06b6d4',width:1.5}}],pl(`${wn} 窗頻域響應`,'bins','dB',{xaxis:{range:[-15,15]},yaxis:{range:[-120,5]}}),pc);
+  Plotly.react('plotP31',[{x:fb,y:db,line:{color:'#06b6d4',width:1.5}}],pl(`${wn} 窗frequency domain響應`,'bins','dB',{xaxis:{range:[-15,15]},yaxis:{range:[-120,5]}}),pc);
 }
 let p31wSel='hann';
 function setP31w(w){p31wSel=w;document.querySelectorAll('.p31wb').forEach(b=>{if(b.dataset.w===w){b.classList.add('bg-cyan-500','text-white')}else{b.classList.remove('bg-cyan-500','text-white')}});updateP31b()}
@@ -10611,7 +10611,7 @@ function updateP33(){
   Plotly.react('plotP33',[
     {x:frP,y:mgP,name:'Periodogram',line:{color:'#94a3b8',width:1}},
     {x:frA,y:mgA,name:`AR(${p})`,line:{color:'#06b6d4',width:2}}
-  ],pl('AR 頻譜 vs Periodogram','Hz','dB',{xaxis:{range:[80,130]},yaxis:{range:[-30,20]}}),pc);
+  ],pl('AR Spectrum vs Periodogram','Hz','dB',{xaxis:{range:[80,130]},yaxis:{range:[-30,20]}}),pc);
 }
 
 // === 3.4 MUSIC ===
@@ -10666,10 +10666,10 @@ function updateP41(){
   const h=hilbert(x);
   const hEnv=[];for(let i=0;i<N;i++)hEnv.push(Math.sqrt(h.re[i]**2+h.im[i]**2));
   Plotly.react('plotP41',[
-    {x:t,y:x,name:'AM 訊號',line:{color:'#94a3b8',width:1}},
-    {x:t,y:hEnv.slice(0,N),name:'Hilbert 包絡',line:{color:'#06b6d4',width:2}},
-    {x:t,y:env,name:'真實包絡',line:{color:'#ef4444',dash:'dash',width:1.5}}
-  ],pl('Hilbert 包絡偵測','Time (s)','Amplitude'),pc);
+    {x:t,y:x,name:'AM signal',line:{color:'#94a3b8',width:1}},
+    {x:t,y:hEnv.slice(0,N),name:'Hilbert envelope',line:{color:'#06b6d4',width:2}},
+    {x:t,y:env,name:'真實envelope',line:{color:'#ef4444',dash:'dash',width:1.5}}
+  ],pl('Hilbert envelope偵測','Time (s)','Amplitude'),pc);
 }
 
 // === 5.1 STFT Spectrogram ===
@@ -10805,7 +10805,7 @@ function runLab(){
   const win=getW(document.getElementById('lwin').value,N,6),xw=x.map((v,i)=>v*win[i]),ws=win.reduce((a,b)=>a+b,0);
   const Nf=np2(N)*2,re=zp(xw,Nf),im=new Array(Nf).fill(0),R=fft(re,im);
   const fr=[],mg=[];for(let k=0;k<Nf/2;k++){fr.push(k*fs/Nf);mg.push(20*Math.log10(Math.sqrt(R.re[k]**2+R.im[k]**2)*2/ws+1e-12))}
-  Plotly.react('plotLabT',[{x:t,y:xw,line:{color:'#06b6d4',width:1}}],pl('時間域','s','Amplitude'),pc);
+  Plotly.react('plotLabT',[{x:t,y:xw,line:{color:'#06b6d4',width:1}}],pl('time域','s','Amplitude'),pc);
   Plotly.react('plotLabF',[{x:fr,y:mg,line:{color:'#10b981',width:1.5}}],pl('FFT Magnitude','Hz','dB',{yaxis:{range:[-100,10]}}),pc);
 }
 
@@ -10816,52 +10816,52 @@ const searchIndex=[
   {id:'m1-2',t:'1.2 分佈理論 Dirac delta 廣義函數 tempered distribution'},
   {id:'m1-3',t:'1.3 收斂理論 Gibbs 現象 逐點 均勻 L2 Carleson'},
   {id:'m1-4',t:'1.4 不確定性原理 Heisenberg Gabor Cauchy-Schwarz Gaussian'},
-  {id:'m2a-1',t:'2.1 傅立葉級數 Fourier Series 諧波 方波 三角波 THD'},
-  {id:'m2a-2',t:'2.2 CTFT 連續傅立葉轉換 卷積定理 Parseval 時移 頻移'},
-  {id:'m3a-1',t:'2.3 DTFT 離散時間 取樣 週期化 混疊'},
+  {id:'m2a-1',t:'2.1 傅立葉級數 Fourier Series 諧波 方波 3角波 THD'},
+  {id:'m2a-2',t:'2.2 CTFT 連續傅立葉轉換 convolution定理 Parseval 時移 頻移'},
+  {id:'m3a-1',t:'2.3 DTFT 離散time sampling 週期化 Aliased'},
   {id:'m3a-2',t:'2.4 DFT FFT 快速傅立葉 Cooley-Tukey 蝴蝶 radix-2 零填充'},
   {id:'m2b-4',t:'2.5 Z轉換 Z-Transform 極點 零點 ROC 穩定性 IIR'},
-  {id:'m2c-1',t:'2.6 取樣定理 Nyquist Shannon 混疊 aliasing 抗混疊'},
-  {id:'m2d-1',t:'2.7 轉換關係 FS CTFT DTFT DFT Z-Transform 關係圖'},
-  {id:'m3b-1',t:'3.1 視窗函數 window Hann Hamming Blackman Kaiser 頻譜洩漏'},
+  {id:'m2c-1',t:'2.6 sampling定理 Nyquist Shannon Aliased aliasing 抗Aliased'},
+  {id:'m2d-1',t:'2.7 轉換relationship FS CTFT DTFT DFT Z-Transform relationship圖'},
+  {id:'m3b-1',t:'3.1 視窗函數 window Hann Hamming Blackman Kaiser Spectrum洩漏'},
   {id:'m3c-1',t:'3.2 Welch Multitaper PSD 功率譜密度 DPSS Slepian'},
-  {id:'m3d-1',t:'3.3 AR 參數式 Yule-Walker Burg Levinson-Durbin 線性預測 LPC'},
+  {id:'m3d-1',t:'3.3 AR Parametric Yule-Walker Burg Levinson-Durbin 線性預測 LPC'},
   {id:'m3d-2',t:'3.4 MUSIC ESPRIT 子空間 超解析度 DOA 特徵值'},
   {id:'m3e-1',t:'3.5 Chirp-Z CZT Bluestein 頻率放大鏡'},
-  {id:'m6-1',t:'4.1 Hilbert轉換 解析訊號 analytic signal 包絡 envelope'},
-  {id:'m6-2',t:'4.2 包絡 瞬時頻率 instantaneous frequency 軸承 BPFO'},
-  {id:'m6-3',t:'4.3 倒頻譜 cepstrum quefrency 基頻 pitch 齒輪 回聲'},
+  {id:'m6-1',t:'4.1 Hilbert轉換 解析signal analytic signal envelope envelope'},
+  {id:'m6-2',t:'4.2 envelope 瞬時頻率 instantaneous frequency bearing BPFO'},
+  {id:'m6-3',t:'4.3 倒Spectrum cepstrum quefrency 基頻 pitch 齒輪 回聲'},
   {id:'m7-1',t:'5.1 STFT 短時傅立葉 spectrogram 時頻分析 語音'},
   {id:'m7-2',t:'5.2 Wigner-Ville WVD 交叉項 cross-term 時頻解析度'},
   {id:'m7-3',t:'5.3 Cohen Class 核函數 kernel Choi-Williams'},
   {id:'m7-4',t:'5.4 CWT 連續小波 Morlet Mexican Hat 多解析度 scalogram'},
-  {id:'m7-5',t:'5.5 DWT 離散小波 Mallat MRA 濾波器組 Haar Daubechies JPEG2000'},
+  {id:'m7-5',t:'5.5 DWT 離散小波 Mallat MRA filter bank Haar Daubechies JPEG2000'},
   {id:'m7-6',t:'5.6 EMD HHT 經驗模態 Hilbert-Huang IMF sifting 非線性 非平穩'},
   {id:'m7-7',t:'5.7 Synchrosqueezing SST 頻率重分配 reassignment'},
   {id:'m3a-3',t:'6.1 Split-radix Bluestein Goertzel DTMF 進階FFT'},
-  {id:'m4d-1',t:'6.2 數值精度 浮點 定點 FPGA SQNR overflow'},
-  {id:'m9a-1',t:'6.3 Overlap-Add Overlap-Save OLA OLS 快速卷積 串流'},
-  {id:'m4a-1',t:'6.4 濾波器設計 FIR IIR Kaiser window 低通 高通'},
-  {id:'m9b-1',t:'6.5 2D FFT 影像處理 k-space MRI 頻域濾波'},
-  {id:'m9c-1',t:'6.6 OFDM 5G LTE WiFi 子載波 cyclic prefix 通道估計'},
-  {id:'m9d-1',t:'6.7 雷達 radar 匹配濾波 Range-Doppler 模糊函數 FMCW'},
+  {id:'m4d-1',t:'6.2 數值精度 floating-point 定點 FPGA SQNR overflow'},
+  {id:'m9a-1',t:'6.3 Overlap-Add Overlap-Save OLA OLS 快速convolution 串流'},
+  {id:'m4a-1',t:'6.4 filter design FIR IIR Kaiser window 低通 高通'},
+  {id:'m9b-1',t:'6.5 2D FFT 影像處理 k-space MRI frequency domain濾波'},
+  {id:'m9c-1',t:'6.6 OFDM 5G LTE WiFi subcarrier cyclic prefix 通道估計'},
+  {id:'m9d-1',t:'6.7 雷達 radar matched filter Range-Doppler ambiguity function FMCW'},
   {id:'m9e-1',t:'6.8 陣列 beamforming DOA ULA MVDR Capon massive MIMO'},
   {id:'m9f-1',t:'6.9 生醫 EEG ECG HRV 腦波 alpha beta delta theta gamma'},
-  {id:'m9g-1',t:'6.10 振動 vibration 軸承 bearing BPFO BPFI 預測性維護'},
+  {id:'m9g-1',t:'6.10 振動 vibration bearing bearing BPFO BPFI 預測性維護'},
   {id:'lab',t:'互動實驗室 signal generator FFT analyzer'},
   {id:'quiz',t:'自我測驗 quiz test'},
-  {id:'m2b-1',t:'2B.1 離散時間訊號 discrete-time signals unit impulse step exponential energy power'},
-  {id:'m2b-2',t:'2B.2 LTI 系統 卷積 convolution impulse response 因果 穩定 linear time-invariant'},
+  {id:'m2b-1',t:'2B.1 離散timesignal discrete-time signals unit impulse step exponential energy power'},
+  {id:'m2b-2',t:'2B.2 LTI 系統 convolution convolution impulse response 因果 穩定 linear time-invariant'},
   {id:'m2b-3',t:'2B.3 差分方程 difference equation system function H(z) LCCDE 極零點'},
-  {id:'m4b-1',t:'4B IIR 濾波器設計 Butterworth Chebyshev Elliptic 雙線性轉換 bilinear'},
-  {id:'m4c-1',t:'4C 濾波器結構 Direct Form cascade SOS lattice 量化 realization structure'},
-  {id:'m4e-1',t:'4E 自適應濾波 adaptive filter LMS NLMS RLS 噪音消除 回音消除 ANC AEC'},
-  {id:'m5a-1',t:'5A 升取樣 降取樣 decimation interpolation 多速率 multirate 取樣率轉換'},
-  {id:'m5b-1',t:'5B Polyphase 分解 Noble Identity 高效 多速率 efficient'},
-  {id:'m5c-1',t:'5C 濾波器組 filter bank QMF 完美重建 perfect reconstruction 分析 合成'},
-  {id:'m5d-1',t:'5D Sigma-Delta ADC oversampling noise shaping 過取樣 噪聲整形 1-bit'},
+  {id:'m4b-1',t:'4B IIR filter design Butterworth Chebyshev Elliptic 雙線性轉換 bilinear'},
+  {id:'m4c-1',t:'4C filter結構 Direct Form cascade SOS lattice 量化 realization structure'},
+  {id:'m4e-1',t:'4E 自適應濾波 adaptive filter LMS NLMS RLS noise cancellation 回音消除 ANC AEC'},
+  {id:'m5a-1',t:'5A 升sampling 降sampling decimation interpolation 多速率 multirate sample rate轉換'},
+  {id:'m5b-1',t:'5B Polyphase decomposition Noble Identity 高效 多速率 efficient'},
+  {id:'m5c-1',t:'5C filter bank filter bank QMF Perfect reconstruction perfect reconstruction 分析 合成'},
+  {id:'m5d-1',t:'5D Sigma-Delta ADC oversampling noise shaping 過sampling 噪聲整形 1-bit'},
   {id:'m8a-1',t:'8A 隨機過程 WSS random process autocorrelation PSD Wiener-Khinchin 白雜訊'},
-  {id:'m8b-1',t:'8B Wiener 濾波 optimal filter MMSE Wiener-Hopf 最小均方誤差'},
+  {id:'m8b-1',t:'8B Wiener 濾波 optimal filter MMSE Wiener-Hopf 最小均方Error'},
 ];
 function doSearch(q){
   const r=document.getElementById('searchResults');
@@ -10927,7 +10927,7 @@ function updateP24() {
   ];
   if (zpFactor > 1) {
     traces.push({
-      x: frRef, y: mgRef, name: '原始 DFT bins (N=' + Nref + ')',
+      x: frRef, y: mgRef, name: 'Original DFT bins (N=' + Nref + ')',
       mode: 'markers', marker: { color: '#ef4444', size: 7, symbol: 'diamond' }
     });
   }
@@ -11086,10 +11086,10 @@ function updateP43() {
   }
 
   Plotly.react('plotP43', [
-    { x: qAxis, y: cVals, name: '實倒頻譜', line: { color: '#06b6d4', width: 1.5 } },
+    { x: qAxis, y: cVals, name: 'real cepstrumSpectrum', line: { color: '#06b6d4', width: 1.5 } },
     { x: [peakIdx], y: [peakVal], name: '回聲峰 (q=' + peakIdx + ')',
       mode: 'markers', marker: { color: '#ef4444', size: 12, symbol: 'star' } }
-  ], pl('實倒頻譜 (Real Cepstrum) — 回聲延遲 D=' + D, 'Quefrency (取樣點)', 'Amplitude', {
+  ], pl('real cepstrumSpectrum (Real Cepstrum) — 回聲延遲 D=' + D, 'Quefrency (Samples)', 'Amplitude', {
     shapes: [
       { type: 'line', x0: D, x1: D, y0: Math.min.apply(null, cVals) - 0.1, y1: peakVal + 0.1,
         line: { color: '#ef4444', dash: 'dash', width: 1.5 } }
@@ -11149,7 +11149,7 @@ function updateP55() {
   var domTop = 1;
   var domBot = domTop - plotHeight;
   traces.push({
-    x: tAxis0, y: x, name: '原始訊號',
+    x: tAxis0, y: x, name: 'Originalsignal',
     line: { color: '#06b6d4', width: 1.2 },
     xaxis: 'x', yaxis: 'y'
   });
@@ -11210,8 +11210,8 @@ function updateP55() {
 
   var d = dk();
   var layout = Object.assign({
-    title: { text: 'Haar DWT 分解 (' + levels + ' 層)', font: { size: 13 } },
-    xaxis: { title: '時間 (歸一化)', color: d ? '#94a3b8' : '#475569', gridcolor: d ? '#1e293b' : '#e2e8f0' },
+    title: { text: 'Haar DWT decomposition (' + levels + ' 層)', font: { size: 13 } },
+    xaxis: { title: 'time (歸一化)', color: d ? '#94a3b8' : '#475569', gridcolor: d ? '#1e293b' : '#e2e8f0' },
     yaxis: layoutYaxis,
     paper_bgcolor: d ? '#1e293b' : '#fff',
     plot_bgcolor: d ? '#0f172a' : '#f8fafc',
@@ -11245,7 +11245,7 @@ function updateP66() {
     mode: 'markers',
     marker: { color: '#06b6d4', size: 8, symbol: 'circle' },
     name: 'QPSK 星座'
-  }], pl('QPSK 星座圖 (64 子載波)', 'Re', 'Im', {
+  }], pl('QPSK constellation (64 subcarrier)', 'Re', 'Im', {
     xaxis: { range: [-2, 2], dtick: 1 },
     yaxis: { range: [-2, 2], dtick: 1, scaleanchor: 'x' },
     shapes: [
@@ -11277,7 +11277,7 @@ function updateP66() {
   Plotly.react('plotP66b', [
     { x: nAxis, y: ofdmRe, name: 'Re{IFFT}', line: { color: '#06b6d4', width: 1.5 } },
     { x: nAxis, y: ofdmIm, name: 'Im{IFFT}', line: { color: '#f59e0b', width: 1.5 } }
-  ], pl('時域 OFDM 符號 (IFFT 輸出)', '取樣點 n', 'Amplitude', {
+  ], pl('time domain OFDM 符號 (IFFT output)', 'Samples n', 'Amplitude', {
     legend: { orientation: 'h', y: 1.1, x: 0.5, xanchor: 'center' }
   }), pc);
 }
@@ -11390,14 +11390,14 @@ function updateP63() {
   }
 
   Plotly.react('plotP63', [
-    { x: xAxis, y: yd, name: '直接卷積', line: { color: '#94a3b8', width: 2 } },
-    { x: xAxis, y: yo, name: 'OLA 卷積', line: { color: '#06b6d4', width: 1.5, dash: 'dash' } }
-  ], pl('Overlap-Add vs 直接卷積 (前 ' + plotLen + ' 點)', '取樣點', 'Amplitude'), pc);
+    { x: xAxis, y: yd, name: 'direct convolution', line: { color: '#94a3b8', width: 2 } },
+    { x: xAxis, y: yo, name: 'OLA convolution', line: { color: '#06b6d4', width: 1.5, dash: 'dash' } }
+  ], pl('Overlap-Add vs direct convolution (前 ' + plotLen + ' 點)', 'Samples', 'Amplitude'), pc);
 
   document.getElementById('p63info').textContent =
-    '直接卷積: ' + tDirect.toFixed(1) + 'ms | OLA: ' + tOLA.toFixed(1) + 'ms | ' +
+    'direct convolution: ' + tDirect.toFixed(1) + 'ms | OLA: ' + tOLA.toFixed(1) + 'ms | ' +
     'FFT 長度: ' + Nfft + ' | 段數: ' + nSegs + ' | ' +
-    '最大誤差: ' + maxErr.toExponential(2);
+    '最大Error: ' + maxErr.toExponential(2);
 }
 
 
@@ -11605,12 +11605,12 @@ function updateP65() {
   Plotly.react('plotP65img', [{
     z: imgPlot, type: 'heatmap', colorscale: 'Greys', reversescale: true,
     showscale: false
-  }], Object.assign({}, layoutBase, { title: { text: '原始影像', font: { size: 13 } } }), { responsive: true });
+  }], Object.assign({}, layoutBase, { title: { text: 'Original影像', font: { size: 13 } } }), { responsive: true });
 
   Plotly.react('plotP65fft', [{
     z: magPlot, type: 'heatmap', colorscale: 'Viridis',
     showscale: false
-  }], Object.assign({}, layoutBase, { title: { text: 'log|F(u,v)| 頻譜', font: { size: 13 } } }), { responsive: true });
+  }], Object.assign({}, layoutBase, { title: { text: 'log|F(u,v)| Spectrum', font: { size: 13 } } }), { responsive: true });
 
   Plotly.react('plotP65out', [{
     z: outPlot, type: 'heatmap', colorscale: 'Greys', reversescale: true,
@@ -11762,8 +11762,8 @@ function updateP42() {
     x: tAxis, y: sigShow, type: 'scatter', mode: 'lines',
     line: { width: 0.8, color: '#1f77b4' }
   }], {
-    title: { text: '原始振動信號（時域）', font: { size: 13 } },
-    xaxis: { title: '時間 (ms)' }, yaxis: { title: 'Amplitude' },
+    title: { text: 'Original振動信號（time domain）', font: { size: 13 } },
+    xaxis: { title: 'time (ms)' }, yaxis: { title: 'Amplitude' },
     margin: { t: 40, b: 45, l: 50, r: 20 }, height: 220
   }, { responsive: true });
 
@@ -11781,7 +11781,7 @@ function updateP42() {
     x: freqPlot, y: magPlot, type: 'scatter', mode: 'lines',
     line: { width: 0.8, color: '#ff7f0e' }
   }], {
-    title: { text: '原始 FFT（注意：看不到 BPFO！）', font: { size: 13 } },
+    title: { text: 'Original FFT（注意：看不到 BPFO！）', font: { size: 13 } },
     xaxis: { title: 'Frequency (Hz)' }, yaxis: { title: '|X(f)|' },
     margin: { t: 40, b: 45, l: 50, r: 20 }, height: 220,
     annotations: [{
@@ -11817,10 +11817,10 @@ function updateP42() {
     { x: tAxis, y: filtShow, type: 'scatter', mode: 'lines',
       line: { width: 0.6, color: '#aaa' }, name: '帶通信號' },
     { x: tAxis, y: envShow, type: 'scatter', mode: 'lines',
-      line: { width: 1.5, color: '#d62728' }, name: '包絡' }
+      line: { width: 1.5, color: '#d62728' }, name: 'envelope' }
   ], {
-    title: { text: '帶通濾波 + Hilbert 包絡（時域）', font: { size: 13 } },
-    xaxis: { title: '時間 (ms)' }, yaxis: { title: 'Amplitude' },
+    title: { text: '帶通濾波 + Hilbert envelope（time domain）', font: { size: 13 } },
+    xaxis: { title: 'time (ms)' }, yaxis: { title: 'Amplitude' },
     margin: { t: 40, b: 45, l: 50, r: 20 }, height: 220,
     showlegend: true, legend: { x: 0.7, y: 1 }
   }, { responsive: true });
@@ -11850,7 +11850,7 @@ function updateP42() {
     x: envFreqPlot, y: envMagPlot, type: 'scatter', mode: 'lines',
     line: { width: 1, color: '#2ca02c' }
   }], {
-    title: { text: '包絡譜 — BPFO 峰值清晰可見！', font: { size: 13 } },
+    title: { text: 'envelope譜 — BPFO 峰值清晰可見！', font: { size: 13 } },
     xaxis: { title: 'Frequency (Hz)' }, yaxis: { title: '|Envelope(f)|' },
     margin: { t: 40, b: 45, l: 50, r: 20 }, height: 220,
     annotations: annots
@@ -11865,9 +11865,9 @@ function updateP42() {
 var _vibCorrectAnswer = null;
 var _vibExplanations = {
   imbalance:    '不平衡的特徵是 1X（轉速頻率）分量佔絕對優勢，2X 很小。這是最常見的振動問題。',
-  misalignment: '不對準的特徵是 2X 分量最大，且 1X 和 3X 也明顯存在。軸向振動通常也很大。',
-  looseness:    '機械鬆動的特徵是出現大量倍頻（1X~8X 甚至更高），且有 0.5X 等次諧波。頻譜看起來「雜亂」。',
-  bearing:      '軸承外環故障（BPFO）的特徵是故障頻率不是轉速的整數倍，而是 BPFO = Nb/2 * (1 - Bd/Pd * cos(alpha)) * fr。' +
+  misalignment: '不對準的特徵是 2X 分量最大，且 1X  and  3X 也明顯存在。軸向振動通常也很大。',
+  looseness:    '機械鬆動的特徵是出現大量倍頻（1X~8X 甚至更高），且有 0.5X 等次諧波。Spectrum看起來「雜亂」。',
+  bearing:      'bearing外環故障（BPFO）的特徵是故障頻率不是轉速的整數倍，而是 BPFO = Nb/2 * (1 - Bd/Pd * cos(alpha)) * fr。' +
                 '峰值出現在 BPFO 及其倍頻處，與 1X 的位置無關。'
 };
 
@@ -11961,7 +11961,7 @@ function generateVibCase() {
     x: freqPlot, y: magPlot, type: 'scatter', mode: 'lines',
     line: { width: 1, color: '#1f77b4' }
   }], {
-    title: { text: '未知故障頻譜（fr = ' + fr + ' Hz = 1X）', font: { size: 13 } },
+    title: { text: '未知故障Spectrum（fr = ' + fr + ' Hz = 1X）', font: { size: 13 } },
     xaxis: { title: 'Frequency (Hz)', dtick: 25 },
     yaxis: { title: 'Amplitude' },
     margin: { t: 40, b: 50, l: 50, r: 20 }, height: 320,
@@ -11998,7 +11998,7 @@ function submitVibDiag() {
     imbalance: '不平衡 (1X)',
     misalignment: '不對準 (2X)',
     looseness: '機械鬆動 (多倍頻)',
-    bearing: '軸承外環故障 (BPFO)'
+    bearing: 'bearing外環故障 (BPFO)'
   };
 
   if (correct) {
@@ -13110,7 +13110,7 @@ function updateP66full() {
     mode: 'markers',
     marker: { color: '#06b6d4', size: 6, opacity: 0.7 },
     name: 'TX'
-  }], pl('TX 星座圖 (' + modType + ')', 'I', 'Q', {
+  }], pl('TX constellation (' + modType + ')', 'I', 'Q', {
     xaxis: { range: [-2, 2], dtick: 1 },
     yaxis: { range: [-2, 2], dtick: 1, scaleanchor: 'x' },
     shapes: [
@@ -13125,7 +13125,7 @@ function updateP66full() {
     mode: 'markers',
     marker: { color: '#f59e0b', size: 6, opacity: 0.7 },
     name: 'RX (eq)'
-  }], pl('RX 等化後星座圖', 'I', 'Q', {
+  }], pl('RX 等化後constellation', 'I', 'Q', {
     xaxis: { range: [-2, 2], dtick: 1 },
     yaxis: { range: [-2, 2], dtick: 1, scaleanchor: 'x' },
     shapes: [
@@ -13140,7 +13140,7 @@ function updateP66full() {
   Plotly.react('plotP66td', [
     { x: nAxis, y: txWithCP_re, name: 'Re (TX+CP)', line: { color: '#06b6d4', width: 1 } },
     { x: nAxis, y: rxRe, name: 'Re (RX)', line: { color: '#ef4444', width: 1, dash: 'dot' } }
-  ], pl('時域信號（含 CP）', '取樣點', 'Amplitude', {
+  ], pl('time domain信號（含 CP）', 'Samples', 'Amplitude', {
     legend: { orientation: 'h', y: 1.12, x: 0.5, xanchor: 'center' },
     shapes: [{
       type: 'rect', x0: 0, x1: cpLen, y0: 0, y1: 1, yref: 'paper',
@@ -13163,7 +13163,7 @@ function updateP66full() {
   Plotly.react('plotP66ch', [
     { x: chFreq, y: chMagTrue, name: '真實 |H(k)|', line: { color: '#10b981', width: 2 } },
     { x: chFreq, y: chMagEst, name: 'LS 估計 |H(k)|', mode: 'markers', marker: { color: '#f59e0b', size: 4 } }
-  ], pl('通道頻率響應', '子載波 k', '|H(k)|', {
+  ], pl('通道頻率響應', 'subcarrier k', '|H(k)|', {
     legend: { orientation: 'h', y: 1.12, x: 0.5, xanchor: 'center' }
   }), pc);
 
@@ -13352,22 +13352,22 @@ function updateP67full() {
     colorbar: { title: 'dB' },
     zmin: -20,
     zmax: undefined
-  }], pl('Range-Doppler Map', '距離 (m)', '速度 (m/s)', {
-    xaxis: { title: '距離 (m)' },
-    yaxis: { title: '速度 (m/s)' },
+  }], pl('Range-Doppler Map', 'range (m)', 'velocity (m/s)', {
+    xaxis: { title: 'range (m)' },
+    yaxis: { title: 'velocity (m/s)' },
     height: 400
   }), pc);
 
   // Resolution info
   var resDiv = document.getElementById('p67res');
   resDiv.innerHTML =
-    '<b>距離解析度</b> &Delta;R = c/(2B) = ' + rangeRes.toFixed(3) + ' m | ' +
-    '<b>最大距離</b> R<sub>max</sub> = ' + maxRange.toFixed(1) + ' m<br>' +
-    '<b>速度解析度</b> &Delta;v = &lambda;/(2&middot;N<sub>c</sub>&middot;PRI) = ' + velRes.toFixed(3) + ' m/s | ' +
-    '<b>最大速度</b> v<sub>max</sub> = &plusmn;' + maxVel.toFixed(1) + ' m/s<br>' +
-    '<span style="color:#06b6d4;">目標 1: R=' + r1 + 'm, v=' + v1 + 'm/s</span> | ' +
-    '<span style="color:#f59e0b;">目標 2: R=' + r2 + 'm, v=' + v2 + 'm/s</span> | ' +
-    '<span style="color:#10b981;">目標 3: R=' + r3 + 'm, v=' + v3 + 'm/s</span>';
+    '<b>range resolution</b> &Delta;R = c/(2B) = ' + rangeRes.toFixed(3) + ' m | ' +
+    '<b>最大range</b> R<sub>max</sub> = ' + maxRange.toFixed(1) + ' m<br>' +
+    '<b>velocity resolution</b> &Delta;v = &lambda;/(2&middot;N<sub>c</sub>&middot;PRI) = ' + velRes.toFixed(3) + ' m/s | ' +
+    '<b>最大velocity</b> v<sub>max</sub> = &plusmn;' + maxVel.toFixed(1) + ' m/s<br>' +
+    '<span style="color:#06b6d4;">target 1: R=' + r1 + 'm, v=' + v1 + 'm/s</span> | ' +
+    '<span style="color:#f59e0b;">target 2: R=' + r2 + 'm, v=' + v2 + 'm/s</span> | ' +
+    '<span style="color:#10b981;">target 3: R=' + r3 + 'm, v=' + v3 + 'm/s</span>';
 }
 
 
@@ -13459,7 +13459,7 @@ function updateP61() {
 
   Plotly.react('plotP61eff', traces, pl(
     'Goertzel vs FFT 運算量 (N=' + N + ')',
-    '需計算的頻率數量 K',
+    '需computation的頻率數量 K',
     '實數乘法次數',
     {
       shapes: shapes,
@@ -13477,16 +13477,16 @@ function updateP61() {
 
   if (goertzelNow < fftNow) {
     infoDiv.innerHTML =
-      '<b style="color:#10b981;">Goertzel 較省！</b> ' +
+      '<b style="color:#10b981;">Goertzel savings!</b> ' +
       'Goertzel: ' + goertzelNow.toLocaleString() + ' ops vs FFT: ' + Math.round(fftNow).toLocaleString() + ' ops ' +
-      '(比值 = ' + ratio + '). ' +
+      '(ratio = ' + ratio + '). ' +
       'K=' + K + ' < log\u2082N/2 = ' + kCross.toFixed(1) + '，適合只需少數頻率的場景（如 DTMF 解碼）。';
   } else if (goertzelNow > fftNow) {
     infoDiv.innerHTML =
-      '<b style="color:#f59e0b;">FFT 較省！</b> ' +
+      '<b style="color:#f59e0b;">FFT savings!</b> ' +
       'Goertzel: ' + goertzelNow.toLocaleString() + ' ops vs FFT: ' + Math.round(fftNow).toLocaleString() + ' ops ' +
-      '(比值 = ' + ratio + '). ' +
-      'K=' + K + ' > log\u2082N/2 = ' + kCross.toFixed(1) + '，需要多個頻率時 FFT 更有效率。';
+      '(ratio = ' + ratio + '). ' +
+      'K=' + K + ' > log\u2082N/2 = ' + kCross.toFixed(1) + '，need多個頻率時 FFT 更有效率。';
   } else {
     infoDiv.innerHTML =
       '<b style="color:#8b5cf6;">兩者相當！</b> ' +
@@ -13503,11 +13503,11 @@ function updateP61() {
 var _eegCorrectAnswer = null;
 
 var _eegStageDescriptions = {
-  awake:  '清醒期的特徵是強 alpha (8-13Hz) 和 beta (13-30Hz) 活動，delta 和 theta 相對較弱。閉眼放鬆時 alpha 尤其明顯。',
-  n1:     'N1 淺睡的特徵是 alpha 波逐漸消失，theta (4-8Hz) 活動增加。這是從清醒到睡眠的過渡階段。',
-  n2:     'N2 睡眠的特徵是出現睡眠紡錘波 (sleep spindle, 12-14Hz 短暫爆發) 和 K-complex。背景以 theta 為主。',
-  n3:     'N3 深睡（慢波睡眠）的特徵是大量 delta (0.5-4Hz) 慢波佔主導（>75%），高振幅低頻率。alpha 和 beta 幾乎消失。',
-  rem:    'REM 睡眠的特徵是低振幅混合頻率，與清醒狀態相似但 theta 活動更多。伴隨快速眼動，是做夢的主要階段。'
+  awake:  '清醒期的特徵是強 alpha (8-13Hz)  and  beta (13-30Hz) 活動，delta  and  theta 相對較弱。閉眼放鬆時 alpha 尤其明顯。',
+  n1:     'N1 淺睡的特徵是 alpha 波逐漸消失，theta (4-8Hz) 活動increase。這是從清醒到睡眠的過渡階段。',
+  n2:     'N2 睡眠的特徵是出現睡眠紡錘波 (sleep spindle, 12-14Hz 短暫爆發)  and  K-complex。背景以 theta 為主。',
+  n3:     'N3 深睡（慢波睡眠）的特徵是大量 delta (0.5-4Hz) 慢波佔主導（>75%），高Amplitudelow freq率。alpha  and  beta 幾乎消失。',
+  rem:    'REM 睡眠的特徵是低Amplitude混合頻率，與清醒狀態相似但 theta 活動更多。伴隨快速眼動，是做夢的主要階段。'
 };
 
 /**
@@ -13792,7 +13792,7 @@ function updateRadarMF() {
     { x: tChirp, y: instFreq, name: '瞬時頻率 (MHz)',
       type: 'scatter', mode: 'lines',
       line: { width: 2, color: '#ff7f0e', dash: 'dot' }, yaxis: 'y2' }
-  ], pl('發射 LFM Chirp 脈衝', '時間 (μs)', 'Re{s(t)}', {
+  ], pl('發射 LFM Chirp 脈衝', 'time (μs)', 'Re{s(t)}', {
     height: 220,
     yaxis2: {
       title: '頻率 (MHz)', overlaying: 'y', side: 'right',
@@ -13934,7 +13934,7 @@ function updateRadarMF() {
     var r = tg * sep_m;
     annots.push({
       x: r, y: 1.05, yref: 'paper',
-      text: '目標' + (tg + 1),
+      text: 'target' + (tg + 1),
       showarrow: true, arrowhead: 2, ax: 0, ay: -25,
       font: { size: 10, color: '#d62728' }
     });
@@ -13956,11 +13956,11 @@ function updateRadarMF() {
     { x: rangePlot, y: rxMag, name: '未壓縮回波 |rx(t)|',
       type: 'scatter', mode: 'lines',
       line: { width: 1.5, color: '#94a3b8', dash: 'dot' } },
-    { x: rangePlot, y: mfPlot, name: '匹配濾波輸出 (壓縮後)',
+    { x: rangePlot, y: mfPlot, name: 'matched filteroutput (壓縮後)',
       type: 'scatter', mode: 'lines',
       line: { width: 2, color: '#06b6d4' },
       fill: 'tozeroy', fillcolor: 'rgba(6,182,212,0.12)' }
-  ], pl('匹配濾波 / 脈衝壓縮結果', '相對距離 (m)', '歸一化幅度', {
+  ], pl('matched filter / 脈衝壓縮結果', '相對range (m)', '歸一化幅度', {
     height: 280,
     annotations: annots,
     shapes: shapes,
@@ -13970,13 +13970,13 @@ function updateRadarMF() {
   /* --- Info box --- */
   var canResolve = sep_m >= dR;
   var infoHTML =
-    '<b>BT 乘積 (壓縮比)：</b> ' + BT.toFixed(1) +
-    '&nbsp;&nbsp;|&nbsp;&nbsp;<b>距離解析度 ΔR：</b> ' + dR.toFixed(2) + ' m' +
-    '&nbsp;&nbsp;|&nbsp;&nbsp;<b>未壓縮距離範圍：</b> ' + dR_uncomp.toFixed(1) + ' m' +
-    '<br><b>目標間距：</b> ' + sep_m.toFixed(1) + ' m &nbsp;' +
+    '<b>BT 乘積 (compression ratio)：</b> ' + BT.toFixed(1) +
+    '&nbsp;&nbsp;|&nbsp;&nbsp;<b>range resolution ΔR：</b> ' + dR.toFixed(2) + ' m' +
+    '&nbsp;&nbsp;|&nbsp;&nbsp;<b>未壓縮range範圍：</b> ' + dR_uncomp.toFixed(1) + ' m' +
+    '<br><b>targetspacing：</b> ' + sep_m.toFixed(1) + ' m &nbsp;' +
     (canResolve
-      ? '<span style="color:#10b981;font-weight:bold">✓ 可分辨 (間距 ≥ ΔR)</span>'
-      : '<span style="color:#ef4444;font-weight:bold">✗ 無法分辨 (間距 < ΔR，需增大頻寬 B)</span>');
+      ? '<span style="color:#10b981;font-weight:bold">✓ 可分辨 (spacing ≥ ΔR)</span>'
+      : '<span style="color:#ef4444;font-weight:bold">✗ 無法分辨 (spacing < ΔR，需增大頻寬 B)</span>');
 
   document.getElementById('radarMFinfo').innerHTML = infoHTML;
 }
@@ -14185,7 +14185,7 @@ function updateRadarAF() {
       xaxis: 'x3', yaxis: 'y3'
     }
   ], {
-    title: { text: '模糊函數 |χ(τ, f_d)|²', font: { size: 14 } },
+    title: { text: 'ambiguity function |χ(τ, f_d)|²', font: { size: 14 } },
     grid: { rows: 2, columns: 2, pattern: 'independent', roworder: 'top to bottom' },
 
     // Main heatmap axes (top, spanning 2 cols)
@@ -14243,22 +14243,22 @@ function updateRadarAF() {
   var descs = {
     pulse:
       '<b>單脈衝 (Simple Pulse)：</b>' +
-      '模糊函數呈「圖釘 + 山脊」形狀 — 延遲軸上寬度 = T（脈衝長度），都卜勒軸上主瓣寬度 ≈ 1/T。' +
-      '距離解析度差（由 T 決定），都卜勒解析度也有限。' +
+      'ambiguity function呈「圖釘 + 山脊」形狀 — 延遲軸上寬度 = T（脈衝長度），都卜勒軸上主瓣寬度 ≈ 1/T。' +
+      'range resolution差（由 T 決定），都卜勒解析度也有限。' +
       '<br>這是最基本的雷達波形，BT ≈ 1，無壓縮增益。',
 
     lfm:
       '<b>線性調頻 LFM Chirp（BT = ' + BT + '）：</b>' +
-      '模糊函數沿斜線傾斜 — 這就是距離-都卜勒耦合（range-Doppler coupling）。' +
+      'ambiguity function沿斜線傾斜 — 這就是range-都卜勒耦合（range-Doppler coupling）。' +
       '零都卜勒切面的主瓣寬度 ≈ 1/B（壓縮後），比單脈衝窄 BT 倍。' +
-      '<br>距離解析度 ΔR = c/(2B)，壓縮比 = BT = ' + BT + '。' +
+      '<br>range resolution ΔR = c/(2B)，compression ratio = BT = ' + BT + '。' +
       '斜線斜率 = B/T，可用都卜勒補償消除耦合。',
 
     barker:
       '<b>巴克碼 Barker-13（相位編碼）：</b>' +
-      '模糊函數的零都卜勒切面呈「圖釘」狀：主瓣寬度 = 1/13 T，旁瓣 ≤ 1/13（-22.3 dB）。' +
+      'ambiguity function的零都卜勒切面呈「圖釘」狀：主瓣寬度 = 1/13 T，旁瓣 ≤ 1/13（-22.3 dB）。' +
       '但在都卜勒軸上，旁瓣較高 — 相位碼對都卜勒偏移敏感。' +
-      '<br>Barker 碼是已知最長的完美二進制碼（旁瓣恆為 1/N），壓縮比 = 13。'
+      '<br>Barker 碼是已知最長的完美二進制碼（旁瓣恆為 1/N），compression ratio = 13。'
   };
   document.getElementById('radarAFdesc').innerHTML = descs[waveType] || '';
 }
@@ -15180,9 +15180,9 @@ function updateM4b1() {
   var fcNorm = (fcSlider / 100).toFixed(4);
 
   var layout = {
-    title: 'IIR 濾波器幅頻響應比較 (N=' + N + ')',
+    title: 'IIR filter幅頻響應比較 (N=' + N + ')',
     xaxis: {
-      title: '正規化頻率 (×π rad/sample)',
+      title: 'normalized frequency (×π rad/sample)',
       range: [0, 1],
       dtick: 0.1
     },
@@ -15487,9 +15487,9 @@ function updateM4c1() {
   }
 
   var layout = {
-    title: '濾波器結構精度比較 (4 階 Butterworth LPF)',
+    title: 'filter結構精度比較 (4 階 Butterworth LPF)',
     xaxis: {
-      title: '正規化頻率 (×π rad/sample)',
+      title: 'normalized frequency (×π rad/sample)',
       range: [0, 1],
       dtick: 0.1
     },
@@ -15504,7 +15504,7 @@ function updateM4c1() {
     annotations: [
       {
         x: 0.5, y: -35,
-        text: 'float32 精度差異在高階/窄帶濾波器中更明顯',
+        text: 'float32 精度差異在高階/窄帶filter中更明顯',
         showarrow: false, font: { size: 10, color: '#999' }
       }
     ]
@@ -15660,20 +15660,20 @@ function updateM4e1() {
   var sigTraces = [
     {
       x: tAxis, y: dPlot,
-      name: 'd[n] 含噪訊號',
+      name: 'd[n] 含噪signal',
       mode: 'lines',
       line: { color: '#bbb', width: 1 },
       opacity: 0.6
     },
     {
       x: tAxis, y: ePlot,
-      name: 'e[n] LMS 輸出',
+      name: 'e[n] LMS output',
       mode: 'lines',
       line: { color: '#2563eb', width: 1.5 }
     },
     {
       x: tAxis, y: cleanPlot,
-      name: '原始乾淨訊號',
+      name: 'Original乾淨signal',
       mode: 'lines',
       line: { color: '#16a34a', width: 1, dash: 'dot' },
       opacity: 0.7
@@ -15682,8 +15682,8 @@ function updateM4e1() {
 
   var sigLayout = {
     title: diverged ?
-      'LMS 噪音消除 — <span style="color:red">發散! 降低 μ</span>' :
-      'LMS 噪音消除 (μ=' + mu.toFixed(3) + ', M=' + M + ')',
+      'LMS noise cancellation — <span style="color:red">發散! 降低 μ</span>' :
+      'LMS noise cancellation (μ=' + mu.toFixed(3) + ', M=' + M + ')',
     xaxis: { title: '樣本 n' },
     yaxis: { title: 'Amplitude', range: [-3, 3] },
     legend: { x: 0.65, y: 0.98 },
