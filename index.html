@@ -1146,12 +1146,9 @@ $$\text{THD} = \frac{\sqrt{\sum_{n=2}^{\infty}|c_n|^2}}{|c_1|} \times 100\%$$
 <p class="text-xs font-bold text-slate-500 mb-1">時間域：理想波形 vs 傅立葉級數合成</p>
 <div id="plotP21" class="plot" style="min-height:300px"></div>
 
-<p class="text-xs font-bold text-slate-500 mb-1 mt-4">頻域：諧波振幅譜 (|c<sub>n</sub>|)</p>
+<p class="text-xs font-bold text-slate-500 mb-1 mt-4">頻譜：當前使用的諧波</p>
+<p class="text-xs text-slate-400 mb-2">只顯示當前 N 項所使用的諧波。每根線標示頻率（基頻倍數）和振幅 |c<sub>n</sub>|。</p>
 <div id="plotP21f" class="plot" style="min-height:280px"></div>
-
-<p class="text-xs font-bold text-slate-500 mb-1 mt-4">頻域 (對數座標)：諧波衰減速率比較</p>
-<p class="text-xs text-slate-400 mb-2">log-log 圖中，方波斜率 -1（每倍頻 -6dB），三角波斜率 -2（-12dB），鋸齒波斜率 -1。線越陡 = 收斂越快 = 訊號越平滑。</p>
-<div id="plotP21fl" class="plot" style="min-height:280px"></div>
 </div>
 
 <!-- 陷阱 -->
@@ -10742,33 +10739,33 @@ function updateP21(){
   const wt=document.getElementById('p21w').value,Nh=parseInt(document.getElementById('p21N').value);
   document.getElementById('p21Nv').textContent=Nh;
   const Ns=800,t=ls(0,2,Ns),s=new Array(Ns).fill(0);
-  // === Time domain synthesis + collect harmonic coefficients ===
-  // Show all harmonics up to a fixed range so user sees full structure
-  const showMax=Math.max(40, Nh*2+5);
-  const harmN=[], harmAmp=[], harmActive=[];
+
+  // === Collect ACTIVE harmonics only (those actually used) ===
+  const activeN=[], activeAmp=[];
   if(wt==='square'){
-    for(let n=1;n<=showMax;n++){
-      const isOdd=(n%2===1);
-      const c=isOdd?4/(Math.PI*n):0;
-      harmN.push(n); harmAmp.push(Math.abs(c));
-      harmActive.push(isOdd && n<=Nh*2 && Math.floor((n+1)/2)<=Nh);
+    // Square wave: odd harmonics only, take Nh of them
+    for(let k=0;k<Nh;k++){
+      const n=2*k+1;
+      const c=4/(Math.PI*n);
+      activeN.push(n); activeAmp.push(c);
+      for(let i=0;i<Ns;i++)s[i]+=c*Math.sin(2*Math.PI*n*t[i]/2);
     }
-    for(let n=1;n<=Nh*2;n+=2){const c=4/(Math.PI*n);for(let i=0;i<Ns;i++)s[i]+=c*Math.sin(2*Math.PI*n*t[i]/2);}
   } else if(wt==='triangle'){
-    for(let n=1;n<=showMax;n++){
-      const isOdd=(n%2===1);
-      const c=isOdd?8/(Math.PI*Math.PI*n*n):0;
-      harmN.push(n); harmAmp.push(Math.abs(c));
-      harmActive.push(isOdd && Math.floor((n+1)/2)<=Nh);
+    // Triangle wave: odd harmonics only, take Nh of them
+    for(let k=0;k<Nh;k++){
+      const n=2*k+1;
+      const c=8/(Math.PI*Math.PI*n*n);
+      activeN.push(n); activeAmp.push(c);
+      const sign=Math.pow(-1,k);
+      for(let i=0;i<Ns;i++)s[i]+=sign*c*Math.sin(2*Math.PI*n*t[i]/2);
     }
-    for(let n=1;n<=Nh*2;n+=2){const c=8/(Math.PI*Math.PI*n*n)*Math.pow(-1,(n-1)/2);for(let i=0;i<Ns;i++)s[i]+=c*Math.sin(2*Math.PI*n*t[i]/2);}
   } else {
-    for(let n=1;n<=showMax;n++){
+    // Sawtooth: all harmonics
+    for(let n=1;n<=Nh;n++){
       const c=2/(Math.PI*n);
-      harmN.push(n); harmAmp.push(c);
-      harmActive.push(n<=Nh);
+      activeN.push(n); activeAmp.push(c);
+      for(let i=0;i<Ns;i++)s[i]+=Math.pow(-1,n+1)*c*Math.sin(2*Math.PI*n*t[i]/2);
     }
-    for(let n=1;n<=Nh;n++){const c=2/(Math.PI*n)*Math.pow(-1,n+1);for(let i=0;i<Ns;i++)s[i]+=c*Math.sin(2*Math.PI*n*t[i]/2);}
   }
   const ideal=t.map(ti=>{const p=(ti/2)%1;if(wt==='square')return p<.5?1:-1;if(wt==='triangle')return p<.5?(4*p-1):(3-4*p);return 2*p-1;});
 
@@ -10778,43 +10775,28 @@ function updateP21(){
     {x:t,y:s,name:`合成 N=${Nh}`,line:{color:'#06b6d4',width:2}}
   ],Object.assign(pl('','t','振幅'),{margin:{l:55,r:30,t:25,b:50},legend:{x:0.01,y:-0.22,orientation:'h',font:{size:10},bgcolor:'rgba(0,0,0,0)'}}),pc);
 
-  // === Frequency domain — bar chart of harmonic amplitudes ===
-  // Active (used) harmonics in cyan, inactive in gray
-  const activeN=[], activeAmp=[], inactiveN=[], inactiveAmp=[];
-  for(let i=0;i<harmN.length;i++){
-    if(harmActive[i]){activeN.push(harmN[i]); activeAmp.push(harmAmp[i]);}
-    else if(harmAmp[i]>0){inactiveN.push(harmN[i]); inactiveAmp.push(harmAmp[i]);}
+  // === Frequency spectrum — only active harmonics, with labels ===
+  // Build stem-plot style: each harmonic as a vertical line + marker
+  const stemX=[], stemY=[];
+  const labels=[];
+  for(let i=0;i<activeN.length;i++){
+    // Add vertical line: from 0 to amplitude
+    stemX.push(activeN[i],activeN[i],null);
+    stemY.push(0,activeAmp[i],null);
+    labels.push(`f₀×${activeN[i]}<br>${activeAmp[i].toFixed(3)}`);
   }
+  const xRange=Math.max(activeN[activeN.length-1]+2, 6);
   Plotly.react('plotP21f',[
-    {x:inactiveN,y:inactiveAmp,name:'未使用 (Unused)',type:'bar',marker:{color:'rgba(148,163,184,0.4)'}},
-    {x:activeN,y:activeAmp,name:'已使用 (Active)',type:'bar',marker:{color:'#06b6d4'}}
-  ],Object.assign(pl('','諧波次數 n','|c_n|'),{
-    barmode:'overlay',
-    xaxis:{title:'諧波次數 n',range:[0,showMax+1],color:dk()?'#94a3b8':'#475569',gridcolor:dk()?'#1e293b':'#e2e8f0'},
-    margin:{l:55,r:30,t:25,b:50},
-    legend:{x:0.01,y:-0.22,orientation:'h',font:{size:10},bgcolor:'rgba(0,0,0,0)'}
-  }),pc);
-
-  // === Log-log plot for decay rate visualization ===
-  // Filter zero amplitudes (for log scale)
-  const logN=[], logAmp=[];
-  for(let i=0;i<harmN.length;i++){
-    if(harmAmp[i]>1e-10){logN.push(harmN[i]); logAmp.push(harmAmp[i]);}
-  }
-  // Theoretical decay reference lines
-  const refN=ls(1,showMax,50);
-  const ref1n=refN.map(n=>4/(Math.PI*n)); // 1/n decay
-  const ref1n2=refN.map(n=>8/(Math.PI*Math.PI*n*n)); // 1/n^2 decay
-
-  Plotly.react('plotP21fl',[
-    {x:refN,y:ref1n,name:'參考: 1/n (-6dB/oct)',line:{color:'rgba(239,68,68,0.4)',dash:'dot',width:1.5},mode:'lines'},
-    {x:refN,y:ref1n2,name:'參考: 1/n² (-12dB/oct)',line:{color:'rgba(16,185,129,0.4)',dash:'dot',width:1.5},mode:'lines'},
-    {x:logN,y:logAmp,name:`${wt} 諧波`,mode:'markers+lines',marker:{size:6,color:'#06b6d4'},line:{color:'#06b6d4',width:1}}
-  ],Object.assign(pl('','諧波次數 n','|c_n|'),{
-    xaxis:{title:'諧波次數 n',type:'log',range:[0,Math.log10(showMax+1)],color:dk()?'#94a3b8':'#475569',gridcolor:dk()?'#1e293b':'#e2e8f0'},
-    yaxis:{title:'|c_n|',type:'log',color:dk()?'#94a3b8':'#475569',gridcolor:dk()?'#1e293b':'#e2e8f0'},
-    margin:{l:55,r:30,t:25,b:50},
-    legend:{x:0.01,y:-0.22,orientation:'h',font:{size:10},bgcolor:'rgba(0,0,0,0)'}
+    // Stem lines
+    {x:stemX,y:stemY,mode:'lines',line:{color:'#06b6d4',width:2.5},showlegend:false,hoverinfo:'skip'},
+    // Markers on top with labels
+    {x:activeN,y:activeAmp,mode:'markers+text',marker:{size:10,color:'#06b6d4',line:{color:'#0e7490',width:1.5}},
+     text:activeN.map((n,i)=>`${activeAmp[i].toFixed(3)}`),textposition:'top center',textfont:{size:10,color:dk()?'#e2e8f0':'#0e7490'},
+     name:'諧波振幅',showlegend:false}
+  ],Object.assign(pl('','頻率（基頻 f₀ 的倍數）','|c_n|'),{
+    xaxis:{title:'頻率（基頻 f₀ 的倍數）',range:[0,xRange],dtick:1,color:dk()?'#94a3b8':'#475569',gridcolor:dk()?'#1e293b':'#e2e8f0'},
+    yaxis:{title:'|c_n|',rangemode:'tozero',color:dk()?'#94a3b8':'#475569',gridcolor:dk()?'#1e293b':'#e2e8f0'},
+    margin:{l:55,r:30,t:25,b:50}
   }),pc);
 }
 
