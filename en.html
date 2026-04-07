@@ -100,21 +100,44 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:16px;heigh
   #sb-ov{display:none;position:fixed;inset:0;top:56px;background:rgba(0,0,0,.5);z-index:35}
   #sb-ov.open{display:block}
 }
+
+/* Keyboard focus indicators */
+button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible, summary:focus-visible{
+  outline: 2px solid #06b6d4;
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+.sb-item:focus-visible{
+  background: rgba(8,145,178,.15);
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+  .sec{animation: none}
+}
+
+/* Screen reader only utility */
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
 </style>
 </head>
 <body class="bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-200 transition-colors">
+<a href="#mainContent" class="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-50 focus:bg-cyan-600 focus:text-white focus:px-4 focus:py-2 focus:rounded">Skip to main content</a>
 
 <!-- Navbar -->
 <nav class="fixed top-0 inset-x-0 z-50 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md border-b border-slate-200 dark:border-slate-700 h-14">
 <div class="flex items-center justify-between h-full px-4 max-w-[1600px] mx-auto">
   <div class="flex items-center gap-3">
-    <button class="lg:hidden p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800" onclick="toggleSB()"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg></button>
+    <button class="lg:hidden p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800" onclick="toggleSB()" aria-label="Toggle sidebar navigation"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg></button>
     <div class="w-7 h-7 rounded-lg bg-gradient-to-br from-cyan-500 to-emerald-500 flex items-center justify-center text-white font-bold text-xs">F</div>
     <span class="font-bold text-base bg-gradient-to-r from-cyan-600 to-emerald-600 bg-clip-text text-transparent hidden sm:inline">DSP Teaching Lab — Graduate Level</span>
   </div>
   <div class="flex items-center gap-2">
-    <a href="index.html" class="px-2.5 py-1 rounded-lg text-xs font-bold border border-slate-300 dark:border-slate-600 hover:bg-slate-100 dark:hover:bg-slate-800 transition" title="switchChinese版">中</a>
-    <button onclick="toggleDark()" class="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800">
+    <a href="index.html" class="px-2.5 py-1 rounded-lg text-xs font-bold border border-slate-300 dark:border-slate-600 hover:bg-slate-100 dark:hover:bg-slate-800 transition" title="切換中文版" aria-label="切換中文版">中</a>
+    <button onclick="toggleDark()" class="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800" aria-label="Toggle dark mode">
       <svg class="w-5 h-5 hidden dark:block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5" stroke-width="2"/><path stroke-width="2" d="M12 1v2m0 18v2m-9-11H1m22 0h-2m-2.636-7.364L16.95 5.05m-9.9 9.9l-1.414 1.414m0-12.728L7.05 5.05m9.9 9.9l1.414 1.414"/></svg>
       <svg class="w-5 h-5 block dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9 9 0 0012 21a9 9 0 008.354-5.646z"/></svg>
     </button>
@@ -125,7 +148,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:16px;heigh
 <div id="sb-ov" onclick="toggleSB()"></div>
 
 <!-- Sidebar -->
-<aside id="sb" class="fixed top-14 left-0 w-[260px] h-[calc(100vh-3.5rem)] bg-white dark:bg-slate-800 border-r border-slate-200 dark:border-slate-700 overflow-y-auto z-40 hidden lg:block text-[13px]">
+<aside id="sb" role="navigation" aria-label="Section navigation" class="fixed top-14 left-0 w-[260px] h-[calc(100vh-3.5rem)] bg-white dark:bg-slate-800 border-r border-slate-200 dark:border-slate-700 overflow-y-auto z-40 hidden lg:block text-[13px]">
 <div class="p-3">
   <button onclick="go('home')" class="sb-item active mb-3" data-s="home">
     <span class="inline-block w-5 text-center mr-1">🏠</span>Home
@@ -274,7 +297,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:16px;heigh
 </aside>
 
 <!-- Main -->
-<main class="pt-14 lg:pl-[260px] min-h-screen">
+<main id="mainContent" class="pt-14 lg:pl-[260px] min-h-screen">
 <div class="max-w-4xl mx-auto p-4 md:p-8">
 
 <!-- ============ HOME ============ -->
@@ -292,7 +315,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:16px;heigh
 
 <div class="mb-6">
   <div class="relative max-w-md mx-auto">
-    <input type="text" id="searchInput" placeholder="Search chapters..." class="w-full px-4 py-2 pl-10 border border-slate-300 dark:border-slate-600 rounded-xl text-sm dark:bg-slate-800 focus:outline-none focus:border-cyan-500" oninput="doSearch(this.value)">
+    <input type="text" id="searchInput" placeholder="Search chapters..." aria-label="Search sections" class="w-full px-4 py-2 pl-10 border border-slate-300 dark:border-slate-600 rounded-xl text-sm dark:bg-slate-800 focus:outline-none focus:border-cyan-500" oninput="doSearch(this.value)">
     <svg class="absolute left-3 top-2.5 w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
   </div>
   <div id="searchResults" class="max-w-md mx-auto mt-2 hidden"></div>
@@ -10612,10 +10635,54 @@ function go(s){
   if(window.innerWidth<1024)closeSB();
   setTimeout(()=>initPlots(s),150);
   if(window.MathJax&&MathJax.typesetPromise)MathJax.typesetPromise([t]).catch(()=>{});
+  // Add copy buttons to any newly visible code blocks
+  setTimeout(addCodeCopyButtons,160);
+  // Update URL hash and browser history
+  if(window.location.hash !== '#'+s){
+    history.pushState({section:s}, '', '#'+s);
+  }
 }
+window.addEventListener('popstate', function(e){
+  const section = (e.state && e.state.section) || window.location.hash.replace('#','') || 'home';
+  // Navigate without pushing to history (avoid infinite loop)
+  document.querySelectorAll('[id^="sec-"]').forEach(el=>el.classList.add('hidden'));
+  const t=document.getElementById('sec-'+section);
+  if(t){t.classList.remove('hidden');t.classList.remove('sec');void t.offsetWidth;t.classList.add('sec');}
+  document.querySelectorAll('.sb-item').forEach(b=>b.classList.toggle('active',b.dataset.s===section));
+  const activeBtn=document.querySelector(`.sb-item[data-s="${section}"]`);
+  if(activeBtn){const parent=activeBtn.closest('details.sb-part');if(parent)parent.open=true;}
+  cur=section;
+  setTimeout(()=>initPlots(section),150);
+  if(window.MathJax&&MathJax.typesetPromise)MathJax.typesetPromise([t]).catch(()=>{});
+});
 function toggleSB(){const s=document.getElementById('sb'),o=document.getElementById('sb-ov');s.classList.toggle('open');o.classList.toggle('open');s.classList.remove('hidden');}
 function closeSB(){document.getElementById('sb').classList.remove('open');document.getElementById('sb-ov').classList.remove('open');}
 function toggleDark(){document.documentElement.classList.toggle('dark');localStorage.setItem('dm',dk());initPlots(cur);}
+
+// Add copy buttons to all code blocks on page load
+function addCodeCopyButtons(){
+  document.querySelectorAll('div.code').forEach(block=>{
+    if(block.querySelector('.copy-btn'))return; // already has one
+    const btn=document.createElement('button');
+    btn.className='copy-btn';
+    btn.innerHTML='📋 Copy';
+    btn.setAttribute('aria-label','Copy code');
+    btn.style.cssText='position:absolute;top:.5rem;right:.5rem;padding:.25rem .5rem;background:rgba(255,255,255,.1);color:#94a3b8;border:1px solid rgba(255,255,255,.2);border-radius:.25rem;font-size:.7rem;cursor:pointer;font-family:system-ui';
+    btn.onclick=function(e){
+      e.stopPropagation();
+      const txt=block.textContent.replace('📋 Copy','').replace('✓ Copied!','').trim();
+      navigator.clipboard.writeText(txt).then(()=>{
+        btn.innerHTML='✓ Copied!';
+        setTimeout(()=>btn.innerHTML='📋 Copy',2000);
+      }).catch(()=>{
+        btn.innerHTML='✗ Failed';
+        setTimeout(()=>btn.innerHTML='📋 Copy',2000);
+      });
+    };
+    block.style.position='relative';
+    block.appendChild(btn);
+  });
+}
 
 function initPlots(s){
   switch(s){
@@ -17010,7 +17077,11 @@ function updateM8b1() {
 document.addEventListener('DOMContentLoaded',()=>{
   if(localStorage.getItem('dm')==='true'||(!'dm' in localStorage&&matchMedia('(prefers-color-scheme:dark)').matches))document.documentElement.classList.add('dark');
   updateProgress();
-  setTimeout(()=>go('home'),200);
+  addCodeCopyButtons();
+  // On load, check URL hash and navigate to that section
+  const initialHash = window.location.hash.replace('#','');
+  const initialSection = initialHash || 'home';
+  setTimeout(()=>go(initialSection),200);
 });
 </script>
 </body>
