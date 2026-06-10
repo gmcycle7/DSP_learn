@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PLL 對 VCO Jitter 的抑制能力推導 | 傳統 / Injection / Feedforward / Fast Phase Reset</title>
+<script>
+window.MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$']],tags:'ams'}};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" async></script>
+<script src="https://cdn.plot.ly/plotly-2.35.0.min.js"></script>
+<style>
+:root{
+  --bg:#f8fafc; --fg:#0f172a; --muted:#475569; --card:#ffffff; --line:#e2e8f0;
+  --accent:#0891b2; --accent2:#059669; --warnb:#f59e0b; --tipb:#06b6d4;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:"Noto Sans TC",ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;line-height:1.8}
+.wrap{max-width:920px;margin:0 auto;padding:2rem 1.25rem 5rem}
+header.hero{background:linear-gradient(135deg,#0e7490,#065f46);color:#fff;border-radius:1rem;padding:2rem 1.75rem;margin-bottom:2rem}
+header.hero h1{margin:0 0 .5rem;font-size:1.6rem;line-height:1.4}
+header.hero p{margin:0;opacity:.92;font-size:.95rem}
+h2{font-size:1.35rem;border-left:5px solid var(--accent);padding-left:.6rem;margin:2.5rem 0 1rem}
+h3{font-size:1.08rem;color:#0e7490;margin:1.6rem 0 .6rem}
+.card{background:var(--card);border:1px solid var(--line);border-radius:.75rem;padding:1.25rem 1.5rem;margin-bottom:1.5rem;box-shadow:0 1px 2px rgba(0,0,0,.05)}
+.fm{background:linear-gradient(to right,#ecfeff,#ecfdf5);border:1px solid #a5f3fc;border-radius:.75rem;padding:1rem 1.25rem;margin:1rem 0;overflow-x:auto}
+.tip{border-left:4px solid var(--tipb);background:rgba(236,254,255,.6);padding: .75rem 1rem;border-radius:0 .5rem .5rem 0;margin:1rem 0}
+.warn{border-left:4px solid var(--warnb);background:rgba(255,251,235,.6);padding:.75rem 1rem;border-radius:0 .5rem .5rem 0;margin:1rem 0}
+.key{border:2px solid var(--accent2);background:#ecfdf5;border-radius:.75rem;padding:1rem 1.25rem;margin:1.25rem 0;overflow-x:auto}
+.key .lbl{font-weight:700;color:#047857;font-size:.8rem;letter-spacing:.06em;text-transform:uppercase;margin-bottom:.25rem}
+table.dt{width:100%;border-collapse:collapse;font-size:.875rem;margin:1rem 0}
+table.dt th{background:#f1f5f9;text-align:left;padding:.5rem .65rem;border:1px solid var(--line)}
+table.dt td{padding:.5rem .65rem;border:1px solid var(--line);vertical-align:top}
+.plot{width:100%;min-height:380px;border:1px solid var(--line);border-radius:.5rem;margin:1rem 0}
+.muted{color:var(--muted);font-size:.9rem}
+code{background:#f1f5f9;border-radius:.25rem;padding:.1rem .35rem;font-size:.85em}
+nav.toc{background:var(--card);border:1px solid var(--line);border-radius:.75rem;padding:1rem 1.5rem;margin-bottom:2rem}
+nav.toc a{color:var(--accent);text-decoration:none}
+nav.toc a:hover{text-decoration:underline}
+nav.toc ol{margin:.25rem 0;padding-left:1.4rem}
+footer{margin-top:3rem;color:var(--muted);font-size:.85rem;text-align:center}
+@media (prefers-color-scheme:dark){
+  :root{--bg:#0f172a;--fg:#e2e8f0;--muted:#94a3b8;--card:#1e293b;--line:#334155}
+  .fm{background:linear-gradient(to right,rgba(8,145,178,.12),rgba(5,150,105,.12));border-color:#155e75}
+  .tip{background:rgba(8,145,178,.08)}
+  .warn{background:rgba(245,158,11,.08)}
+  .key{background:rgba(5,150,105,.1)}
+  table.dt th{background:#1e293b}
+  code{background:#334155}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="hero">
+<h1>PLL 架構對 VCO Jitter 的抑制能力：完整推導</h1>
+<p>從同一個 VCO 雜訊模型（每週期 jitter $\sigma_{vco}$）出發，推導四種常見架構的輸出 jitter：
+傳統 Type-II PLL、Injection-Locked PLL、Analog Feedforward 抵消、Fast Phase Reset（MDLL 類）。</p>
+</header>
+
+<nav class="toc">
+<strong>目錄</strong>
+<ol>
+<li><a href="#sec0">符號定義與 VCO 雜訊模型</a></li>
+<li><a href="#sec1">傳統 PLL（連續時間迴路）</a></li>
+<li><a href="#sec2">Injection-Locked PLL（離散修正，部分復位 $\beta$）</a></li>
+<li><a href="#sec3">Analog Feedforward（開迴路相位抵消）</a></li>
+<li><a href="#sec4">Fast Phase Reset / MDLL（完全復位 $\beta=1$）</a></li>
+<li><a href="#sec5">統一比較：公式、數值例與互動圖</a></li>
+<li><a href="#sec6">工程取捨備註</a></li>
+</ol>
+</nav>
+
+<!-- ============================================================ -->
+<h2 id="sec0">0. 符號定義與 VCO 雜訊模型</h2>
+<div class="card">
+<h3>0.1 基本符號</h3>
+<table class="dt">
+<tr><th>符號</th><th>意義</th></tr>
+<tr><td>$f_0,\ \omega_0=2\pi f_0,\ T_0=1/f_0$</td><td>VCO 輸出頻率／角頻率／週期</td></tr>
+<tr><td>$f_{ref},\ T_{ref}=1/f_{ref}$</td><td>參考時脈頻率／週期</td></tr>
+<tr><td>$N=f_0/f_{ref}$</td><td>倍頻比（每個參考週期含 $N$ 個 VCO 週期）</td></tr>
+<tr><td>$\sigma_{vco}$</td><td>VCO <b>每週期 period jitter</b>（RMS，單位：秒）</td></tr>
+<tr><td>$\sigma_{out}$</td><td>輸出端絕對 jitter（RMS，相對於乾淨參考）</td></tr>
+<tr><td>$\phi(t)$</td><td>VCO 多餘相位（excess phase，rad）；換成時間域 jitter 為 $\Delta t=\phi/\omega_0$</td></tr>
+</table>
+
+<h3>0.2 VCO 雜訊：白色 FM 雜訊 → 相位隨機漫步（Wiener Process）</h3>
+<p>自由振盪 VCO 的主要雜訊機制是<b>白色頻率雜訊</b>（thermal noise 調變瞬時頻率），
+對應相位是一個隨機漫步。設每個 VCO 週期的 period 誤差為 i.i.d.、變異數 $\sigma_{vco}^2$，
+則經過 $k$ 個週期後累積的時間誤差變異數為</p>
+<div class="fm">$$\sigma^2(k\,T_0)=k\,\sigma_{vco}^2
+\qquad\Longleftrightarrow\qquad
+\sigma^2(\tau)=\frac{\tau}{T_0}\,\sigma_{vco}^2 .$$</div>
+<p>把它寫成連續時間的 Wiener process：$\mathbb{E}\!\left[(\phi(t+\tau)-\phi(t))^2\right]=2D\,\tau$。
+比對一個週期（$\tau=T_0$，時間 jitter 變異數 $\sigma_{vco}^2$，相位變異數 $\omega_0^2\sigma_{vco}^2$）可得擴散常數</p>
+<div class="fm">$$2D=\frac{\omega_0^2\,\sigma_{vco}^2}{T_0}=\omega_0^2 f_0\,\sigma_{vco}^2 .$$</div>
+
+<h3>0.3 對應的相位雜訊頻譜</h3>
+<p>Wiener 相位的（雙邊）功率譜密度為 $S_\phi(\omega)=2D/\omega^2$，亦即自由振盪 VCO 著名的 $1/f^2$ 相位雜訊：</p>
+<div class="fm">$$S_\phi(f)\Big|_{\text{雙邊}}=\frac{2D}{(2\pi f)^2}
+=\frac{f_0^3\,\sigma_{vco}^2}{f^2},
+\qquad
+\mathcal{L}(f)=\frac{f_0^3\,\sigma_{vco}^2}{f^{2}}\ \ (\text{單邊 }\mathcal{L}(f)=S_{\phi,\text{雙邊}}(f)).$$</div>
+<p class="muted">註：$\int S_\phi\,df$ 對自由振盪 VCO 發散（絕對 jitter 無上界）——這正是需要 PLL 的原因。
+以下所有架構的「抑制能力」都定義為：把這個發散的積分變成有限值之後，$\sigma_{out}$ 與 $\sigma_{vco}$ 的關係。</p>
+</div>
+
+<!-- ============================================================ -->
+<h2 id="sec1">1. 傳統 PLL（連續時間迴路）</h2>
+<div class="card">
+<h3>1.1 VCO 雜訊轉移函數（NTF）</h3>
+<p>線性相位域模型：$\phi_{out} = \phi_{vco,n} + \dfrac{LG(s)}{1+LG(s)}\big(N\phi_{ref}-\phi_{out}\big)\cdots$，整理後 VCO 自身雜訊到輸出的轉移為</p>
+<div class="fm">$$\text{NTF}_{vco}(s)=\frac{1}{1+LG(s)},\qquad LG(s)=\frac{K_{pd}\,K_{vco}}{N}\cdot\frac{F(s)}{s}.$$</div>
+<p><b>一階迴路</b>（$F(s)=1$，迴路增益 $LG=\omega_L/s$）：</p>
+<div class="fm">$$\text{NTF}_{vco}(s)=\frac{s}{s+\omega_L}\quad(\text{高通，轉折在迴路頻寬 }\omega_L=2\pi f_L).$$</div>
+<p><b>Type-II 二階迴路</b>（charge-pump + $RC$，$F(s)=R+\frac{1}{sC}$）：</p>
+<div class="fm">$$\text{NTF}_{vco}(s)=\frac{s^2}{s^2+2\zeta\omega_n s+\omega_n^2},\qquad
+\omega_n=\sqrt{\tfrac{K_{pd}K_{vco}}{NC}},\ \ \zeta=\tfrac{R C\,\omega_n}{2}.$$</div>
+<p>物理意義：迴路頻寬內（$f&lt;f_L$）VCO 相位被參考「拉回」，頻寬外 VCO 雜訊原樣輸出。</p>
+
+<h3>1.2 輸出 jitter 積分（一階迴路）</h3>
+<p>輸出相位變異數 $=$ VCO 相位雜訊 $\times$ 高通 NTF 的全頻積分（用雙邊頻譜）：</p>
+<div class="fm">$$\sigma_{\phi,out}^2
+=\int_{-\infty}^{\infty}\frac{2D}{\omega^2}\cdot\left|\frac{j\omega}{j\omega+\omega_L}\right|^2 df
+=\int_{-\infty}^{\infty}\frac{2D}{\omega^2+\omega_L^2}\,df
+=\frac{2D}{2\pi}\cdot\frac{\pi}{\omega_L}
+=\frac{D}{\omega_L}.$$</div>
+<p>代入 $2D=\omega_0^2 f_0 \sigma_{vco}^2$，再除以 $\omega_0^2$ 換回時間域：</p>
+<div class="key"><div class="lbl">傳統一階 PLL</div>
+$$\boxed{\ \sigma_{out}^2=\frac{f_0}{2\,\omega_L}\,\sigma_{vco}^2
+=\frac{f_0}{4\pi f_L}\,\sigma_{vco}^2
+=\frac{N}{4\pi}\cdot\frac{f_{ref}}{f_L}\cdot\sigma_{vco}^2\ }$$</div>
+<p><b>直觀解讀</b>：自由振盪累積 jitter 為 $\sigma^2(\tau)=(\tau/T_0)\sigma_{vco}^2$，而
+$\sigma_{out}^2=\sigma^2\!\big(\tau=\tfrac{1}{2\omega_L}\big)$ ——
+PLL 等效於每隔 $\tau\approx 1/(2\omega_L)$ 把 VCO 的累積 jitter「歸零」一次。頻寬越大，歸零越快，jitter 越小。</p>
+
+<h3>1.3 Type-II 二階迴路的精確積分</h3>
+<p>用標準積分表（$H(s)=\frac{b_1 s+b_0}{s^2+a_1 s+a_0}$ 時 $\frac{1}{2\pi}\!\int|H|^2 d\omega=\frac{b_1^2 a_0+b_0^2}{2 a_1 a_0}$，
+這裡對 $\frac{2D}{\omega^2}\big|\text{NTF}\big|^2$ 積分等價於 $H(s)=\frac{s}{s^2+2\zeta\omega_n s+\omega_n^2}$、輸入白雜訊 $2D$）：</p>
+<div class="fm">$$\sigma_{\phi,out}^2=2D\cdot\frac{1}{4\zeta\omega_n}
+\quad\Longrightarrow\quad
+\sigma_{out}^2=\frac{f_0}{4\zeta\omega_n}\,\sigma_{vco}^2=\frac{f_0}{8\pi\zeta f_n}\,\sigma_{vco}^2 .$$</div>
+<p class="muted">$\zeta\omega_n$ 扮演一階公式中 $\omega_L/2$ 的角色；$\zeta=1$、$f_n=f_L/2$ 時兩式一致（數量級相同），所以後文統一用一階形式討論。</p>
+
+<h3>1.4 根本限制：迴路頻寬上限（Gardner Limit）</h3>
+<p>相位偵測器每 $T_{ref}$ 才取樣一次，離散取樣使連續時間近似在 $f_L$ 接近 $f_{ref}$ 時失效並造成不穩定。
+工程上通常 $f_L\lesssim f_{ref}/10\sim f_{ref}/20$。代入上式得傳統 PLL 的<b>抑制下限</b>：</p>
+<div class="key"><div class="lbl">傳統 PLL 的極限（取 $f_L=f_{ref}/10$）</div>
+$$\sigma_{out}^2\ \gtrsim\ \frac{10}{4\pi}\,N\,\sigma_{vco}^2\ \approx\ 0.8\,N\,\sigma_{vco}^2
+\qquad\Longrightarrow\qquad \sigma_{out}\gtrsim 0.9\sqrt{N}\,\sigma_{vco}.$$</div>
+<p>這就是後面三種架構存在的理由：它們都在設法<b>繞過取樣造成的頻寬上限</b>，更快地歸零 VCO 的累積相位。</p>
+</div>
+
+<!-- ============================================================ -->
+<h2 id="sec2">2. Injection-Locked PLL（離散修正，部分復位 $\beta$）</h2>
+<div class="card">
+<h3>2.1 模型：每個參考邊緣注入一次、修正比例 $\beta$</h3>
+<p>子諧波注入鎖定（subharmonic injection locking）：每個參考週期把一個乾淨脈衝注入 VCO，
+把當下的相位誤差瞬間拉回一個比例。設注入前誤差為 $\phi^-$，注入後</p>
+<div class="fm">$$\phi^+=(1-\beta)\,\phi^-,\qquad 0&lt;\beta\le 1,$$</div>
+<p>$\beta$ 稱為<b>注入強度（injection strength）</b>，由注入脈衝能量與振盪器擺幅決定（弱注入時 $\beta\approx \frac{I_{inj}}{I_{osc}}\cdot\frac{2\pi}{N}\cdot(\cdots)$，這裡直接以 $\beta$ 為參數）。
+兩次注入之間 VCO 自由累積 $N$ 個週期的 jitter：</p>
+<div class="fm">$$\phi^-_{n+1}=\phi^+_n+w_n,\qquad \mathrm{Var}(w_n)=N\,\sigma_{vco}^2\quad(\text{時間域單位}).$$</div>
+
+<h3>2.2 穩態變異數（離散 Lyapunov 遞迴）</h3>
+<p>令注入前誤差變異數穩態值為 $P^-$。把遞迴式取變異數（$w_n$ 與 $\phi_n^+$ 獨立）：</p>
+<div class="fm">$$P^-=(1-\beta)^2 P^- + N\sigma_{vco}^2
+\quad\Longrightarrow\quad
+P^-=\frac{N\,\sigma_{vco}^2}{1-(1-\beta)^2}=\frac{N\,\sigma_{vco}^2}{\beta(2-\beta)},
+\qquad P^+=(1-\beta)^2P^-.$$</div>
+
+<h3>2.3 週期內時間平均（觀察者看到的 jitter）</h3>
+<p>注入後第 $k$ 個 VCO 週期（$k=1\ldots N$）的誤差變異數為 $P^++k\sigma_{vco}^2$（鋸齒狀累積）。對 $k$ 平均：</p>
+<div class="key"><div class="lbl">Injection-Locked PLL</div>
+$$\boxed{\ \sigma_{out}^2
+= \underbrace{\frac{(1-\beta)^2}{\beta(2-\beta)}\,N\,\sigma_{vco}^2}_{\text{修正殘留（復位不完全）}}
+\;+\;\underbrace{\frac{N+1}{2}\,\sigma_{vco}^2}_{\text{週期內重新累積}}\ }$$</div>
+
+<h3>2.4 等效迴路頻寬：為什麼 injection 能勝過傳統 PLL</h3>
+<p>誤差每 $T_{ref}$ 衰減 $(1-\beta)$ 倍，對應連續時間衰減率 $e^{-\omega_{eq}T_{ref}}=1-\beta$：</p>
+<div class="fm">$$f_{eq}=\frac{f_{ref}}{2\pi}\ln\!\frac{1}{1-\beta}\ \xrightarrow{\ \beta\ll 1\ }\ \frac{\beta f_{ref}}{2\pi}.$$</div>
+<p><b>一致性檢查</b>：$\beta\ll1$ 時 $\sigma_{out}^2\approx \frac{N\sigma_{vco}^2}{2\beta}$，
+而把 $\omega_L=\beta f_{ref}$ 代入第 1 節傳統公式 $\sigma_{out}^2=\frac{f_0}{2\omega_L}\sigma_{vco}^2=\frac{N\sigma_{vco}^2}{2\beta}$ —— 完全吻合。
+差別在於：傳統 PLL 受 Gardner limit 約束 $f_L\lesssim f_{ref}/10$，
+而注入是「瞬時相位修正」而非「經由迴路濾波器的延遲回授」，$\beta$ 可以接近 1，
+等效頻寬 $f_{eq}$ 可遠超過 $f_{ref}/10$（$\beta=0.9$ 時 $f_{eq}\approx 0.37 f_{ref}$）。</p>
+<div class="tip">$\beta\to1$ 時殘留項消失，$\sigma_{out}^2\to\frac{N+1}{2}\sigma_{vco}^2$ —— 收斂到第 4 節 Fast Phase Reset 的結果。
+實務上 injection PLL 仍需要一個低頻 PLL/FLL 維持<b>頻率</b>正確（注入只修相位，不修頻率漂移），否則會產生固定相位偏移與 reference spur。</div>
+</div>
+
+<!-- ============================================================ -->
+<h2 id="sec3">3. Analog Feedforward（開迴路相位抵消）</h2>
+<div class="card">
+<h3>3.1 模型：量測誤差後在「輸出端」減掉，而不是回授到 VCO</h3>
+<p>架構：主 PLL 維持窄頻寬鎖定；另以 PD/TDC 每個參考週期量測瞬時相位誤差
+$\hat e_n=\phi(nT_{ref})+q_n$（$q_n$ 為量測雜訊，變異數 $\sigma_q^2$），
+經增益 $G$ 後由<b>輸出路徑上的相位內插器（PI）／可調延遲線（DTC）</b>直接從輸出相位中減去（零階保持到下一筆）：</p>
+<div class="fm">$$\psi(nT_{ref}+\tau)=\phi(nT_{ref}+\tau)-G\,\hat e_n,
+\qquad 0\le\tau&lt;T_{ref}.$$</div>
+<p>因為修正路徑是<b>開迴路（feedforward）</b>，不經過迴路動態，所以<b>沒有穩定度限制</b>，這是它能突破 Gardner limit 的原因。</p>
+
+<h3>3.2 殘留誤差推導</h3>
+<p>把 $\phi(nT_{ref}+\tau)=\phi(nT_{ref})+W(\tau)$ 拆開（$W(\tau)$ 為取樣後新累積的隨機漫步，
+$\mathrm{Var}[W(\tau)]=\frac{\tau}{T_0}\sigma_{vco}^2$），代入：</p>
+<div class="fm">$$\psi=(1-G)\,\phi(nT_{ref})\;+\;W(\tau)\;-\;G\,q_n .$$</div>
+<p>三項彼此獨立。$\phi(nT_{ref})$ 是主迴路鎖定下的穩態誤差（即第 1 節結果 $\sigma^2_{\phi,loop}=\frac{f_0}{4\pi f_L}\sigma_{vco}^2$）。
+對 $\tau$ 在一個參考週期內平均（$\overline{\tau/T_0}=\frac{N+1}{2}$ 取離散平均）：</p>
+<div class="key"><div class="lbl">Analog Feedforward</div>
+$$\boxed{\ \sigma_{out}^2
+=\underbrace{(1-G)^2\,\frac{f_0}{4\pi f_L}\,\sigma_{vco}^2}_{\text{增益失配殘留 }(\varepsilon=1-G)}
++\underbrace{\frac{N+1}{2}\,\sigma_{vco}^2}_{\text{取樣間重新累積}}
++\underbrace{G^2\sigma_q^2}_{\text{量測雜訊直通}}
+\;\Big(+\,\frac{\Delta}{T_0}\sigma_{vco}^2\Big)\ }$$</div>
+<p>最後一項是修正路徑延遲 $\Delta$（量到套用之間 VCO 又多走了 $\Delta/T_0$ 個週期）造成的額外累積——
+這就是為什麼此類架構強調「fast / low-latency」修正。</p>
+
+<h3>3.3 三個極限情況</h3>
+<ul>
+<li><b>完美抵消</b>（$G=1$、$\sigma_q=0$、$\Delta=0$）：$\sigma_{out}^2=\frac{N+1}{2}\sigma_{vco}^2$ —— 與 Fast Phase Reset 同一個地板（見 §4.3 的共同下限）。</li>
+<li><b>增益失配 $\varepsilon=1-G$</b>：低頻 VCO 雜訊被壓 $20\log_{10}(1/\varepsilon)$ dB；$\varepsilon=10\%$ 即 20 dB 抵消深度。</li>
+<li><b>量測雜訊主導</b>：$\sigma_q$ 直接全頻通到輸出，TDC/PD 解析度成為地板——feedforward 是用「量測精度」換「抑制頻寬」。</li>
+</ul>
+<div class="tip">與 injection 的關鍵差異：feedforward <b>不擾動振盪器本身</b>（無 injection pulling、VCO 內無 reference spur），
+代價是輸出路徑上 PI/DTC 的非線性與雜訊直接成為輸出 jitter 的一部分。</div>
+</div>
+
+<!-- ============================================================ -->
+<h2 id="sec4">4. Fast Phase Reset / MDLL（完全復位 $\beta=1$）</h2>
+<div class="card">
+<h3>4.1 模型：邊緣替換（edge replacement）</h3>
+<p>MDLL（Multiplying DLL）或 fast phase reset 架構：每個參考邊緣到來時，用多工器把<b>乾淨的參考邊緣直接取代</b>環形振盪器中正在傳遞的邊緣。
+效果上等於 $\beta=1$ 的注入——累積相位誤差被「整段丟棄」：</p>
+<div class="fm">$$\phi^+_n=0\quad(\text{理想復位}),\qquad
+\phi(\text{復位後第 }k\text{ 個週期})\ \text{的變異數}=k\,\sigma_{vco}^2 .$$</div>
+
+<h3>4.2 輸出 jitter：鋸齒累積的平均</h3>
+<p>誤差變異數呈鋸齒：$0\to\sigma_{vco}^2\to2\sigma_{vco}^2\to\cdots\to N\sigma_{vco}^2\to$（復位）$\to0$。對一個參考週期取平均：</p>
+<div class="key"><div class="lbl">Fast Phase Reset / MDLL</div>
+$$\boxed{\ \sigma_{out}^2=\frac{1}{N}\sum_{k=1}^{N}k\,\sigma_{vco}^2=\frac{N+1}{2}\,\sigma_{vco}^2
+\ \approx\ \frac{N}{2}\,\sigma_{vco}^2
+\qquad\Longrightarrow\qquad
+\sigma_{out}\approx\sigma_{vco}\sqrt{\frac{N}{2}}\ }$$</div>
+<p>峰值（復位前最後一個邊緣）為 $N\sigma_{vco}^2$，是平均值的兩倍——規格上若看 peak jitter 要用 $N$ 而非 $N/2$。</p>
+
+<h3>4.3 這是「每 $T_{ref}$ 修正一次」類架構的共同下限</h3>
+<p>任何只在參考邊緣動作的架構（injection、feedforward、reset 皆然），修正之間的 $W(\tau)$ 累積無法避免，因此</p>
+<div class="fm">$$\sigma_{out}^2\ \ge\ \frac{N+1}{2}\,\sigma_{vco}^2\qquad(\text{修正率}=f_{ref}\text{ 的理論地板}).$$</div>
+<p>要再降低只有兩條路：(a) 提高修正率（每 $M&lt;N$ 個 VCO 週期修正一次 → 地板變 $\frac{M+1}{2}\sigma_{vco}^2$，如 injection at $2f_{ref}$）；(b) 換更低 $\sigma_{vco}$ 的振盪器（LC 取代 ring）。</p>
+
+<h3>4.4 頻域對照（補充）</h3>
+<p>完全復位輸出 $\psi(t)=W(t)-W(\lfloor t/T_{ref}\rfloor T_{ref})$ 是週期平穩過程，其時間平均頻譜等效於</p>
+<div class="fm">$$S_{\psi}(f)=S_{\phi,vco}(f)\cdot\Big(1-\mathrm{sinc}^2(f\,T_{ref})\Big),\qquad
+\mathrm{sinc}(x)=\frac{\sin\pi x}{\pi x}.$$</div>
+<p>低頻端 $1-\mathrm{sinc}^2\approx\frac{(\pi f T_{ref})^2}{3}$，把 $1/f^2$ 的 VCO 雜訊整平成白色（有限），
+在 $f=k\,f_{ref}$ 出現 null；對全頻積分即可驗證回到 $\sigma_{out}^2\approx\frac{N}{2}\sigma_{vco}^2$ 的時域結果。</p>
+<div class="warn">代價：輸出每 $T_{ref}$ 直接「貼上」參考邊緣 → 參考雜訊與 spur <b>全頻直通</b>（$\sigma_{ref}^2$ 一比一加在輸出，無低通濾除），
+且 mux 切換的 deterministic 誤差造成 reference spur。MDLL 適合「參考很乾淨、VCO（ring）很吵」的場景。</div>
+</div>
+
+<!-- ============================================================ -->
+<h2 id="sec5">5. 統一比較</h2>
+<div class="card">
+<h3>5.1 公式總表</h3>
+<table class="dt">
+<tr><th>架構</th><th>$\sigma_{out}^2/\sigma_{vco}^2$</th><th>等效抑制頻寬</th><th>主要限制</th></tr>
+<tr><td><b>傳統 Type-II PLL</b></td>
+<td>$\dfrac{f_0}{4\pi f_L}=\dfrac{N}{4\pi}\dfrac{f_{ref}}{f_L}$</td>
+<td>$f_L\lesssim f_{ref}/10$（Gardner）</td>
+<td>取樣穩定度限制頻寬</td></tr>
+<tr><td><b>Injection-Locked PLL</b></td>
+<td>$\dfrac{(1-\beta)^2 N}{\beta(2-\beta)}+\dfrac{N+1}{2}$</td>
+<td>$f_{eq}=\dfrac{f_{ref}}{2\pi}\ln\dfrac{1}{1-\beta}$，可達 $\mathcal{O}(f_{ref})$</td>
+<td>需輔助迴路鎖頻率；injection pulling／spur</td></tr>
+<tr><td><b>Analog Feedforward</b></td>
+<td>$(1-G)^2\dfrac{f_0}{4\pi f_L}+\dfrac{N+1}{2}+\dfrac{G^2\sigma_q^2}{\sigma_{vco}^2}$</td>
+<td>開迴路，無穩定度限制（受 $\Delta$、$\sigma_q$ 限）</td>
+<td>增益匹配 $\varepsilon$、TDC 雜訊、PI/DTC 非線性</td></tr>
+<tr><td><b>Fast Phase Reset / MDLL</b></td>
+<td>$\dfrac{N+1}{2}$（理論地板）</td>
+<td>等效 $\beta=1$，$\sim f_{ref}/2$</td>
+<td>參考雜訊全頻直通；mux 失配 spur</td></tr>
+</table>
+
+<h3>5.2 數值例：$f_0=10\,$GHz、$f_{ref}=100\,$MHz（$N=100$）</h3>
+<table class="dt">
+<tr><th>架構（參數）</th><th>$\sigma_{out}/\sigma_{vco}$</th><th>相對傳統 PLL 的改善</th></tr>
+<tr><td>傳統 PLL，$f_L=5$ MHz（$f_{ref}/20$）</td><td>$\sqrt{159}\approx12.6$</td><td>—</td></tr>
+<tr><td>傳統 PLL，$f_L=10$ MHz（$f_{ref}/10$，極限）</td><td>$\sqrt{79.6}\approx8.9$</td><td>3.0 dB</td></tr>
+<tr><td>Injection，$\beta=0.5$</td><td>$\sqrt{83.8}\approx9.2$</td><td>2.8 dB</td></tr>
+<tr><td>Injection，$\beta=0.9$</td><td>$\sqrt{51.5}\approx7.2$</td><td>4.9 dB</td></tr>
+<tr><td>Feedforward，$G=0.9$、$\sigma_q=0$</td><td>$\sqrt{52.1}\approx7.2$</td><td>4.8 dB</td></tr>
+<tr><td>Fast Reset / MDLL（理想）</td><td>$\sqrt{50.5}\approx7.1$</td><td>5.0 dB</td></tr>
+</table>
+<p class="muted">改善以 jitter 功率（variance）計。可看出：突破 Gardner limit 後，各架構都收斂到 $\sqrt{N/2}$ 的共同地板，差別主要在「殘留項」與各自的非理想雜訊來源。</p>
+
+<h3>5.3 互動圖一：VCO 雜訊轉移函數 $|\mathrm{NTF}(f)|$</h3>
+<div id="plotNTF" class="plot"></div>
+<p class="muted">傳統 PLL 受限於 $f_L=f_{ref}/20$；injection 的等效頻寬隨 $\beta$ 上升；完全復位（MDLL）用 $1-\mathrm{sinc}^2(fT_{ref})$，在 $f=kf_{ref}$ 出現 null。</p>
+
+<h3>5.4 互動圖二：$\sigma_{out}/\sigma_{vco}$ 對注入強度 $\beta$（$N=100$）</h3>
+<div id="plotBeta" class="plot"></div>
+<p class="muted">虛線：傳統 PLL（$f_L=f_{ref}/20$）；點線：$\sqrt{(N+1)/2}$ 共同理論地板。$\beta\gtrsim0.5$ 之後即優於傳統 PLL，$\beta\to1$ 貼到地板。</p>
+
+<h3>5.5 互動圖三：誤差變異數的時域累積（鋸齒圖）</h3>
+<div id="plotSaw" class="plot"></div>
+<p class="muted">完全復位架構的瞬時誤差變異數 $k\,\sigma_{vco}^2$ 呈鋸齒；其時間平均（綠虛線）即 $\frac{N+1}{2}\sigma_{vco}^2$；紅線為傳統 PLL 的穩態值。</p>
+</div>
+
+<!-- ============================================================ -->
+<h2 id="sec6">6. 工程取捨備註</h2>
+<div class="card">
+<ul>
+<li><b>抑制 VCO 雜訊 ⇔ 直通參考雜訊。</b>所有「高等效頻寬」架構都把參考路徑雜訊（含 buffer、注入路徑、TDC）幾乎一比一送到輸出：
+$\sigma_{out,total}^2\approx\sigma_{ref-path}^2+\sigma_{out,vco}^2$。VCO 很吵（ring oscillator）時划算；LC-VCO 很安靜時，窄頻寬傳統 PLL 反而可能更好。</li>
+<li><b>$\sqrt{N/2}$ 地板的含義。</b>固定 $f_0$ 之下提高 $f_{ref}$（降低 $N$）能直接降地板——這是高參考頻率（如 500 MHz crystal/MEMS）與 multi-rate injection 流行的原因。</li>
+<li><b>$\beta$ 不是自由參數。</b>注入強度受脈衝寬度、振盪器 Q、擺幅限制；強注入造成 frequency pulling 與 deterministic spur，實際設計常落在 $\beta\sim0.3$–$0.8$。</li>
+<li><b>Feedforward 與 reset 可疊加。</b>例如 MDLL + DTC 前饋修 mux 失配，或 injection PLL + feedforward 修殘留——殘留項相乘、地板不變。</li>
+<li><b>本文假設白色 FM 雜訊。</b>若 VCO 含明顯 $1/f^3$ 區（flicker FM），低頻權重更重，高等效頻寬架構的相對優勢更大；推導方法相同，把 $S_\phi\propto1/f^2$ 換成 $1/f^3$ 重新積分即可。</li>
+</ul>
+</div>
+
+<footer>PLL VCO Jitter Suppression — 推導筆記 · 數學以 MathJax 渲染 · 圖表以 Plotly 繪製</footer>
+</div>
+
+<script>
+function ready(fn){if(document.readyState!=='loading'){fn()}else{document.addEventListener('DOMContentLoaded',fn)}}
+ready(function(){
+  var dark=window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches;
+  var paper=dark?'#1e293b':'#ffffff', fg=dark?'#e2e8f0':'#0f172a', grid=dark?'#334155':'#e2e8f0';
+  var baseLayout=function(t,xt,yt){return{title:{text:t,font:{size:14}},paper_bgcolor:paper,plot_bgcolor:paper,
+    font:{color:fg,size:12},margin:{l:60,r:20,t:40,b:50},
+    xaxis:{title:xt,gridcolor:grid,zeroline:false},yaxis:{title:yt,gridcolor:grid,zeroline:false},
+    legend:{orientation:'h',y:-0.25}};};
+
+  /* ---- Plot 1: |NTF(f)| ---- */
+  (function(){
+    var fr=1; // f_ref normalized to 1
+    var f=[],i; for(i=-3;i<=0.6;i+=0.01) f.push(Math.pow(10,i));
+    function firstOrder(fL){return f.map(function(x){return 10*Math.log10(x*x/(x*x+fL*fL));});}
+    function mdll(){return f.map(function(x){var s=Math.sin(Math.PI*x/fr)/(Math.PI*x/fr);var v=1-s*s;return 10*Math.log10(Math.max(v,1e-12));});}
+    var fL=fr/20;
+    var feq=function(b){return fr/(2*Math.PI)*Math.log(1/(1-b));};
+    var traces=[
+      {x:f,y:firstOrder(fL),name:'傳統 PLL (f_L=f_ref/20)',line:{color:'#ef4444',width:2.5}},
+      {x:f,y:firstOrder(feq(0.3)),name:'Injection β=0.3',line:{color:'#f59e0b',width:2}},
+      {x:f,y:firstOrder(feq(0.9)),name:'Injection β=0.9',line:{color:'#0891b2',width:2}},
+      {x:f,y:mdll(),name:'Fast Reset / MDLL (1−sinc²)',line:{color:'#059669',width:2.5}}
+    ];
+    var ly=baseLayout('VCO 雜訊轉移函數 |NTF(f)|²  (dB)','f / f_ref','|NTF|² (dB)');
+    ly.xaxis.type='log'; ly.yaxis.range=[-60,5];
+    Plotly.newPlot('plotNTF',traces,ly,{responsive:true,displayModeBar:false});
+  })();
+
+  /* ---- Plot 2: sigma_out/sigma_vco vs beta ---- */
+  (function(){
+    var N=100,b=[],y=[],i;
+    for(i=0.02;i<=0.999;i+=0.002){b.push(i);
+      y.push(Math.sqrt((1-i)*(1-i)*N/(i*(2-i))+(N+1)/2));}
+    var classic=Math.sqrt(N/(4*Math.PI)*20); // f_L=f_ref/20
+    var floor=Math.sqrt((N+1)/2);
+    var traces=[
+      {x:b,y:y,name:'Injection PLL',line:{color:'#0891b2',width:2.5}},
+      {x:[0,1],y:[classic,classic],name:'傳統 PLL (f_L=f_ref/20)',line:{color:'#ef4444',width:2,dash:'dash'}},
+      {x:[0,1],y:[floor,floor],name:'√((N+1)/2) 理論地板',line:{color:'#059669',width:2,dash:'dot'}}
+    ];
+    var ly=baseLayout('σ_out / σ_vco 對注入強度 β（N=100）','β（注入強度）','σ_out / σ_vco');
+    ly.yaxis.range=[0,30];
+    Plotly.newPlot('plotBeta',traces,ly,{responsive:true,displayModeBar:false});
+  })();
+
+  /* ---- Plot 3: sawtooth accumulation ---- */
+  (function(){
+    var N=20,x=[],y=[],i,p;
+    for(p=0;p<3;p++){for(i=0;i<=N;i++){x.push(p*N+i);y.push(i);} }
+    var classicVal=20*N/(4*Math.PI); // f0/(4π f_L) with f_L=f_ref/20, in units of σ²_vco
+    var traces=[
+      {x:x,y:y,name:'Fast Reset：瞬時 Var/σ²_vco',line:{color:'#059669',width:2},mode:'lines'},
+      {x:[0,3*N],y:[(N+1)/2,(N+1)/2],name:'時間平均 (N+1)/2',line:{color:'#10b981',width:2,dash:'dash'}},
+      {x:[0,3*N],y:[classicVal,classicVal],name:'傳統 PLL 穩態 (f_L=f_ref/20)',line:{color:'#ef4444',width:2,dash:'dot'}}
+    ];
+    var ly=baseLayout('誤差變異數時域累積（N=20，單位 σ²_vco）','VCO 週期序號（每 N=20 復位一次）','Var / σ²_vco');
+    Plotly.newPlot('plotSaw',traces,ly,{responsive:true,displayModeBar:false});
+  })();
+});
+</script>
+</body>
+</html>
